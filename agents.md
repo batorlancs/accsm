@@ -372,4 +372,3 @@ impl From<AppError> for String {
 - Hot reload works for both frontend and backend (with `cargo watch`)
 - Use TypeScript strict mode for maximum type safety
 - Leverage TanStack Query's devtools for debugging data flow
-
