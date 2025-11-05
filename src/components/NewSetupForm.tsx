@@ -110,7 +110,7 @@ export function NewSetupForm({ onCancel, onSuccess }: NewSetupFormProps) {
       if (car) {
         const updatedSetup = {
           ...DEFAULT_SETUP_JSON,
-          carName: car.folder_name,
+          carName: car.id,
         };
         setJsonContent(JSON.stringify(updatedSetup, null, 2));
       }

@@ -187,7 +187,6 @@ impl AppStateManager {
         Ok(CarFolder {
             car_id: car.id.clone(),
             car_name: car.pretty_name.clone(),
-            folder_name: car.folder_name.clone(),
             tracks,
         })
     }
@@ -240,7 +239,6 @@ impl AppStateManager {
         Ok(TrackFolder {
             track_id: track.id.clone(),
             track_name: track.pretty_name.clone(),
-            folder_name: track.folder_name.clone(),
             setups,
         })
     }
@@ -284,8 +282,8 @@ impl AppStateManager {
         })?;
 
         let file_path = setups_path
-            .join(&car_data.folder_name)
-            .join(&track_data.folder_name)
+            .join(&car_data.id)
+            .join(&track_data.id)
             .join(filename);
 
         if !file_path.exists() {
@@ -304,10 +302,10 @@ impl AppStateManager {
         })?;
 
         // Validate car name matches
-        if setup.car_name != car_data.folder_name {
+        if setup.car_name != car_data.id {
             return Err(AccError::CarNameMismatch {
                 json_car: setup.car_name,
-                folder_car: car_data.folder_name.clone(),
+                folder_car: car_data.id.clone(),
             });
         }
 
@@ -343,7 +341,7 @@ impl AppStateManager {
         let obj = content.as_object_mut().unwrap();
 
         // Ensure carName field matches the car folder
-        obj.insert("carName".to_string(), serde_json::Value::String(car_data.folder_name.clone()));
+        obj.insert("carName".to_string(), serde_json::Value::String(car_data.id.clone()));
 
         // Add or update ACCSM metadata
         let accsm_data = AccsmData {
@@ -363,8 +361,8 @@ impl AppStateManager {
 
         // Ensure the directory structure exists
         let dir_path = setups_path
-            .join(&car_data.folder_name)
-            .join(&track_data.folder_name);
+            .join(&car_data.id)
+            .join(&track_data.id);
 
         if !dir_path.exists() {
             fs::create_dir_all(&dir_path).map_err(|e| AccError::DirectoryCreationFailed {
@@ -400,8 +398,8 @@ impl AppStateManager {
         })?;
 
         let file_path = setups_path
-            .join(&car_data.folder_name)
-            .join(&track_data.folder_name)
+            .join(&car_data.id)
+            .join(&track_data.id)
             .join(filename);
 
         if !file_path.exists() {

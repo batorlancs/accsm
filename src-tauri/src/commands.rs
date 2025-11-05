@@ -243,10 +243,10 @@ pub async fn validate_setup(
     let cars = data::get_cars();
     if let Some(car_data) = cars.get(&car) {
         if let Some(car_name) = obj.get("carName").and_then(|v| v.as_str()) {
-            if car_name != car_data.folder_name {
+            if car_name != car_data.id {
                 return Err(AccError::CarNameMismatch {
                     json_car: car_name.to_string(),
-                    folder_car: car_data.folder_name.clone(),
+                    folder_car: car_data.id.clone(),
                 });
             }
         }

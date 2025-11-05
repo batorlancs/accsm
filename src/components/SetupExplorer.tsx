@@ -193,7 +193,7 @@ function TrackNode({ car, track, selectedSetup, onSelectSetup, isSetupSelected }
             car={car}
             track={track}
             setup={setup}
-            isSelected={isSetupSelected(car.folder_name, track.folder_name, setup.filename)}
+            isSelected={isSetupSelected(car.car_id, track.track_id, setup.filename)}
             onSelect={() => onSelectSetup(car.car_id, track.track_id, setup.filename)}
           />
         ))}

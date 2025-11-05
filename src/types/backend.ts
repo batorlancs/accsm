@@ -2,13 +2,11 @@
 
 export interface Car {
   id: string;
-  folder_name: string;
   pretty_name: string;
 }
 
 export interface Track {
   id: string;
-  folder_name: string;
   pretty_name: string;
 }
 
@@ -38,14 +36,12 @@ export interface SetupInfo {
 export interface TrackFolder {
   track_id: string;
   track_name: string;
-  folder_name: string;
   setups: SetupInfo[];
 }
 
 export interface CarFolder {
   car_id: string;
   car_name: string;
-  folder_name: string;
   tracks: TrackFolder[];
 }
 
