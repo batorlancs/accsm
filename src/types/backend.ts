@@ -1,82 +1,83 @@
 // Backend data structure types that match the Rust models
 
 export interface Car {
-  id: string;
-  pretty_name: string;
+    id: string;
+    pretty_name: string;
 }
 
 export interface Track {
-  id: string;
-  pretty_name: string;
+    id: string;
+    pretty_name: string;
 }
 
 export interface AccsmData {
-  lastModified: string; // ISO string from DateTime<Utc>
-  tags: string[];
-  setupType: string;
+    lastModified: string; // ISO string from DateTime<Utc>
+    tags: string[];
+    setupType: string;
 }
 
 export interface SetupFile {
-  carName: string;
-  basicSetup: any; // JSON value
-  advancedSetup: any; // JSON value
-  trackBopType?: number;
-  ACCSMData: AccsmData;
-  [key: string]: any; // For other_fields
+    carName: string;
+    basicSetup: any; // JSON value
+    advancedSetup: any; // JSON value
+    trackBopType?: number;
+    ACCSMData: AccsmData;
+    [key: string]: any; // For other_fields
 }
 
 export interface SetupInfo {
-  filename: string;
-  display_name: string;
-  last_modified: string; // ISO string
-  tags: string[];
-  setup_type: string;
+    filename: string;
+    display_name: string;
+    last_modified: string; // ISO string
+    tags: string[];
+    setup_type: string;
 }
 
 export interface TrackFolder {
-  track_id: string;
-  track_name: string;
-  setups: SetupInfo[];
+    track_id: string;
+    track_name: string;
+    setups: SetupInfo[];
 }
 
 export interface CarFolder {
-  car_id: string;
-  car_name: string;
-  tracks: TrackFolder[];
+    car_id: string;
+    car_name: string;
+    tracks: TrackFolder[];
 }
 
 export interface FolderStructure {
-  cars: CarFolder[];
-  total_setups: number;
-  last_scan: string; // ISO string
+    cars: CarFolder[];
+    total_setups: number;
+    last_scan: string; // ISO string
 }
 
 // Tauri command parameter types
 export interface GetSetupParams {
-  car: string;
-  track: string;
-  filename: string;
+    car: string;
+    track: string;
+    filename: string;
 }
 
 export interface SaveSetupParams {
-  car: string;
-  track: string;
-  filename: string;
-  content: any;
+    car: string;
+    track: string;
+    filename: string;
+    content: any;
 }
 
 export interface DeleteSetupParams {
-  car: string;
-  track: string;
-  filename: string;
+    car: string;
+    track: string;
+    filename: string;
 }
 
 export interface ValidateSetupParams {
-  car: string;
-  content: any;
+    car: string;
+    content: any;
 }
 
 // Event payload types
 export interface SetupsChangedEvent {
-  payload: FolderStructure;
+    payload: FolderStructure;
 }
+
