@@ -1,6 +1,7 @@
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
+import { ThemeProvider } from "next-themes";
 
 import * as TanStackQueryProvider from "./integrations/tanstack-query/root-provider.tsx";
 
@@ -37,9 +38,16 @@ if (rootElement && !rootElement.innerHTML) {
     const root = ReactDOM.createRoot(rootElement);
     root.render(
         <StrictMode>
-            <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
-                <RouterProvider router={router} />
-            </TanStackQueryProvider.Provider>
+            <ThemeProvider 
+                attribute="class" 
+                defaultTheme="dark" 
+                enableSystem={false}
+                disableTransitionOnChange
+            >
+                <TanStackQueryProvider.Provider {...TanStackQueryProviderContext}>
+                    <RouterProvider router={router} />
+                </TanStackQueryProvider.Provider>
+            </ThemeProvider>
         </StrictMode>,
     );
 }
