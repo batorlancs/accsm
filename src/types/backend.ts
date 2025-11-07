@@ -80,4 +80,3 @@ export interface ValidateSetupParams {
 export interface SetupsChangedEvent {
     payload: FolderStructure;
 }
-
