@@ -2,7 +2,6 @@ import { Plus, Save, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -191,13 +190,13 @@ export function NewSetupForm({ onCancel, onSuccess }: NewSetupFormProps) {
     const trackOptions = tracks ? Object.values(tracks) : [];
 
     return (
-        <Card className="h-full flex flex-col">
-            <CardHeader className="flex-shrink-0">
+        <div className="h-full flex flex-col">
+            <div className="flex-shrink-0">
                 <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg flex items-center gap-2">
+                    <h2 className="text-lg flex items-center gap-2">
                         <Plus className="h-5 w-5" />
                         Create New Setup
-                    </CardTitle>
+                    </h2>
                     <div className="flex gap-2">
                         <Button
                             onClick={handleSubmit}
@@ -216,9 +215,9 @@ export function NewSetupForm({ onCancel, onSuccess }: NewSetupFormProps) {
                         </Button>
                     </div>
                 </div>
-            </CardHeader>
+            </div>
 
-            <CardContent className="flex-1 flex flex-col gap-4 overflow-hidden">
+            <div className="flex-1 flex flex-col gap-4 overflow-hidden">
                 {/* Form fields */}
                 <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -321,7 +320,7 @@ export function NewSetupForm({ onCancel, onSuccess }: NewSetupFormProps) {
                         placeholder="Enter setup JSON content..."
                     />
                 </div>
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }

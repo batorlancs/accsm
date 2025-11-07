@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Collapsible,
     CollapsibleContent,
@@ -55,11 +54,11 @@ export function SetupExplorer({
 
     if (error) {
         return (
-            <Card className="h-full">
-                <CardHeader>
-                    <CardTitle className="text-red-500">Error</CardTitle>
-                </CardHeader>
-                <CardContent>
+            <div className="h-full">
+                <div>
+                    <h2 className="text-red-500">Error</h2>
+                </div>
+                <div>
                     <p className="text-sm text-red-500 mb-4">
                         Failed to load folder structure
                     </p>
@@ -67,8 +66,8 @@ export function SetupExplorer({
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Retry
                     </Button>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         );
     }
 
@@ -76,7 +75,7 @@ export function SetupExplorer({
         <div>
             <div className="flex-shrink-0">
                 <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Setup Explorer</CardTitle>
+                    <h2 className="text-lg">Setup Explorer</h2>
                     <div className="flex gap-1">
                         <Button
                             onClick={handleRefresh}

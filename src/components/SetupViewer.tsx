@@ -11,7 +11,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -136,50 +135,50 @@ export function SetupViewer({
 
     if (isLoading) {
         return (
-            <Card className="h-full">
-                <CardContent className="flex items-center justify-center h-full">
+            <div className="h-full">
+                <div className="flex items-center justify-center h-full">
                     <div className="text-muted-foreground">
                         Loading setup...
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         );
     }
 
     if (error) {
         return (
-            <Card className="h-full">
-                <CardHeader>
-                    <CardTitle className="text-red-500">Error</CardTitle>
-                </CardHeader>
-                <CardContent>
+            <div className="h-full">
+                <div>
+                    <h2 className="text-red-500">Error</h2>
+                </div>
+                <div>
                     <p className="text-sm text-red-500">
                         Failed to load setup: {String(error)}
                     </p>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         );
     }
 
     if (!setup) {
         return (
-            <Card className="h-full">
-                <CardContent className="flex items-center justify-center h-full">
+            <div className="h-full">
+                <div className="flex items-center justify-center h-full">
                     <div className="text-muted-foreground">Setup not found</div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         );
     }
 
     return (
-        <Card className="h-full flex flex-col">
-            <CardHeader className="flex-shrink-0">
+        <div className="h-full flex flex-col">
+            <div className="flex-shrink-0">
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle className="text-lg flex items-center gap-2">
+                        <h2 className="text-lg flex items-center gap-2">
                             <FileText className="h-5 w-5" />
                             {filename}
-                        </CardTitle>
+                        </h2>
                         <div className="text-sm text-muted-foreground mt-1 space-y-1">
                             <div className="flex items-center gap-2">
                                 <Car className="h-3 w-3" />
@@ -254,9 +253,9 @@ export function SetupViewer({
                         )}
                     </div>
                 </div>
-            </CardHeader>
+            </div>
 
-            <CardContent className="flex-1 flex flex-col gap-4 overflow-hidden">
+            <div className="flex-1 flex flex-col gap-4 overflow-hidden">
                 {isEditing ? (
                     <>
                         {/* Edit form */}
@@ -330,7 +329,7 @@ export function SetupViewer({
                         />
                     </div>
                 )}
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }

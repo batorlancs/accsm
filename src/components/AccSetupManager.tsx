@@ -56,28 +56,10 @@ export function AccSetupManager() {
             : null;
 
     return (
-        <div className="h-screen flex flex-col bg-background">
-            {/* Header */}
-            <div
-                data-tauri-drag-region
-                className="h-12 w-full bg-primary text-primary-foreground flex items-center px-4 justify-between"
-            >
-                <h1 className="text-lg font-semibold">ACC Setup Manager</h1>
-                <Button
-                    onClick={handleCreateNew}
-                    variant="secondary"
-                    size="sm"
-                    className="flex items-center gap-2"
-                >
-                    <Plus className="h-4 w-4" />
-                    New Setup
-                </Button>
-            </div>
-
-            {/* Main content */}
+        <div className="h-screen flex flex-col bg-background border-t border-border/50">
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Sidebar - Setup Explorer */}
-                <div className="w-96 border-r bg-muted/50 p-4">
+                <div className="w-96 border-r border-border/50 bg-muted/50 p-4">
                     <SetupExplorer
                         selectedSetup={selectedSetup}
                         onSelectSetup={handleSelectSetup}
