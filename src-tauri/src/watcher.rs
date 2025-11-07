@@ -89,7 +89,7 @@ impl FileWatcher {
                     // Check if it's a .json file or a directory change within setups_path
                     if let Ok(relative_path) = path.strip_prefix(setups_path) {
                         // Update if it's a JSON file, or if it's a directory change
-                        path.extension().map_or(false, |ext| ext == "json")
+                        path.extension() == Some("json".as_ref())
                             || path.is_dir()
                             || relative_path.components().count() <= 3 // Only car/track/setup levels
                     } else {
@@ -99,7 +99,7 @@ impl FileWatcher {
 
                 if should_update {
                     info!("File system change detected, updating structure");
-                    
+
                     // Update the cached folder structure
                     if let Err(e) = state_manager.refresh_folder_structure().await {
                         error!("Failed to refresh folder structure: {}", e);
@@ -112,7 +112,10 @@ impl FileWatcher {
                             if let Err(e) = app_handle.emit("setups-changed", &structure) {
                                 error!("Failed to emit setups-changed event: {}", e);
                             } else {
-                                info!("Emitted setups-changed event with {} cars", structure.cars.len());
+                                info!(
+                                    "Emitted setups-changed event with {} cars",
+                                    structure.cars.len()
+                                );
                             }
                         }
                         Err(e) => {
@@ -136,3 +139,4 @@ impl FileWatcher {
         Ok(())
     }
 }
+
