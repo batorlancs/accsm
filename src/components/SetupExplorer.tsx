@@ -1,24 +1,19 @@
+import { FileText, RefreshCw, Settings } from "lucide-react";
 import {
-    Car,
-    ChevronDown,
-    ChevronRight,
-    FileText,
-    MapPin,
-    RefreshCw,
-    Settings,
-} from "lucide-react";
-import React from "react";
+    FileItem,
+    Files,
+    FolderContent,
+    FolderItem,
+    FolderTrigger,
+    SubFiles,
+} from "@/components/animate-ui/components/radix/files";
 import { Button } from "@/components/ui/button";
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import {
     useFolderStructure,
     useRefreshFolderStructure,
     useSetupsPath,
 } from "@/hooks/useBackend";
+import { cn } from "@/lib/utils";
 import type { CarFolder, SetupInfo, TrackFolder } from "@/types/backend";
 
 interface SetupExplorerProps {
@@ -63,7 +58,7 @@ export function SetupExplorer({
                         Failed to load folder structure
                     </p>
                     <Button onClick={handleRefresh} variant="outline" size="sm">
-                        <RefreshCw className="h-4 w-4 mr-2" />
+                        <RefreshCw />
                         Retry
                     </Button>
                 </div>
@@ -124,7 +119,7 @@ export function SetupExplorer({
                         No cars found in the setups folder
                     </div>
                 ) : (
-                    <div className="space-y-1 p-4">
+                    <Files className="w-full">
                         {folderStructure?.cars.map((car) => (
                             <CarNode
                                 key={car.car_id}
@@ -134,7 +129,7 @@ export function SetupExplorer({
                                 isSetupSelected={isSetupSelected}
                             />
                         ))}
-                    </div>
+                    </Files>
                 )}
             </div>
         </div>
@@ -154,48 +149,35 @@ function CarNode({
     onSelectSetup,
     isSetupSelected,
 }: CarNodeProps) {
-    const [isOpen, setIsOpen] = React.useState(false);
-
     return (
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-            <CollapsibleTrigger asChild>
-                <Button
-                    variant="ghost"
-                    className="w-full justify-start px-2 py-1 h-auto text-left"
-                >
-                    {isOpen ? (
-                        <ChevronDown className="h-3 w-3 mr-2 flex-shrink-0" />
-                    ) : (
-                        <ChevronRight className="h-3 w-3 mr-2 flex-shrink-0" />
+        <FolderItem value={car.car_id}>
+            <FolderTrigger className="w-full flex items-center justify-between">
+                <span className="tex-xs truncate">{car.car_name}</span>
+                <span className="text-xs text-muted-foreground pl-2">
+                    (
+                    {car.tracks.reduce(
+                        (acc, track) => acc + track.setups.length,
+                        0,
                     )}
-                    <Car className="h-3 w-3 mr-2 flex-shrink-0" />
-                    <span className="truncate text-sm font-medium">
-                        {car.car_name}
-                    </span>
-                    <span className="ml-auto text-xs text-muted-foreground">
-                        (
-                        {car.tracks.reduce(
-                            (acc, track) => acc + track.setups.length,
-                            0,
-                        )}
-                        )
-                    </span>
-                </Button>
-            </CollapsibleTrigger>
+                    )
+                </span>
+            </FolderTrigger>
 
-            <CollapsibleContent className="ml-4 space-y-1">
-                {car.tracks.map((track) => (
-                    <TrackNode
-                        key={track.track_id}
-                        car={car}
-                        track={track}
-                        selectedSetup={selectedSetup}
-                        onSelectSetup={onSelectSetup}
-                        isSetupSelected={isSetupSelected}
-                    />
-                ))}
-            </CollapsibleContent>
-        </Collapsible>
+            <FolderContent>
+                <SubFiles>
+                    {car.tracks.map((track) => (
+                        <TrackNode
+                            key={track.track_id}
+                            car={car}
+                            track={track}
+                            selectedSetup={selectedSetup}
+                            onSelectSetup={onSelectSetup}
+                            isSetupSelected={isSetupSelected}
+                        />
+                    ))}
+                </SubFiles>
+            </FolderContent>
+        </FolderItem>
     );
 }
 
@@ -214,51 +196,40 @@ function TrackNode({
     onSelectSetup,
     isSetupSelected,
 }: TrackNodeProps) {
-    const [isOpen, setIsOpen] = React.useState(false);
-
     return (
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-            <CollapsibleTrigger asChild>
-                <Button
-                    variant="ghost"
-                    className="w-full justify-start px-2 py-1 h-auto text-left"
-                >
-                    {isOpen ? (
-                        <ChevronDown className="h-3 w-3 mr-2 flex-shrink-0" />
-                    ) : (
-                        <ChevronRight className="h-3 w-3 mr-2 flex-shrink-0" />
-                    )}
-                    <MapPin className="h-3 w-3 mr-2 flex-shrink-0" />
-                    <span className="truncate text-sm">{track.track_name}</span>
-                    <span className="ml-auto text-xs text-muted-foreground">
-                        ({track.setups.length})
-                    </span>
-                </Button>
-            </CollapsibleTrigger>
+        <FolderItem value={track.track_id}>
+            <FolderTrigger className="w-full flex items-center justify-between">
+                <span className="truncate text-sm">{track.track_name}</span>
+                <span className="text-xs text-muted-foreground pl-2">
+                    ({track.setups.length})
+                </span>
+            </FolderTrigger>
 
-            <CollapsibleContent className="ml-4 space-y-1">
-                {track.setups.map((setup) => (
-                    <SetupNode
-                        key={setup.filename}
-                        car={car}
-                        track={track}
-                        setup={setup}
-                        isSelected={isSetupSelected(
-                            car.car_id,
-                            track.track_id,
-                            setup.filename,
-                        )}
-                        onSelect={() =>
-                            onSelectSetup(
+            <FolderContent>
+                <SubFiles>
+                    {track.setups.map((setup) => (
+                        <SetupNode
+                            key={setup.filename}
+                            car={car}
+                            track={track}
+                            setup={setup}
+                            isSelected={isSetupSelected(
                                 car.car_id,
                                 track.track_id,
                                 setup.filename,
-                            )
-                        }
-                    />
-                ))}
-            </CollapsibleContent>
-        </Collapsible>
+                            )}
+                            onSelect={() =>
+                                onSelectSetup(
+                                    car.car_id,
+                                    track.track_id,
+                                    setup.filename,
+                                )
+                            }
+                        />
+                    ))}
+                </SubFiles>
+            </FolderContent>
+        </FolderItem>
     );
 }
 
@@ -272,21 +243,19 @@ interface SetupNodeProps {
 
 function SetupNode({ setup, isSelected, onSelect }: SetupNodeProps) {
     return (
-        <Button
-            variant={isSelected ? "secondary" : "ghost"}
-            className="w-full justify-start px-2 py-1 h-auto text-left"
+        // biome-ignore lint/a11y/noStaticElementInteractions: off
+        // biome-ignore lint/a11y/useKeyWithClickEvents: off
+        <div
+            className={cn(
+                isSelected ? "bg-accent/25" : "",
+                "cusror-pointer rounded",
+            )}
             onClick={onSelect}
         >
-            <FileText className="h-3 w-3 mr-2 flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-                <div className="text-sm truncate">{setup.display_name}</div>
-                <div className="text-xs text-muted-foreground flex items-center gap-2">
-                    <span className="capitalize">{setup.setup_type}</span>
-                    {setup.tags.length > 0 && (
-                        <span>• {setup.tags.join(", ")}</span>
-                    )}
-                </div>
-            </div>
-        </Button>
+            <FileItem icon={FileText} onClick={onSelect}>
+                {setup.display_name}{" "}
+                <span className="opacity-50">{setup.setup_type}</span>
+            </FileItem>
+        </div>
     );
 }
