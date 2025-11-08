@@ -67,8 +67,8 @@ export function SetupExplorer({
     }
 
     return (
-        <div>
-            <div className="flex-shrink-0">
+        <div className="h-full">
+            <div>
                 <div className="flex items-center justify-between">
                     <h2 className="text-lg">Setup Explorer</h2>
                     <div className="flex gap-1">
@@ -109,7 +109,7 @@ export function SetupExplorer({
                 )}
             </div>
 
-            <div className="flex-1 overflow-y-auto p-0">
+            <div className="flex-1 overflow-y-auto mt-4">
                 {isLoading ? (
                     <div className="p-4 text-center text-muted-foreground">
                         Loading folder structure...
@@ -247,14 +247,16 @@ function SetupNode({ setup, isSelected, onSelect }: SetupNodeProps) {
         // biome-ignore lint/a11y/useKeyWithClickEvents: off
         <div
             className={cn(
-                isSelected ? "bg-accent/25" : "",
+                isSelected ? "bg-foreground/10" : "",
                 "cusror-pointer rounded",
             )}
             onClick={onSelect}
         >
             <FileItem icon={FileText} onClick={onSelect}>
                 {setup.display_name}{" "}
-                <span className="opacity-50">{setup.setup_type}</span>
+                <span className="opacity-50 pl-2 text-xs capitalize font-mono">
+                    {setup.setup_type}
+                </span>
             </FileItem>
         </div>
     );
