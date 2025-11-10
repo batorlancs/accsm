@@ -80,3 +80,17 @@ export interface ValidateSetupParams {
 export interface SetupsChangedEvent {
     payload: FolderStructure;
 }
+
+// Import types
+export interface ImportResult {
+    path: string;
+    success: boolean;
+    error?: string;
+    car?: string;
+    track?: string;
+    filename?: string;
+}
+
+export interface ImportJsonFilesParams {
+    paths: string[];
+}

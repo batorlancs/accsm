@@ -6,6 +6,7 @@ import type {
     DeleteSetupParams,
     FolderStructure,
     GetSetupParams,
+    ImportResult,
     SaveSetupParams,
     SetupFile,
     SetupsChangedEvent,
@@ -64,6 +65,11 @@ export class TauriAPI {
 
     static async getTracks(): Promise<Record<string, Track>> {
         return invoke<Record<string, Track>>("get_tracks");
+    }
+
+    // Import operations
+    static async importJsonFiles(paths: string[]): Promise<ImportResult[]> {
+        return invoke<ImportResult[]>("import_json_files", { paths });
     }
 
     // Event listeners

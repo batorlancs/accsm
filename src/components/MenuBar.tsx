@@ -1,4 +1,4 @@
-import { RefreshCw, Settings2 } from "lucide-react";
+import { RefreshCw, Settings2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -10,9 +10,10 @@ import { useRefreshFolderStructure } from "@/hooks/useBackend";
 
 interface MenuBarProps {
     onSettingsClick: () => void;
+    onAddClick: () => void;
 }
 
-export function MenuBar({ onSettingsClick }: MenuBarProps) {
+export function MenuBar({ onSettingsClick, onAddClick }: MenuBarProps) {
     const refreshMutation = useRefreshFolderStructure();
 
     const handleRefresh = () => {
@@ -26,6 +27,16 @@ export function MenuBar({ onSettingsClick }: MenuBarProps) {
             </h1>
 
             <div className="flex items-center gap-2">
+                <Button
+                    variant="default"
+                    size="sm"
+                    onClick={onAddClick}
+                    className="gap-2"
+                >
+                    <Plus className="h-4 w-4" />
+                    Add
+                </Button>
+
                 <Button
                     variant="ghost"
                     size="sm"

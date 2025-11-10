@@ -1,5 +1,5 @@
 import { Car, FileText, MapPin } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
     Tabs,
     TabsList,
@@ -8,6 +8,8 @@ import {
     TabsTab,
 } from "@/components/animate-ui/components/base/tabs";
 import { EmptyState } from "@/components/EmptyState";
+import { FileDropModal } from "@/components/FileDropModal";
+import { GlobalDragDropOverlay } from "@/components/GlobalDragDropOverlay";
 import { ImprovedChangePathDialog } from "@/components/ImprovedChangePathDialog";
 import { MenuBar } from "@/components/MenuBar";
 import { NewSetupForm } from "@/components/NewSetupForm";
@@ -30,6 +32,7 @@ export function AccSetupManager() {
         type: "empty",
     });
     const [isPathDialogOpen, setIsPathDialogOpen] = useState(false);
+    const [isFileDropModalOpen, setIsFileDropModalOpen] = useState(false);
     const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
     const [selectedCar, setSelectedCar] = useState<string | null>(null);
 
@@ -65,6 +68,13 @@ export function AccSetupManager() {
         setSelectedCar(carId === selectedCar ? null : carId);
     };
 
+    const [globalDropFiles, setGlobalDropFiles] = useState<string[] | null>(null);
+
+    const handleFilesDropped = useCallback((paths: string[]) => {
+        setGlobalDropFiles(paths);
+        setIsFileDropModalOpen(true);
+    }, []);
+
     const selectedSetup =
         viewState.type === "viewing"
             ? {
@@ -77,7 +87,10 @@ export function AccSetupManager() {
     return (
         <div className="h-screen flex flex-col bg-background border-t border-border/50">
             {/* Menu Bar */}
-            <MenuBar onSettingsClick={() => setIsPathDialogOpen(true)} />
+            <MenuBar 
+                onSettingsClick={() => setIsPathDialogOpen(true)}
+                onAddClick={() => setIsFileDropModalOpen(true)}
+            />
 
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Sidebar - Tabbed Explorer */}
@@ -165,6 +178,19 @@ export function AccSetupManager() {
                 open={isPathDialogOpen}
                 onOpenChange={setIsPathDialogOpen}
             />
+            <FileDropModal
+                open={isFileDropModalOpen}
+                onOpenChange={(open) => {
+                    setIsFileDropModalOpen(open);
+                    if (!open) {
+                        setGlobalDropFiles(null);
+                    }
+                }}
+                globalDropFiles={globalDropFiles}
+            />
+            {!isFileDropModalOpen && (
+                <GlobalDragDropOverlay onFilesDropped={handleFilesDropped} />
+            )}
         </div>
     );
 }

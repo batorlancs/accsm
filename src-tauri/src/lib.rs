@@ -93,7 +93,8 @@ pub fn run() {
             get_tracks,
             refresh_folder_structure,
             setup_exists,
-            validate_setup
+            validate_setup,
+            import_json_files
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
