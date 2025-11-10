@@ -69,7 +69,7 @@ export function AccSetupManager() {
                 {/* Left Sidebar - Tabbed Explorer */}
                 <div className="w-80 border-r border-border/50 bg-muted/50 p-2">
                     <Tabs defaultValue="setups" className="h-full">
-                        <TabsList className="mb-4 w-full">
+                        <TabsList className="w-full">
                             <TabsTab value="setups">
                                 <FileText className="" />
                                 Setups
@@ -84,8 +84,14 @@ export function AccSetupManager() {
                             </TabsTab>
                         </TabsList>
 
-                        <TabsPanels className="flex-1 overflow-hidden">
-                            <TabsPanel value="setups" className="h-full">
+                        <TabsPanels
+                            mode="layout"
+                            className="overflow-hidden flex-1 h-full"
+                        >
+                            <TabsPanel
+                                value="setups"
+                                className="h-full min-h-full flex-1 flex"
+                            >
                                 <SetupView
                                     selectedSetup={selectedSetup}
                                     onSelectSetup={handleSelectSetup}
