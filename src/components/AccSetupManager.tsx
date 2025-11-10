@@ -1,5 +1,5 @@
 import { Car, FileText, MapPin } from "lucide-react";
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import {
     Tabs,
     TabsList,
@@ -68,7 +68,9 @@ export function AccSetupManager() {
         setSelectedCar(carId === selectedCar ? null : carId);
     };
 
-    const [globalDropFiles, setGlobalDropFiles] = useState<string[] | null>(null);
+    const [globalDropFiles, setGlobalDropFiles] = useState<string[] | null>(
+        null,
+    );
 
     const handleFilesDropped = useCallback((paths: string[]) => {
         setGlobalDropFiles(paths);
@@ -87,7 +89,7 @@ export function AccSetupManager() {
     return (
         <div className="h-screen flex flex-col bg-background border-t border-border/50">
             {/* Menu Bar */}
-            <MenuBar 
+            <MenuBar
                 onSettingsClick={() => setIsPathDialogOpen(true)}
                 onAddClick={() => setIsFileDropModalOpen(true)}
             />
@@ -188,9 +190,12 @@ export function AccSetupManager() {
                 }}
                 globalDropFiles={globalDropFiles}
             />
-            {!isFileDropModalOpen && (
-                <GlobalDragDropOverlay onFilesDropped={handleFilesDropped} />
-            )}
+            {!isFileDropModalOpen ? (
+                <GlobalDragDropOverlay
+                    onFilesDropped={handleFilesDropped}
+                    enabled={!isFileDropModalOpen}
+                />
+            ) : null}
         </div>
     );
 }
