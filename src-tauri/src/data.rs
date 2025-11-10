@@ -4,17 +4,23 @@ use std::collections::HashMap;
 /// Static data for ACC cars
 pub fn get_cars() -> HashMap<String, Car> {
     let mut cars = HashMap::new();
-    
+
     let car_data = vec![
         ("audi_r8_evo", "Audi R8 LMS Evo"),
         ("audi_r8_evo_ii", "Audi R8 LMS Evo II"),
         ("bmw_m4_gt3", "BMW M4 GT3"),
-        ("bentley_continental_gt3_2018", "Bentley Continental GT3 2018"),
+        (
+            "bentley_continental_gt3_2018",
+            "Bentley Continental GT3 2018",
+        ),
         ("ferrari_488_gt3", "Ferrari 488 GT3"),
         ("ferrari_488_gt3_evo", "Ferrari 488 GT3 Evo"),
         ("lamborghini_huracan_gt3", "Lamborghini Huracán GT3"),
         ("lamborghini_huracan_gt3_evo", "Lamborghini Huracán GT3 Evo"),
-        ("lamborghini_huracan_gt3_evo2", "Lamborghini Huracán GT3 Evo2"),
+        (
+            "lamborghini_huracan_gt3_evo2",
+            "Lamborghini Huracán GT3 Evo2",
+        ),
         ("mclaren_720s_gt3", "McLaren 720S GT3"),
         ("mercedes_amg_gt3", "Mercedes-AMG GT3"),
         ("mercedes_amg_gt3_evo", "Mercedes-AMG GT3 Evo"),
@@ -37,10 +43,13 @@ pub fn get_cars() -> HashMap<String, Car> {
     ];
 
     for (id, pretty_name) in car_data {
-        cars.insert(id.to_string(), Car {
-            id: id.to_string(),
-            pretty_name: pretty_name.to_string(),
-        });
+        cars.insert(
+            id.to_string(),
+            Car {
+                id: id.to_string(),
+                pretty_name: pretty_name.to_string(),
+            },
+        );
     }
 
     cars
@@ -49,7 +58,7 @@ pub fn get_cars() -> HashMap<String, Car> {
 /// Static data for ACC tracks
 pub fn get_tracks() -> HashMap<String, Track> {
     let mut tracks = HashMap::new();
-    
+
     let track_data = vec![
         ("Barcelona", "Circuit de Barcelona-Catalunya"),
         ("brands_hatch", "Brands Hatch Circuit"),
@@ -79,10 +88,13 @@ pub fn get_tracks() -> HashMap<String, Track> {
     ];
 
     for (id, pretty_name) in track_data {
-        tracks.insert(id.to_string(), Track {
-            id: id.to_string(),
-            pretty_name: pretty_name.to_string(),
-        });
+        tracks.insert(
+            id.to_string(),
+            Track {
+                id: id.to_string(),
+                pretty_name: pretty_name.to_string(),
+            },
+        );
     }
 
     tracks
@@ -95,5 +107,7 @@ pub fn find_car_by_folder(folder_name: &str) -> Option<Car> {
 
 /// Helper function to find track by folder name
 pub fn find_track_by_folder(folder_name: &str) -> Option<Track> {
-    get_tracks().into_values().find(|track| track.id == folder_name)
+    get_tracks()
+        .into_values()
+        .find(|track| track.id == folder_name)
 }

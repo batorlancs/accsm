@@ -15,6 +15,7 @@ use watcher::FileWatcher;
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_dialog::init())
         .setup(|app| {
             // Setup logging
             if cfg!(debug_assertions) {
@@ -38,7 +39,7 @@ pub fn run() {
                 match state_clone.refresh_folder_structure().await {
                     Ok(()) => {
                         info!("Initial folder structure scan completed");
-                        
+
                         // Emit initial setups-changed event
                         match state_clone.get_folder_structure().await {
                             Ok(structure) => {

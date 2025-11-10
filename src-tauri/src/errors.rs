@@ -15,7 +15,10 @@ pub enum AccError {
     PermissionDenied { path: String },
 
     #[error("Car name mismatch: JSON contains '{json_car}' but file is in folder '{folder_car}'")]
-    CarNameMismatch { json_car: String, folder_car: String },
+    CarNameMismatch {
+        json_car: String,
+        folder_car: String,
+    },
 
     #[error("Missing required field in setup JSON: {field}")]
     MissingRequiredField { field: String },

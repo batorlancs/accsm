@@ -17,7 +17,10 @@ pub async fn get_folder_structure(
     info!("Getting folder structure");
     match state.get_folder_structure().await {
         Ok(structure) => {
-            info!("Retrieved folder structure with {} cars", structure.cars.len());
+            info!(
+                "Retrieved folder structure with {} cars",
+                structure.cars.len()
+            );
             Ok(structure)
         }
         Err(e) => {
@@ -38,7 +41,10 @@ pub async fn get_setup(
     info!("Getting setup: {}/{}/{}", car, track, filename);
     match state.read_setup(&car, &track, &filename).await {
         Ok(setup) => {
-            info!("Successfully retrieved setup: {}/{}/{}", car, track, filename);
+            info!(
+                "Successfully retrieved setup: {}/{}/{}",
+                car, track, filename
+            );
             Ok(setup)
         }
         Err(e) => {
@@ -80,7 +86,7 @@ pub async fn edit_setup(
     state: State<'_, Arc<AppStateManager>>,
 ) -> Result<(), AccError> {
     info!("Editing setup: {}/{}/{}", car, track, filename);
-    
+
     // For editing, we use the same save_setup function as it handles metadata updates
     match state.save_setup(&car, &track, &filename, content).await {
         Ok(()) => {
@@ -109,7 +115,10 @@ pub async fn delete_setup(
             Ok(())
         }
         Err(e) => {
-            error!("Failed to delete setup {}/{}/{}: {}", car, track, filename, e);
+            error!(
+                "Failed to delete setup {}/{}/{}: {}",
+                car, track, filename, e
+            );
             Err(e)
         }
     }
@@ -137,9 +146,7 @@ pub async fn set_setups_path(
 
 /// Get the current setups folder path
 #[tauri::command]
-pub async fn get_setups_path(
-    state: State<'_, Arc<AppStateManager>>,
-) -> Result<String, AccError> {
+pub async fn get_setups_path(state: State<'_, Arc<AppStateManager>>) -> Result<String, AccError> {
     let path = state.get_setups_path().await;
     let path_str = path.to_string_lossy().to_string();
     info!("Current setups path: {}", path_str);
@@ -171,18 +178,19 @@ pub async fn refresh_folder_structure(
 ) -> Result<FolderStructure, AccError> {
     info!("Force refreshing folder structure");
     match state.refresh_folder_structure().await {
-        Ok(()) => {
-            match state.get_folder_structure().await {
-                Ok(structure) => {
-                    info!("Successfully refreshed folder structure with {} cars", structure.cars.len());
-                    Ok(structure)
-                }
-                Err(e) => {
-                    error!("Failed to get folder structure after refresh: {}", e);
-                    Err(e)
-                }
+        Ok(()) => match state.get_folder_structure().await {
+            Ok(structure) => {
+                info!(
+                    "Successfully refreshed folder structure with {} cars",
+                    structure.cars.len()
+                );
+                Ok(structure)
             }
-        }
+            Err(e) => {
+                error!("Failed to get folder structure after refresh: {}", e);
+                Err(e)
+            }
+        },
         Err(e) => {
             error!("Failed to refresh folder structure: {}", e);
             Err(e)
@@ -207,10 +215,7 @@ pub async fn setup_exists(
 
 /// Validate setup content without saving
 #[tauri::command]
-pub async fn validate_setup(
-    car: String,
-    content: JsonValue,
-) -> Result<bool, AccError> {
+pub async fn validate_setup(car: String, content: JsonValue) -> Result<bool, AccError> {
     // Basic validation checks
     if !content.is_object() {
         return Err(AccError::SetupValidationFailed {

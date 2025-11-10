@@ -7,7 +7,8 @@ import {
     TabsPanels,
     TabsTab,
 } from "@/components/animate-ui/components/base/tabs";
-import { ChangePathDialog } from "@/components/ChangePathDialog";
+import { ImprovedChangePathDialog } from "@/components/ImprovedChangePathDialog";
+import { MenuBar } from "@/components/MenuBar";
 import { EmptyState } from "@/components/EmptyState";
 import { NewSetupForm } from "@/components/NewSetupForm";
 import { SetupViewer } from "@/components/SetupViewer";
@@ -65,6 +66,9 @@ export function AccSetupManager() {
 
     return (
         <div className="h-screen flex flex-col bg-background border-t border-border/50">
+            {/* Menu Bar */}
+            <MenuBar onSettingsClick={() => setIsPathDialogOpen(true)} />
+            
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Sidebar - Tabbed Explorer */}
                 <div className="w-80 border-r border-border/50 bg-muted/50 p-2">
@@ -141,7 +145,7 @@ export function AccSetupManager() {
             </div>
 
             {/* Dialogs */}
-            <ChangePathDialog
+            <ImprovedChangePathDialog
                 open={isPathDialogOpen}
                 onOpenChange={setIsPathDialogOpen}
             />

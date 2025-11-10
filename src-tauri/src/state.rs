@@ -1,8 +1,6 @@
 use crate::data::{find_car_by_folder, find_track_by_folder};
 use crate::errors::{AccError, AccResult};
-use crate::models::{
-    AccsmData, CarFolder, FolderStructure, SetupFile, SetupInfo, TrackFolder,
-};
+use crate::models::{AccsmData, CarFolder, FolderStructure, SetupFile, SetupInfo, TrackFolder};
 use chrono::Utc;
 use log::{debug, info, warn};
 use std::fs;
@@ -47,7 +45,7 @@ impl AppStateManager {
     /// Get the cached folder structure, scanning if necessary
     pub async fn get_folder_structure(&self) -> AccResult<FolderStructure> {
         let structure = self.folder_structure.read().await;
-        
+
         if let Some(ref cached) = *structure {
             Ok(cached.clone())
         } else {
@@ -61,7 +59,7 @@ impl AppStateManager {
     /// Force refresh the folder structure from disk
     pub async fn refresh_folder_structure(&self) -> AccResult<()> {
         let setups_path = self.get_setups_path().await;
-        
+
         if !setups_path.exists() {
             warn!("Setups path does not exist: {:?}", setups_path);
             return Err(AccError::SetupsFolderNotFound {
@@ -109,7 +107,11 @@ impl AppStateManager {
             if let Some(car) = find_car_by_folder(&folder_name) {
                 match self.scan_car_folder(&path, &car.id).await {
                     Ok(car_folder) => {
-                        total_setups += car_folder.tracks.iter().map(|t| t.setups.len()).sum::<usize>();
+                        total_setups += car_folder
+                            .tracks
+                            .iter()
+                            .map(|t| t.setups.len())
+                            .sum::<usize>();
                         cars.push(car_folder);
                     }
                     Err(e) => {
@@ -134,9 +136,12 @@ impl AppStateManager {
     /// Scan a car folder for track directories
     async fn scan_car_folder(&self, car_path: &Path, car_id: &str) -> AccResult<CarFolder> {
         let cars_data = crate::data::get_cars();
-        let car = cars_data.get(car_id).cloned().ok_or_else(|| AccError::InvalidCarId {
-            car_id: car_id.to_string(),
-        })?;
+        let car = cars_data
+            .get(car_id)
+            .cloned()
+            .ok_or_else(|| AccError::InvalidCarId {
+                car_id: car_id.to_string(),
+            })?;
 
         let mut tracks = Vec::new();
 
@@ -177,7 +182,10 @@ impl AppStateManager {
                     }
                 }
             } else {
-                debug!("Unknown track folder in {}: {}", car.pretty_name, folder_name);
+                debug!(
+                    "Unknown track folder in {}: {}",
+                    car.pretty_name, folder_name
+                );
             }
         }
 
@@ -194,9 +202,12 @@ impl AppStateManager {
     /// Scan a track folder for setup files
     async fn scan_track_folder(&self, track_path: &Path, track_id: &str) -> AccResult<TrackFolder> {
         let tracks_data = crate::data::get_tracks();
-        let track = tracks_data.get(track_id).cloned().ok_or_else(|| AccError::InvalidTrackId {
-            track_id: track_id.to_string(),
-        })?;
+        let track = tracks_data
+            .get(track_id)
+            .cloned()
+            .ok_or_else(|| AccError::InvalidTrackId {
+                track_id: track_id.to_string(),
+            })?;
 
         let mut setups = Vec::new();
 
@@ -249,10 +260,11 @@ impl AppStateManager {
             message: format!("Failed to read setup file: {}", e),
         })?;
 
-        let setup: SetupFile = serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
-            file_path: file_path.to_string_lossy().to_string(),
-            error: e.to_string(),
-        })?;
+        let setup: SetupFile =
+            serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
+                file_path: file_path.to_string_lossy().to_string(),
+                error: e.to_string(),
+            })?;
 
         let display_name = filename
             .strip_suffix(".json")
@@ -273,13 +285,15 @@ impl AppStateManager {
         let setups_path = self.get_setups_path().await;
         let cars_data = crate::data::get_cars();
         let tracks_data = crate::data::get_tracks();
-        
+
         let car_data = cars_data.get(car).ok_or_else(|| AccError::InvalidCarId {
             car_id: car.to_string(),
         })?;
-        let track_data = tracks_data.get(track).ok_or_else(|| AccError::InvalidTrackId {
-            track_id: track.to_string(),
-        })?;
+        let track_data = tracks_data
+            .get(track)
+            .ok_or_else(|| AccError::InvalidTrackId {
+                track_id: track.to_string(),
+            })?;
 
         let file_path = setups_path
             .join(&car_data.id)
@@ -296,10 +310,11 @@ impl AppStateManager {
             message: format!("Failed to read setup file: {}", e),
         })?;
 
-        let setup: SetupFile = serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
-            file_path: file_path.to_string_lossy().to_string(),
-            error: e.to_string(),
-        })?;
+        let setup: SetupFile =
+            serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
+                file_path: file_path.to_string_lossy().to_string(),
+                error: e.to_string(),
+            })?;
 
         // Validate car name matches
         if setup.car_name != car_data.id {
@@ -323,13 +338,15 @@ impl AppStateManager {
         let setups_path = self.get_setups_path().await;
         let cars_data = crate::data::get_cars();
         let tracks_data = crate::data::get_tracks();
-        
+
         let car_data = cars_data.get(car).ok_or_else(|| AccError::InvalidCarId {
             car_id: car.to_string(),
         })?;
-        let track_data = tracks_data.get(track).ok_or_else(|| AccError::InvalidTrackId {
-            track_id: track.to_string(),
-        })?;
+        let track_data = tracks_data
+            .get(track)
+            .ok_or_else(|| AccError::InvalidTrackId {
+                track_id: track.to_string(),
+            })?;
 
         // Ensure the content has the required structure
         if !content.is_object() {
@@ -341,16 +358,21 @@ impl AppStateManager {
         let obj = content.as_object_mut().unwrap();
 
         // Ensure carName field matches the car folder
-        obj.insert("carName".to_string(), serde_json::Value::String(car_data.id.clone()));
+        obj.insert(
+            "carName".to_string(),
+            serde_json::Value::String(car_data.id.clone()),
+        );
 
         // Add or update ACCSM metadata
         let accsm_data = AccsmData {
             last_modified: Utc::now(),
-            tags: obj.get("ACCSMData")
+            tags: obj
+                .get("ACCSMData")
                 .and_then(|data| data.get("tags"))
                 .and_then(|tags| serde_json::from_value(tags.clone()).ok())
                 .unwrap_or_default(),
-            setup_type: obj.get("ACCSMData")
+            setup_type: obj
+                .get("ACCSMData")
                 .and_then(|data| data.get("setupType"))
                 .and_then(|t| t.as_str())
                 .unwrap_or("race")
@@ -360,9 +382,7 @@ impl AppStateManager {
         obj.insert("ACCSMData".to_string(), serde_json::to_value(accsm_data)?);
 
         // Ensure the directory structure exists
-        let dir_path = setups_path
-            .join(&car_data.id)
-            .join(&track_data.id);
+        let dir_path = setups_path.join(&car_data.id).join(&track_data.id);
 
         if !dir_path.exists() {
             fs::create_dir_all(&dir_path).map_err(|e| AccError::DirectoryCreationFailed {
@@ -374,7 +394,7 @@ impl AppStateManager {
         // Write the file
         let file_path = dir_path.join(filename);
         let json_string = serde_json::to_string_pretty(&content)?;
-        
+
         fs::write(&file_path, json_string).map_err(|e| AccError::FileWriteFailed {
             path: file_path.to_string_lossy().to_string(),
             error: e.to_string(),
@@ -389,13 +409,15 @@ impl AppStateManager {
         let setups_path = self.get_setups_path().await;
         let cars_data = crate::data::get_cars();
         let tracks_data = crate::data::get_tracks();
-        
+
         let car_data = cars_data.get(car).ok_or_else(|| AccError::InvalidCarId {
             car_id: car.to_string(),
         })?;
-        let track_data = tracks_data.get(track).ok_or_else(|| AccError::InvalidTrackId {
-            track_id: track.to_string(),
-        })?;
+        let track_data = tracks_data
+            .get(track)
+            .ok_or_else(|| AccError::InvalidTrackId {
+                track_id: track.to_string(),
+            })?;
 
         let file_path = setups_path
             .join(&car_data.id)
@@ -429,7 +451,9 @@ fn get_default_setups_path() -> PathBuf {
         // Windows: %USERPROFILE%\Documents\Assetto Corsa Competizione\Setups
         dirs::document_dir()
             .map(|dir| dir.join("Assetto Corsa Competizione").join("Setups"))
-            .unwrap_or_else(|| PathBuf::from("C:\\Users\\Public\\Documents\\Assetto Corsa Competizione\\Setups"))
+            .unwrap_or_else(|| {
+                PathBuf::from("C:\\Users\\Public\\Documents\\Assetto Corsa Competizione\\Setups")
+            })
     } else {
         // macOS/Linux: ~/acc_setups_test for development
         dirs::home_dir()
