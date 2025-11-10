@@ -16,6 +16,24 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
     // Get all available cars from folder structure
     const availableCars = folderStructure?.cars || [];
 
+    // Calculate setup count for a specific car
+    const getSetupCountForCar = (carId: string) => {
+        const car = availableCars.find((c) => c.car_id === carId);
+        return (
+            car?.tracks.reduce(
+                (total, track) => total + track.setups.length,
+                0,
+            ) || 0
+        );
+    };
+
+    // Get unique track count
+    const uniqueTrackCount =
+        folderStructure?.cars
+            .flatMap((car) => car.tracks.map((track) => track.track_id))
+            .filter((trackId, index, arr) => arr.indexOf(trackId) === index)
+            .length || 0;
+
     if (isLoading) {
         return (
             <div className="h-full">
@@ -33,45 +51,58 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
     }
 
     return (
-        <div className="h-full">
-            <div className="space-y-1">
-                {availableCars.map((car) => {
-                    const carInfo = carsData?.[car.car_id];
-                    const isSelected = selectedCar === car.car_id;
+        <div className="h-full flex flex-col justify-between">
+            <div className="flex-1 overflow-y-auto">
+                <div className="space-y-1">
+                    {availableCars.map((car) => {
+                        const carInfo = carsData?.[car.car_id];
+                        const isSelected = selectedCar === car.car_id;
 
-                    return (
-                        // biome-ignore lint/a11y/noStaticElementInteractions: <off>
-                        // biome-ignore lint/a11y/useKeyWithClickEvents: off
-                        <div
-                            key={car.car_id}
-                            onClick={() => onSelectCar(car.car_id)}
-                            className={`
-                                flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-all
-                                ${
-                                    isSelected
-                                        ? "bg-primary/10 hover:bg-primary/15 opacity-100 text-primary"
-                                        : "opacity-60 hover:opacity-80"
-                                }
-                            `}
-                        >
-                            <Car className="h-4 w-4 shrink-0" />
+                        return (
+                            // biome-ignore lint/a11y/noStaticElementInteractions: <off>
+                            // biome-ignore lint/a11y/useKeyWithClickEvents: off
+                            <div
+                                key={car.car_id}
+                                onClick={() => onSelectCar(car.car_id)}
+                                className={`
+                                    flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-all
+                                    ${
+                                        isSelected
+                                            ? "bg-primary/10 hover:bg-primary/15 opacity-100 text-primary"
+                                            : "opacity-60 hover:opacity-80"
+                                    }
+                                `}
+                            >
+                                <Car className="h-4 w-4 shrink-0" />
 
-                            <div className="flex-1 min-w-0">
-                                <h3 className="text-sm truncate">
-                                    {carInfo?.pretty_name || car.car_name}
-                                </h3>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="text-sm truncate">
+                                        {carInfo?.pretty_name || car.car_name}
+                                    </h3>
+                                </div>
+
+                                <span className="text-xs text-muted-foreground shrink-0">
+                                    {getSetupCountForCar(car.car_id)}
+                                </span>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
 
-                {availableCars.length === 0 && (
-                    <div className="p-4 text-center text-muted-foreground">
-                        No cars found
+                    {availableCars.length === 0 && (
+                        <div className="p-4 text-center text-muted-foreground">
+                            No cars found
+                        </div>
+                    )}
+                </div>
+            </div>
+            <div className="p-2 mt-5">
+                {folderStructure && (
+                    <div className="text-xs text-muted-foreground opacity-80">
+                        {folderStructure.total_setups} setups overall covering{" "}
+                        {uniqueTrackCount} tracks
                     </div>
                 )}
             </div>
         </div>
     );
 }
-

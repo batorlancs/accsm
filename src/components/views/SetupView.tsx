@@ -80,7 +80,11 @@ export function SetupView({ selectedSetup, onSelectSetup }: SetupViewProps) {
                 {folderStructure && (
                     <div className="text-xs text-muted-foreground opacity-80">
                         {folderStructure.total_setups} setups across{" "}
-                        {folderStructure.cars.length} cars
+                        {folderStructure.cars.length} cars and{" "}
+                        {folderStructure.cars
+                            .flatMap((car) => car.tracks.map((track) => track.track_id))
+                            .filter((trackId, index, arr) => arr.indexOf(trackId) === index)
+                            .length} tracks
                     </div>
                 )}
             </div>

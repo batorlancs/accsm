@@ -21,6 +21,16 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
             .filter((trackId, index, arr) => arr.indexOf(trackId) === index) ||
         [];
 
+    // Calculate setup count for a specific track
+    const getSetupCountForTrack = (trackId: string) => {
+        return (
+            folderStructure?.cars
+                .flatMap((car) => car.tracks)
+                .filter((track) => track.track_id === trackId)
+                .reduce((total, track) => total + track.setups.length, 0) || 0
+        );
+    };
+
     if (isLoading) {
         return (
             <div className="h-full">
@@ -38,45 +48,58 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
     }
 
     return (
-        <div className="h-full">
-            <div className="space-y-1">
-                {availableTracks.map((trackId) => {
-                    const trackInfo = tracksData?.[trackId];
-                    const isSelected = selectedTrack === trackId;
+        <div className="h-full flex flex-col justify-between">
+            <div className="flex-1 overflow-y-auto">
+                <div className="space-y-1">
+                    {availableTracks.map((trackId) => {
+                        const trackInfo = tracksData?.[trackId];
+                        const isSelected = selectedTrack === trackId;
 
-                    return (
-                        // biome-ignore lint/a11y/noStaticElementInteractions: <off>
-                        // biome-ignore lint/a11y/useKeyWithClickEvents: off
-                        <div
-                            key={trackId}
-                            onClick={() => onSelectTrack(trackId)}
-                            className={`
-                                flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-all
-                                ${
-                                    isSelected
-                                        ? "bg-primary/10 hover:bg-primary/15 opacity-100 text-primary"
-                                        : "opacity-60 hover:opacity-80"
-                                }
-                            `}
-                        >
-                            <MapPin className="h-4 w-4 shrink-0" />
+                        return (
+                            // biome-ignore lint/a11y/noStaticElementInteractions: <off>
+                            // biome-ignore lint/a11y/useKeyWithClickEvents: off
+                            <div
+                                key={trackId}
+                                onClick={() => onSelectTrack(trackId)}
+                                className={`
+                                    flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-all
+                                    ${
+                                        isSelected
+                                            ? "bg-primary/10 hover:bg-primary/15 opacity-100 text-primary"
+                                            : "opacity-60 hover:opacity-80"
+                                    }
+                                `}
+                            >
+                                <MapPin className="h-4 w-4 shrink-0" />
 
-                            <div className="flex-1 min-w-0">
-                                <h3 className="text-sm truncate">
-                                    {trackInfo?.pretty_name || trackId}
-                                </h3>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="text-sm truncate">
+                                        {trackInfo?.pretty_name || trackId}
+                                    </h3>
+                                </div>
+
+                                <span className="text-xs text-muted-foreground shrink-0">
+                                    {getSetupCountForTrack(trackId)}
+                                </span>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
 
-                {availableTracks.length === 0 && (
-                    <div className="p-4 text-center text-muted-foreground">
-                        No tracks found
+                    {availableTracks.length === 0 && (
+                        <div className="p-4 text-center text-muted-foreground">
+                            No tracks found
+                        </div>
+                    )}
+                </div>
+            </div>
+            <div className="p-2 mt-5">
+                {folderStructure && (
+                    <div className="text-xs text-muted-foreground opacity-80">
+                        {folderStructure.total_setups} setups overall for{" "}
+                        {folderStructure.cars.length} cars
                     </div>
                 )}
             </div>
         </div>
     );
 }
-
