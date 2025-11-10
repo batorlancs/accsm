@@ -13,9 +13,9 @@
     "windows": [
       {
         "title": "ACCSM",
-        "width": 800,
-        "height": 600,
-        "resizable": true,
+        "width": 900,
+        "height": 700,
+        "resizable": false,
         "fullscreen": false,
         "decorations": true
       }
