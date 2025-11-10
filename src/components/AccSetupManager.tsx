@@ -1,11 +1,19 @@
-import { Plus } from "lucide-react";
-import React, { useState } from "react";
+import { Car, FileText, MapPin } from "lucide-react";
+import { useState } from "react";
+import {
+    Tabs,
+    TabsList,
+    TabsPanel,
+    TabsPanels,
+    TabsTab,
+} from "@/components/animate-ui/components/base/tabs";
 import { ChangePathDialog } from "@/components/ChangePathDialog";
 import { EmptyState } from "@/components/EmptyState";
 import { NewSetupForm } from "@/components/NewSetupForm";
-import { SetupExplorer } from "@/components/SetupExplorer";
 import { SetupViewer } from "@/components/SetupViewer";
-import { Button } from "@/components/ui/button";
+import { CarView } from "@/components/views/CarView";
+import { SetupView } from "@/components/views/SetupView";
+import { TrackView } from "@/components/views/TrackView";
 import { useSetupsEvents } from "@/hooks/useSetupsEvents";
 
 type MainViewState =
@@ -58,13 +66,48 @@ export function AccSetupManager() {
     return (
         <div className="h-screen flex flex-col bg-background border-t border-border/50">
             <div className="flex-1 flex overflow-hidden">
-                {/* Left Sidebar - Setup Explorer */}
-                <div className="w-96 border-r border-border/50 bg-muted/50 p-4">
-                    <SetupExplorer
-                        selectedSetup={selectedSetup}
-                        onSelectSetup={handleSelectSetup}
-                        onChangePathClick={() => setIsPathDialogOpen(true)}
-                    />
+                {/* Left Sidebar - Tabbed Explorer */}
+                <div className="w-80 border-r border-border/50 bg-muted/50 p-2">
+                    <Tabs defaultValue="setups" className="h-full">
+                        <TabsList className="mb-4 w-full">
+                            <TabsTab value="setups">
+                                <FileText className="" />
+                                Setups
+                            </TabsTab>
+                            <TabsTab value="tracks">
+                                <MapPin className="" />
+                                Tracks
+                            </TabsTab>
+                            <TabsTab value="cars">
+                                <Car className="" />
+                                Cars
+                            </TabsTab>
+                        </TabsList>
+
+                        <TabsPanels className="flex-1 overflow-hidden">
+                            <TabsPanel value="setups" className="h-full">
+                                <SetupView
+                                    selectedSetup={selectedSetup}
+                                    onSelectSetup={handleSelectSetup}
+                                    onChangePathClick={() =>
+                                        setIsPathDialogOpen(true)
+                                    }
+                                />
+                            </TabsPanel>
+                            <TabsPanel
+                                value="tracks"
+                                className="h-full overflow-y-auto"
+                            >
+                                <TrackView />
+                            </TabsPanel>
+                            <TabsPanel
+                                value="cars"
+                                className="h-full overflow-y-auto"
+                            >
+                                <CarView />
+                            </TabsPanel>
+                        </TabsPanels>
+                    </Tabs>
                 </div>
 
                 {/* Main Area */}
