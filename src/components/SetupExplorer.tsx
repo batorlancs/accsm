@@ -247,12 +247,20 @@ function SetupNode({ setup, isSelected, onSelect }: SetupNodeProps) {
         // biome-ignore lint/a11y/useKeyWithClickEvents: off
         <div
             className={cn(
-                isSelected ? "bg-foreground/10" : "",
-                "cusror-pointer rounded",
+                isSelected
+                    ? "bg-primary/10 hover:bg-primary/15 text-primary"
+                    : "",
+                "cursor-pointer rounded transition duration-75",
             )}
             onClick={onSelect}
         >
-            <FileItem icon={FileText} onClick={onSelect}>
+            <FileItem
+                icon={FileText}
+                onClick={onSelect}
+                outerClassName={
+                    isSelected ? "opacity-100! hover:opacity-100!" : ""
+                }
+            >
                 {setup.display_name}{" "}
                 <span className="opacity-50 pl-2 text-xs capitalize font-mono">
                     {setup.setup_type}

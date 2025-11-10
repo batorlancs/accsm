@@ -30,9 +30,7 @@ type FilesProps = FilesPrimitiveProps;
 function Files({ className, children, ...props }: FilesProps) {
     return (
         <FilesPrimitive className={cn("p-1 w-full", className)} {...props}>
-            <FilesHighlightPrimitive className="bg-accent rounded-lg pointer-events-none">
-                {children}
-            </FilesHighlightPrimitive>
+            {children}
         </FilesPrimitive>
     );
 }
@@ -62,7 +60,7 @@ function FolderTrigger({
     return (
         <FolderHeaderPrimitive>
             <FolderTriggerPrimitive className="w-full text-start">
-                <FolderHighlightPrimitive>
+                <div className="opacity-60 hover:opacity-80 transition-opacity duration-75">
                     <FolderPrimitive className="flex items-center justify-between gap-2 p-1 pointer-events-none">
                         <div
                             className={cn(
@@ -95,7 +93,7 @@ function FolderTrigger({
                             />
                         )}
                     </FolderPrimitive>
-                </FolderHighlightPrimitive>
+                </div>
             </FolderTriggerPrimitive>
         </FolderHeaderPrimitive>
     );
@@ -114,17 +112,24 @@ function FolderContent(props: FolderContentProps) {
 type FileItemProps = FilePrimitiveProps & {
     icon?: React.ElementType;
     gitStatus?: GitStatus;
+    outerClassName?: string;
 };
 
 function FileItem({
     icon: Icon = FileIcon,
     className,
+    outerClassName,
     children,
     gitStatus,
     ...props
 }: FileItemProps) {
     return (
-        <FileHighlightPrimitive>
+        <div
+            className={cn(
+                outerClassName,
+                "opacity-60 hover:opacity-80 transition-opacity duration-75",
+            )}
+        >
             <FilePrimitive
                 className={cn(
                     "flex items-center justify-between gap-2 p-1 pointer-events-none",
@@ -153,7 +158,7 @@ function FileItem({
                     </span>
                 )}
             </FilePrimitive>
-        </FileHighlightPrimitive>
+        </div>
     );
 }
 
