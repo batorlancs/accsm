@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { open as openfile } from "@tauri-apps/plugin-dialog";
-import { AlertCircle, CheckCircle2, FileText, Upload, X } from "lucide-react";
+import { AlertCircle, CheckCircle2, FileText, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -199,7 +199,7 @@ export function FileDropModal({
                     </div>
                 );
 
-            case "results":
+            case "results": {
                 const { success, failed } = getResultCounts(modalState.results);
                 return (
                     <div className="space-y-4">
@@ -222,6 +222,7 @@ export function FileDropModal({
                         <div className="max-h-64 overflow-y-auto space-y-2 border rounded-lg p-3">
                             {modalState.results.map((result, index) => (
                                 <div
+                                    // biome-ignore lint/suspicious/noArrayIndexKey: off
                                     key={index}
                                     className={`flex items-start gap-3 p-2 rounded ${
                                         result.success
@@ -230,9 +231,9 @@ export function FileDropModal({
                                     }`}
                                 >
                                     {result.success ? (
-                                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
                                     ) : (
-                                        <AlertCircle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
+                                        <AlertCircle className="h-4 w-4 text-red-600 mt-0.5 shrink-0" />
                                     )}
                                     <div className="flex-1 min-w-0">
                                         <p
@@ -271,6 +272,7 @@ export function FileDropModal({
                         </div>
                     </div>
                 );
+            }
         }
     };
 
