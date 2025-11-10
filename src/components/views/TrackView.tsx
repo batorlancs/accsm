@@ -1,84 +1,82 @@
 import { MapPin } from "lucide-react";
+import { useState } from "react";
+import { useFolderStructure, useTracks } from "@/hooks/useBackend";
 
-// Mock data for tracks - replace with actual data from backend
-const tracks = [
-    {
-        id: "monza",
-        name: "Monza",
-        country: "Italy",
-        length: "5.793 km",
-        turns: 11,
-        type: "Road Course",
-    },
-    {
-        id: "silverstone",
-        name: "Silverstone",
-        country: "United Kingdom", 
-        length: "5.891 km",
-        turns: 18,
-        type: "Road Course",
-    },
-    {
-        id: "spa",
-        name: "Spa-Francorchamps",
-        country: "Belgium",
-        length: "7.004 km", 
-        turns: 19,
-        type: "Road Course",
-    },
-    {
-        id: "nurburgring",
-        name: "Nürburgring",
-        country: "Germany",
-        length: "5.148 km",
-        turns: 17,
-        type: "Road Course",
-    },
-    {
-        id: "brands_hatch",
-        name: "Brands Hatch",
-        country: "United Kingdom",
-        length: "3.908 km",
-        turns: 12,
-        type: "Road Course",
+interface TrackViewProps {
+    selectedTrack: string | null;
+    onSelectTrack: (trackId: string) => void;
+}
+
+export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
+    const { data: folderStructure, isLoading: folderLoading } =
+        useFolderStructure();
+    const { data: tracksData, isLoading: tracksLoading } = useTracks();
+
+    const isLoading = folderLoading || tracksLoading;
+
+    // Get all unique tracks from folder structure
+    const availableTracks =
+        folderStructure?.cars
+            .flatMap((car) => car.tracks.map((track) => track.track_id))
+            .filter((trackId, index, arr) => arr.indexOf(trackId) === index) ||
+        [];
+
+    if (isLoading) {
+        return (
+            <div className="h-full">
+                <div className="mb-4">
+                    <h2 className="text-lg font-medium">Tracks</h2>
+                    <p className="text-sm text-muted-foreground">
+                        Browse available tracks
+                    </p>
+                </div>
+                <div className="p-4 text-center text-muted-foreground">
+                    Loading tracks...
+                </div>
+            </div>
+        );
     }
-];
 
-export function TrackView() {
     return (
         <div className="h-full">
-            <div className="mb-4">
-                <h2 className="text-lg font-medium">Tracks</h2>
-                <p className="text-sm text-muted-foreground">
-                    Browse available tracks
-                </p>
-            </div>
+            <div className="space-y-1">
+                {availableTracks.map((trackId) => {
+                    const trackInfo = tracksData?.[trackId];
+                    const isSelected = selectedTrack === trackId;
 
-            <div className="space-y-2">
-                {tracks.map((track) => (
-                    <div
-                        key={track.id}
-                        className="flex items-center gap-3 p-3 rounded-lg border border-border/50 bg-card hover:bg-muted/50 transition-colors cursor-pointer"
-                    >
-                        <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
-                        
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                                <h3 className="font-medium truncate">{track.name}</h3>
-                                <span className="text-xs text-muted-foreground">
-                                    {track.country}
-                                </span>
-                            </div>
-                            
-                            <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
-                                <span>{track.length}</span>
-                                <span>{track.turns} turns</span>
-                                <span>{track.type}</span>
+                    return (
+                        // biome-ignore lint/a11y/noStaticElementInteractions: <off>
+                        // biome-ignore lint/a11y/useKeyWithClickEvents: off
+                        <div
+                            key={trackId}
+                            onClick={() => onSelectTrack(trackId)}
+                            className={`
+                                flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-all
+                                ${
+                                    isSelected
+                                        ? "bg-primary/10 hover:bg-primary/15 opacity-100 text-primary"
+                                        : "opacity-60 hover:opacity-80"
+                                }
+                            `}
+                        >
+                            <MapPin className="h-4 w-4 shrink-0" />
+
+                            <div className="flex-1 min-w-0">
+                                <h3 className="text-sm truncate">
+                                    {trackInfo?.pretty_name || trackId}
+                                </h3>
                             </div>
                         </div>
+                    );
+                })}
+
+                {availableTracks.length === 0 && (
+                    <div className="p-4 text-center text-muted-foreground">
+                        No tracks found
                     </div>
-                ))}
+                )}
             </div>
         </div>
     );
 }
+

@@ -7,9 +7,9 @@ import {
     TabsPanels,
     TabsTab,
 } from "@/components/animate-ui/components/base/tabs";
+import { EmptyState } from "@/components/EmptyState";
 import { ImprovedChangePathDialog } from "@/components/ImprovedChangePathDialog";
 import { MenuBar } from "@/components/MenuBar";
-import { EmptyState } from "@/components/EmptyState";
 import { NewSetupForm } from "@/components/NewSetupForm";
 import { SetupViewer } from "@/components/SetupViewer";
 import { CarView } from "@/components/views/CarView";
@@ -30,6 +30,8 @@ export function AccSetupManager() {
         type: "empty",
     });
     const [isPathDialogOpen, setIsPathDialogOpen] = useState(false);
+    const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
+    const [selectedCar, setSelectedCar] = useState<string | null>(null);
 
     const handleSelectSetup = (
         car: string,
@@ -55,6 +57,14 @@ export function AccSetupManager() {
         setViewState({ type: "empty" });
     };
 
+    const handleSelectTrack = (trackId: string) => {
+        setSelectedTrack(trackId === selectedTrack ? null : trackId);
+    };
+
+    const handleSelectCar = (carId: string) => {
+        setSelectedCar(carId === selectedCar ? null : carId);
+    };
+
     const selectedSetup =
         viewState.type === "viewing"
             ? {
@@ -68,22 +78,22 @@ export function AccSetupManager() {
         <div className="h-screen flex flex-col bg-background border-t border-border/50">
             {/* Menu Bar */}
             <MenuBar onSettingsClick={() => setIsPathDialogOpen(true)} />
-            
+
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Sidebar - Tabbed Explorer */}
                 <div className="w-80 border-r border-border/50 bg-muted/50 p-2">
                     <Tabs defaultValue="setups" className="h-full">
                         <TabsList className="w-full">
                             <TabsTab value="setups">
-                                <FileText className="" />
-                                Setups
+                                {/* <FileText className="" /> */}
+                                Explorer
                             </TabsTab>
                             <TabsTab value="tracks">
-                                <MapPin className="" />
+                                {/* <MapPin className="" /> */}
                                 Tracks
                             </TabsTab>
                             <TabsTab value="cars">
-                                <Car className="" />
+                                {/* <Car className="" /> */}
                                 Cars
                             </TabsTab>
                         </TabsList>
@@ -108,13 +118,19 @@ export function AccSetupManager() {
                                 value="tracks"
                                 className="h-full overflow-y-auto"
                             >
-                                <TrackView />
+                                <TrackView
+                                    selectedTrack={selectedTrack}
+                                    onSelectTrack={handleSelectTrack}
+                                />
                             </TabsPanel>
                             <TabsPanel
                                 value="cars"
                                 className="h-full overflow-y-auto"
                             >
-                                <CarView />
+                                <CarView
+                                    selectedCar={selectedCar}
+                                    onSelectCar={handleSelectCar}
+                                />
                             </TabsPanel>
                         </TabsPanels>
                     </Tabs>
