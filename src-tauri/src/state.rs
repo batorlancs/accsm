@@ -260,11 +260,34 @@ impl AppStateManager {
             message: format!("Failed to read setup file: {}", e),
         })?;
 
-        let setup: SetupFile =
+        // Parse as raw JSON first to check for ACCSMData
+        let mut json_content: serde_json::Value = 
             serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
                 file_path: file_path.to_string_lossy().to_string(),
                 error: e.to_string(),
             })?;
+
+        // Add ACCSMData if it doesn't exist
+        if !json_content.get("ACCSMData").is_some() {
+            let default_accsm = AccsmData {
+                last_modified: Utc::now(),
+                tags: Vec::new(),
+                setup_type: "unknown".to_string(),
+            };
+            json_content["ACCSMData"] = serde_json::to_value(default_accsm)?;
+            
+            // Save the file with the added ACCSMData
+            let json_string = serde_json::to_string_pretty(&json_content)?;
+            fs::write(file_path, json_string).map_err(|e| AccError::IoError {
+                message: format!("Failed to update setup file with ACCSMData: {}", e),
+            })?;
+        }
+
+        // Now parse as SetupFile
+        let setup: SetupFile = serde_json::from_value(json_content).map_err(|e| AccError::InvalidSetupJson {
+            file_path: file_path.to_string_lossy().to_string(),
+            error: e.to_string(),
+        })?;
 
         let display_name = filename
             .strip_suffix(".json")

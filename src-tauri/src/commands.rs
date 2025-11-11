@@ -745,9 +745,6 @@ fn apply_lfm_modifications(mut json_content: JsonValue) -> JsonValue {
                 .get_mut("telemetryLaps")
                 .and_then(|v| v.as_object_mut())
             {
-                // Example: Ensure certain aero settings are within LFM limits
-                // This is just an example - customize based on actual LFM requirements
-                // set telemetry laps to 99
                 telementry_laps.insert("value".to_string(), JsonValue::from(99));
             }
         }
