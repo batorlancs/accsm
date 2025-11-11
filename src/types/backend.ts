@@ -94,3 +94,26 @@ export interface ImportResult {
 export interface ImportJsonFilesParams {
     paths: string[];
 }
+
+// Validation types
+export interface ValidationResult {
+    path: string;
+    success: boolean;
+    error?: string;
+    json_content?: any;
+    car?: string;
+    filename?: string;
+}
+
+export interface ValidateJsonFilesParams {
+    paths: string[];
+}
+
+// Setup import types
+export interface SetupImportData {
+    json_content: any;
+    car: string;
+    track: string;
+    filename: string;
+    apply_lfm: boolean;
+}

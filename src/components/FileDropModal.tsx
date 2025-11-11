@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { open as openfile } from "@tauri-apps/plugin-dialog";
-import { AlertCircle, CheckCircle2, FileText, Upload } from "lucide-react";
+import { FileText, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,9 +10,10 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { ValidationResults } from "@/components/ValidationResults";
 import { useDragDrop } from "@/hooks/useDragDrop";
 import { TauriAPI } from "@/services/api";
-import type { ImportResult } from "@/types/backend";
+import type { ValidationResult } from "@/types/backend";
 
 interface FileDropModalProps {
     open: boolean;
@@ -23,7 +24,7 @@ interface FileDropModalProps {
 type ModalState =
     | { type: "waiting" }
     | { type: "processing" }
-    | { type: "results"; results: ImportResult[] };
+    | { type: "results"; results: ValidationResult[] };
 
 export function FileDropModal({
     open,
@@ -33,18 +34,10 @@ export function FileDropModal({
     const [modalState, setModalState] = useState<ModalState>({
         type: "waiting",
     });
-    const queryClient = useQueryClient();
-
-    const importMutation = useMutation({
-        mutationFn: TauriAPI.importJsonFiles,
+    const validateMutation = useMutation({
+        mutationFn: TauriAPI.validateJsonFiles,
         onSuccess: (results) => {
             setModalState({ type: "results", results });
-            // Refresh folder structure if any imports succeeded
-            if (results.some((r) => r.success)) {
-                queryClient.invalidateQueries({
-                    queryKey: ["folderStructure"],
-                });
-            }
         },
         onError: () => {
             setModalState({ type: "waiting" });
@@ -53,13 +46,13 @@ export function FileDropModal({
 
     const processFilesRef = useRef((paths: string[]) => {
         setModalState({ type: "processing" });
-        importMutation.mutate(paths);
+        validateMutation.mutate(paths);
     });
 
     // Update ref when mutation changes
     processFilesRef.current = (paths: string[]) => {
         setModalState({ type: "processing" });
-        importMutation.mutate(paths);
+        validateMutation.mutate(paths);
     };
 
     // Don't handle drag/drop in modal - let global handler do it
@@ -111,11 +104,6 @@ export function FileDropModal({
 
     const handleClose = () => onOpenChange(false);
     const handleTryAgain = () => setModalState({ type: "waiting" });
-
-    const getResultCounts = (results: ImportResult[]) => ({
-        success: results.filter((r) => r.success).length,
-        failed: results.filter((r) => !r.success).length,
-    });
 
     const renderContent = () => {
         // Show drag-over state if dragging (only when not processing global files)
@@ -193,84 +181,19 @@ export function FileDropModal({
                                 Processing files...
                             </h3>
                             <p className="text-sm text-muted-foreground">
-                                Importing and validating JSON files
+                                Validating JSON files
                             </p>
                         </div>
                     </div>
                 );
 
             case "results": {
-                const { success, failed } = getResultCounts(modalState.results);
                 return (
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                            <h3 className="font-semibold">Import Results</h3>
-                            <div className="flex items-center gap-4 text-sm">
-                                <span className="flex items-center gap-1 text-green-600">
-                                    <CheckCircle2 className="h-4 w-4" />
-                                    {success} successful
-                                </span>
-                                {failed > 0 && (
-                                    <span className="flex items-center gap-1 text-red-600">
-                                        <AlertCircle className="h-4 w-4" />
-                                        {failed} failed
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="max-h-64 overflow-y-auto space-y-2 border rounded-lg p-3">
-                            {modalState.results.map((result, index) => (
-                                <div
-                                    // biome-ignore lint/suspicious/noArrayIndexKey: off
-                                    key={index}
-                                    className={`flex items-start gap-3 p-2 rounded ${
-                                        result.success
-                                            ? "bg-green-50 dark:bg-green-950/20"
-                                            : "bg-red-50 dark:bg-red-950/20"
-                                    }`}
-                                >
-                                    {result.success ? (
-                                        <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
-                                    ) : (
-                                        <AlertCircle className="h-4 w-4 text-red-600 mt-0.5 shrink-0" />
-                                    )}
-                                    <div className="flex-1 min-w-0">
-                                        <p
-                                            className="text-sm font-medium truncate"
-                                            title={result.path}
-                                        >
-                                            {result.path.split("/").pop() ||
-                                                result.path}
-                                        </p>
-                                        {result.success ? (
-                                            <p className="text-xs text-green-700 dark:text-green-300">
-                                                Imported as {result.car}/
-                                                {result.track}/{result.filename}
-                                            </p>
-                                        ) : (
-                                            <p className="text-xs text-red-700 dark:text-red-300">
-                                                {result.error}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                onClick={handleTryAgain}
-                                className="flex-1"
-                            >
-                                Import More
-                            </Button>
-                            <Button onClick={handleClose} className="flex-1">
-                                Done
-                            </Button>
-                        </div>
-                    </div>
+                    <ValidationResults
+                        results={modalState.results}
+                        onComplete={handleClose}
+                        onTryAgain={handleTryAgain}
+                    />
                 );
             }
         }
@@ -286,7 +209,7 @@ export function FileDropModal({
                     </DialogTitle>
                     <DialogDescription>
                         Drop JSON setup files or folders containing JSON files
-                        to import them into your setup collection.
+                        to validate and import them into your setup collection.
                     </DialogDescription>
                 </DialogHeader>
 

@@ -10,8 +10,10 @@ import type {
     SaveSetupParams,
     SetupFile,
     SetupsChangedEvent,
+    SetupImportData,
     Track,
     ValidateSetupParams,
+    ValidationResult,
 } from "@/types/backend";
 
 export class TauriAPI {
@@ -70,6 +72,15 @@ export class TauriAPI {
     // Import operations
     static async importJsonFiles(paths: string[]): Promise<ImportResult[]> {
         return invoke<ImportResult[]>("import_json_files", { paths });
+    }
+
+    // Validation operations
+    static async validateJsonFiles(paths: string[]): Promise<ValidationResult[]> {
+        return invoke<ValidationResult[]>("validate_json_files", { paths });
+    }
+
+    static async importValidatedSetups(setups: SetupImportData[]): Promise<ImportResult[]> {
+        return invoke<ImportResult[]>("import_validated_setups", { setups });
     }
 
     // Event listeners

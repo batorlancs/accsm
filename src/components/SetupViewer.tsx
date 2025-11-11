@@ -319,7 +319,7 @@ export function SetupViewer({
                 ) : (
                     // View mode
                     <div className="flex-1 flex flex-col">
-                        <label className="text-sm font-medium mb-2">
+                        <label className="text-sm font-medium mb-2 mt-4">
                             Setup JSON
                         </label>
                         <Textarea
