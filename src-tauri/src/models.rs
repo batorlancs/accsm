@@ -30,7 +30,7 @@ impl Default for AccsmData {
         Self {
             last_modified: Utc::now(),
             tags: Vec::new(),
-            setup_type: "race".to_string(),
+            setup_type: "unknown".to_string(),
         }
     }
 }

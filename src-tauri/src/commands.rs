@@ -262,9 +262,7 @@ pub async fn validate_setup(car: String, content: JsonValue) -> Result<bool, Acc
 
 /// Validate JSON files from dropped paths without saving
 #[tauri::command]
-pub async fn validate_json_files(
-    paths: Vec<String>,
-) -> Result<Vec<ValidationResult>, AccError> {
+pub async fn validate_json_files(paths: Vec<String>) -> Result<Vec<ValidationResult>, AccError> {
     info!("Validating JSON files from {} paths", paths.len());
     let mut results = Vec::new();
 
@@ -327,7 +325,7 @@ pub async fn import_validated_setups(
 
     for setup_data in setups {
         let mut json_content = setup_data.json_content;
-        
+
         // Apply LFM modifications if requested
         if setup_data.apply_lfm {
             json_content = apply_lfm_modifications(json_content);
@@ -335,11 +333,19 @@ pub async fn import_validated_setups(
 
         // Save the setup
         match state
-            .save_setup(&setup_data.car, &setup_data.track, &setup_data.filename, json_content)
+            .save_setup(
+                &setup_data.car,
+                &setup_data.track,
+                &setup_data.filename,
+                json_content,
+            )
             .await
         {
             Ok(_) => results.push(ImportResult {
-                path: format!("{}/{}/{}", setup_data.car, setup_data.track, setup_data.filename),
+                path: format!(
+                    "{}/{}/{}",
+                    setup_data.car, setup_data.track, setup_data.filename
+                ),
                 success: true,
                 error: None,
                 car: Some(setup_data.car),
@@ -347,7 +353,10 @@ pub async fn import_validated_setups(
                 filename: Some(setup_data.filename),
             }),
             Err(e) => results.push(ImportResult {
-                path: format!("{}/{}/{}", setup_data.car, setup_data.track, setup_data.filename),
+                path: format!(
+                    "{}/{}/{}",
+                    setup_data.car, setup_data.track, setup_data.filename
+                ),
                 success: false,
                 error: Some(format!("Failed to save setup: {}", e)),
                 car: Some(setup_data.car),
@@ -357,7 +366,10 @@ pub async fn import_validated_setups(
         }
     }
 
-    info!("Import of validated setups completed with {} results", results.len());
+    info!(
+        "Import of validated setups completed with {} results",
+        results.len()
+    );
     Ok(results)
 }
 
@@ -692,7 +704,9 @@ async fn validate_json_file(path: &PathBuf) -> ValidationResult {
     }
 }
 
-async fn scan_directory_for_validation(dir_path: &PathBuf) -> Result<Vec<ValidationResult>, AccError> {
+async fn scan_directory_for_validation(
+    dir_path: &PathBuf,
+) -> Result<Vec<ValidationResult>, AccError> {
     let mut results = Vec::new();
     let entries = std::fs::read_dir(dir_path).map_err(|e| AccError::IoError {
         message: format!("Failed to read directory {}: {}", dir_path.display(), e),
@@ -725,11 +739,16 @@ fn apply_lfm_modifications(mut json_content: JsonValue) -> JsonValue {
     // This is a placeholder implementation - you can customize this based on your needs
     if let Some(obj) = json_content.as_object_mut() {
         // Example: Set specific values for LFM compatibility
-        if let Some(advanced_setup) = obj.get_mut("advancedSetup").and_then(|v| v.as_object_mut()) {
+        if let Some(basic_setup) = obj.get_mut("basicSetup").and_then(|v| v.as_object_mut()) {
             // Example modifications for LFM compatibility
-            if let Some(aero) = advanced_setup.get_mut("aero").and_then(|v| v.as_object_mut()) {
+            if let Some(telementry_laps) = basic_setup
+                .get_mut("telemetryLaps")
+                .and_then(|v| v.as_object_mut())
+            {
                 // Example: Ensure certain aero settings are within LFM limits
                 // This is just an example - customize based on actual LFM requirements
+                // set telemetry laps to 99
+                telementry_laps.insert("value".to_string(), JsonValue::from(99));
             }
         }
     }

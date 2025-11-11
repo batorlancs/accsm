@@ -109,7 +109,7 @@ export function NewSetupForm({ onCancel, onSuccess }: NewSetupFormProps) {
     const [selectedTrack, setSelectedTrack] = useState("");
     const [filename, setFilename] = useState("");
     const [tags, setTags] = useState("");
-    const [setupType, setSetupType] = useState("race");
+    const [setupType, setSetupType] = useState("unknown");
     const [jsonContent, setJsonContent] = useState("");
     const [validationError, setValidationError] = useState<string | null>(null);
 

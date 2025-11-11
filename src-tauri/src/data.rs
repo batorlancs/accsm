@@ -73,6 +73,7 @@ pub fn get_tracks() -> HashMap<String, Track> {
         ("monza", "Autodromo Nazionale Monza"),
         ("mount_panorama", "Mount Panorama Circuit"),
         ("nurburgring", "Nürburgring-Nordschleife"),
+        ("nurburgring_24h", "Nürburgring 24h Circuit"),
         ("oulton_park", "Oulton Park"),
         ("Paul_Ricard", "Circuit Paul Ricard"),
         ("Silverstone", "Silverstone Circuit"),
