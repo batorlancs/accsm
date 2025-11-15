@@ -1,7 +1,8 @@
-import { Car } from "lucide-react";
+import { Car, Wrench, MapPin } from "lucide-react";
 import { useEffect } from "react";
 import { useCars, useFolderStructure } from "@/hooks/useBackend";
 import { getBrandSvg } from "@/lib/brandSvgs";
+import { IconNumber } from "@/components/shared";
 
 interface CarViewProps {
     selectedCar: string | null;
@@ -27,6 +28,12 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                 0,
             ) || 0
         );
+    };
+
+    // Calculate track count for a specific car
+    const getTrackCountForCar = (carId: string) => {
+        const car = availableCars.find((c) => c.car_id === carId);
+        return car?.tracks.length || 0;
     };
 
     // Get unique track count
@@ -107,9 +114,16 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                                     </h3>
                                 </div>
 
-                                <span className="text-xs opacity-80 shrink-0">
-                                    {getSetupCountForCar(car.car_id)}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                    <IconNumber 
+                                        icon={Wrench} 
+                                        number={getSetupCountForCar(car.car_id)} 
+                                    />
+                                    <IconNumber 
+                                        icon={MapPin} 
+                                        number={getTrackCountForCar(car.car_id)} 
+                                    />
+                                </div>
                             </div>
                         );
                     })}

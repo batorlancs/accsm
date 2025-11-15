@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useFolderStructure, useTracks } from "@/hooks/useBackend";
 import { getCountryFlag } from "@/lib/countryFlags";
+import { IconNumber } from "@/components/shared";
+import { Wrench, CarFront } from "lucide-react";
 
 interface TrackViewProps {
     selectedTrack: string | null;
@@ -28,6 +30,15 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                 .flatMap((car) => car.tracks)
                 .filter((track) => track.track_id === trackId)
                 .reduce((total, track) => total + track.setups.length, 0) || 0
+        );
+    };
+
+    // Calculate car count for a specific track
+    const getCarCountForTrack = (trackId: string) => {
+        return (
+            folderStructure?.cars
+                .filter((car) => car.tracks.some((track) => track.track_id === trackId))
+                .length || 0
         );
     };
 
@@ -91,9 +102,16 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                                     </h3>
                                 </div>
 
-                                <span className={`text-xs opacity-80 shrink-0`}>
-                                    {getSetupCountForTrack(trackId)}
-                                </span>
+                                <div className="flex items-center gap-2">
+                                    <IconNumber 
+                                        icon={Wrench} 
+                                        number={getSetupCountForTrack(trackId)} 
+                                    />
+                                    <IconNumber 
+                                        icon={CarFront} 
+                                        number={getCarCountForTrack(trackId)} 
+                                    />
+                                </div>
                             </div>
                         );
                     })}
