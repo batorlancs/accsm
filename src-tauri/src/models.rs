@@ -16,25 +16,6 @@ pub struct Track {
     pub pretty_name: String,
 }
 
-/// Custom metadata added to setup files
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct AccsmData {
-    pub last_modified: DateTime<Utc>,
-    pub tags: Vec<String>,
-    pub setup_type: String,
-}
-
-impl Default for AccsmData {
-    fn default() -> Self {
-        Self {
-            last_modified: Utc::now(),
-            tags: Vec::new(),
-            setup_type: "unknown".to_string(),
-        }
-    }
-}
-
 /// Complete setup file structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -43,8 +24,6 @@ pub struct SetupFile {
     pub basic_setup: serde_json::Value,
     pub advanced_setup: serde_json::Value,
     pub track_bop_type: Option<i32>,
-    #[serde(rename = "ACCSMData")]
-    pub accsm_data: AccsmData,
     #[serde(flatten)]
     pub other_fields: HashMap<String, serde_json::Value>,
 }
@@ -55,8 +34,6 @@ pub struct SetupInfo {
     pub filename: String,
     pub display_name: String,
     pub last_modified: DateTime<Utc>,
-    pub tags: Vec<String>,
-    pub setup_type: String,
 }
 
 /// Represents a track folder with its setups

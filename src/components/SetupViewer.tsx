@@ -35,8 +35,6 @@ interface SetupViewerProps {
     onDelete?: () => void;
 }
 
-const SETUP_TYPES = ["race", "qualifying", "wet", "custom"];
-
 export function SetupViewer({
     car,
     track,
@@ -50,16 +48,12 @@ export function SetupViewer({
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedContent, setEditedContent] = useState("");
-    const [editedTags, setEditedTags] = useState("");
-    const [editedSetupType, setEditedSetupType] = useState("race");
     const [validationError, setValidationError] = useState<string | null>(null);
 
     // Update edited values when setup loads
     useEffect(() => {
         if (setup) {
             setEditedContent(JSON.stringify(setup, null, 2));
-            setEditedTags(setup.ACCSMData.tags.join(", "));
-            setEditedSetupType(setup.ACCSMData.setupType);
         }
     }, [setup]);
 
@@ -71,8 +65,6 @@ export function SetupViewer({
     const handleCancel = () => {
         if (setup) {
             setEditedContent(JSON.stringify(setup, null, 2));
-            setEditedTags(setup.ACCSMData.tags.join(", "));
-            setEditedSetupType(setup.ACCSMData.setupType);
         }
         setIsEditing(false);
         setValidationError(null);
@@ -82,17 +74,6 @@ export function SetupViewer({
         try {
             // Parse the JSON content
             const parsedContent = JSON.parse(editedContent);
-
-            // Update the ACCSMData
-            parsedContent.ACCSMData = {
-                ...parsedContent.ACCSMData,
-                tags: editedTags
-                    .split(",")
-                    .map((tag) => tag.trim())
-                    .filter((tag) => tag.length > 0),
-                setupType: editedSetupType,
-                lastModified: new Date().toISOString(),
-            };
 
             // Validate the setup
             await validateMutation.mutateAsync({
@@ -184,26 +165,7 @@ export function SetupViewer({
                                 <Car className="h-3 w-3" />
                                 <span>{setup.carName}</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <Calendar className="h-3 w-3" />
-                                <span>
-                                    Modified:{" "}
-                                    {new Date(
-                                        setup.ACCSMData.lastModified,
-                                    ).toLocaleString()}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Tag className="h-3 w-3" />
-                                <span className="capitalize">
-                                    {setup.ACCSMData.setupType}
-                                </span>
-                                {setup.ACCSMData.tags.length > 0 && (
-                                    <span>
-                                        • {setup.ACCSMData.tags.join(", ")}
-                                    </span>
-                                )}
-                            </div>
+
                         </div>
                     </div>
 
@@ -258,44 +220,6 @@ export function SetupViewer({
             <div className="flex-1 flex flex-col gap-4 overflow-hidden">
                 {isEditing ? (
                     <>
-                        {/* Edit form */}
-                        <div className="flex gap-4">
-                            <div className="flex-1">
-                                <label className="text-sm font-medium">
-                                    Tags (comma-separated)
-                                </label>
-                                <Input
-                                    value={editedTags}
-                                    onChange={(e) =>
-                                        setEditedTags(e.target.value)
-                                    }
-                                    placeholder="e.g., wet, aggressive, stable"
-                                />
-                            </div>
-                            <div className="w-40">
-                                <label className="text-sm font-medium">
-                                    Setup Type
-                                </label>
-                                <Select
-                                    value={editedSetupType}
-                                    onValueChange={setEditedSetupType}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {SETUP_TYPES.map((type) => (
-                                            <SelectItem key={type} value={type}>
-                                                <span className="capitalize">
-                                                    {type}
-                                                </span>
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-
                         {validationError && (
                             <div className="text-sm text-red-500 bg-red-50 p-2 rounded">
                                 {validationError}

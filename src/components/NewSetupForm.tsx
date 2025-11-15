@@ -23,8 +23,6 @@ interface NewSetupFormProps {
     onSuccess?: () => void;
 }
 
-const SETUP_TYPES = ["race", "qualifying", "wet", "custom"];
-
 const DEFAULT_SETUP_JSON = {
     carName: "",
     basicSetup: {
@@ -108,8 +106,6 @@ export function NewSetupForm({ onCancel, onSuccess }: NewSetupFormProps) {
     const [selectedCar, setSelectedCar] = useState("");
     const [selectedTrack, setSelectedTrack] = useState("");
     const [filename, setFilename] = useState("");
-    const [tags, setTags] = useState("");
-    const [setupType, setSetupType] = useState("unknown");
     const [jsonContent, setJsonContent] = useState("");
     const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -148,16 +144,6 @@ export function NewSetupForm({ onCancel, onSuccess }: NewSetupFormProps) {
         try {
             // Parse the JSON content
             const parsedContent = JSON.parse(jsonContent);
-
-            // Add our custom metadata
-            parsedContent.ACCSMData = {
-                lastModified: new Date().toISOString(),
-                tags: tags
-                    .split(",")
-                    .map((tag) => tag.trim())
-                    .filter((tag) => tag.length > 0),
-                setupType,
-            };
 
             // Validate the setup
             await validateMutation.mutateAsync({
@@ -259,47 +245,14 @@ export function NewSetupForm({ onCancel, onSuccess }: NewSetupFormProps) {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="text-sm font-medium">
-                            Filename *
-                        </label>
-                        <Input
-                            value={filename}
-                            onChange={(e) => setFilename(e.target.value)}
-                            placeholder="e.g., my_setup or my_setup.json"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="text-sm font-medium">
-                            Setup Type
-                        </label>
-                        <Select value={setupType} onValueChange={setSetupType}>
-                            <SelectTrigger>
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {SETUP_TYPES.map((type) => (
-                                    <SelectItem key={type} value={type}>
-                                        <span className="capitalize">
-                                            {type}
-                                        </span>
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-
                 <div>
                     <label className="text-sm font-medium">
-                        Tags (comma-separated)
+                        Filename *
                     </label>
                     <Input
-                        value={tags}
-                        onChange={(e) => setTags(e.target.value)}
-                        placeholder="e.g., stable, aggressive, wet"
+                        value={filename}
+                        onChange={(e) => setFilename(e.target.value)}
+                        placeholder="e.g., my_setup or my_setup.json"
                     />
                 </div>
 

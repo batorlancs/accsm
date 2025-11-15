@@ -1,6 +1,6 @@
 use crate::data::{find_car_by_folder, find_track_by_folder};
 use crate::errors::{AccError, AccResult};
-use crate::models::{AccsmData, CarFolder, FolderStructure, SetupFile, SetupInfo, TrackFolder};
+use crate::models::{CarFolder, FolderStructure, SetupFile, SetupInfo, TrackFolder};
 use chrono::Utc;
 use log::{debug, info, warn};
 use std::fs;
@@ -260,34 +260,24 @@ impl AppStateManager {
             message: format!("Failed to read setup file: {}", e),
         })?;
 
-        // Parse as raw JSON first to check for ACCSMData
-        let mut json_content: serde_json::Value = 
+        // Parse as raw JSON to validate structure
+        let _json_content: serde_json::Value = 
             serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
                 file_path: file_path.to_string_lossy().to_string(),
                 error: e.to_string(),
             })?;
 
-        // Add ACCSMData if it doesn't exist
-        if !json_content.get("ACCSMData").is_some() {
-            let default_accsm = AccsmData {
-                last_modified: Utc::now(),
-                tags: Vec::new(),
-                setup_type: "unknown".to_string(),
-            };
-            json_content["ACCSMData"] = serde_json::to_value(default_accsm)?;
-            
-            // Save the file with the added ACCSMData
-            let json_string = serde_json::to_string_pretty(&json_content)?;
-            fs::write(file_path, json_string).map_err(|e| AccError::IoError {
-                message: format!("Failed to update setup file with ACCSMData: {}", e),
-            })?;
-        }
-
-        // Now parse as SetupFile
-        let setup: SetupFile = serde_json::from_value(json_content).map_err(|e| AccError::InvalidSetupJson {
-            file_path: file_path.to_string_lossy().to_string(),
-            error: e.to_string(),
+        // Get file metadata for last modified
+        let metadata = fs::metadata(file_path).map_err(|e| AccError::IoError {
+            message: format!("Failed to read file metadata: {}", e),
         })?;
+
+        let last_modified = metadata
+            .modified()
+            .map_err(|e| AccError::IoError {
+                message: format!("Failed to get file modification time: {}", e),
+            })?
+            .into();
 
         let display_name = filename
             .strip_suffix(".json")
@@ -297,9 +287,7 @@ impl AppStateManager {
         Ok(SetupInfo {
             filename: filename.to_string(),
             display_name,
-            last_modified: setup.accsm_data.last_modified,
-            tags: setup.accsm_data.tags,
-            setup_type: setup.accsm_data.setup_type,
+            last_modified,
         })
     }
 
@@ -333,31 +321,8 @@ impl AppStateManager {
             message: format!("Failed to read setup file: {}", e),
         })?;
 
-        // Parse as raw JSON first to check for ACCSMData
-        let mut json_content: serde_json::Value = 
-            serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
-                file_path: file_path.to_string_lossy().to_string(),
-                error: e.to_string(),
-            })?;
-
-        // Add ACCSMData if it doesn't exist
-        if !json_content.get("ACCSMData").is_some() {
-            let default_accsm = AccsmData {
-                last_modified: Utc::now(),
-                tags: Vec::new(),
-                setup_type: "unknown".to_string(),
-            };
-            json_content["ACCSMData"] = serde_json::to_value(default_accsm)?;
-            
-            // Save the file with the added ACCSMData
-            let json_string = serde_json::to_string_pretty(&json_content)?;
-            fs::write(&file_path, json_string).map_err(|e| AccError::IoError {
-                message: format!("Failed to update setup file with ACCSMData: {}", e),
-            })?;
-        }
-
-        // Now parse as SetupFile
-        let setup: SetupFile = serde_json::from_value(json_content).map_err(|e| AccError::InvalidSetupJson {
+        // Parse as SetupFile
+        let setup: SetupFile = serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
             file_path: file_path.to_string_lossy().to_string(),
             error: e.to_string(),
         })?;
@@ -408,24 +373,6 @@ impl AppStateManager {
             "carName".to_string(),
             serde_json::Value::String(car_data.id.clone()),
         );
-
-        // Add or update ACCSM metadata
-        let accsm_data = AccsmData {
-            last_modified: Utc::now(),
-            tags: obj
-                .get("ACCSMData")
-                .and_then(|data| data.get("tags"))
-                .and_then(|tags| serde_json::from_value(tags.clone()).ok())
-                .unwrap_or_default(),
-            setup_type: obj
-                .get("ACCSMData")
-                .and_then(|data| data.get("setupType"))
-                .and_then(|t| t.as_str())
-                .unwrap_or("unknown")
-                .to_string(),
-        };
-
-        obj.insert("ACCSMData".to_string(), serde_json::to_value(accsm_data)?);
 
         // Ensure the directory structure exists
         let dir_path = setups_path.join(&car_data.id).join(&track_data.id);

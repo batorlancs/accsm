@@ -31,10 +31,7 @@ export function SetupNode({ setup, isSelected, onSelect }: SetupNodeProps) {
                     isSelected ? "opacity-100! hover:opacity-100!" : ""
                 }
             >
-                {setup.display_name}{" "}
-                <span className="opacity-50 pl-2 text-xs capitalize font-mono">
-                    {setup.setup_type}
-                </span>
+                {setup.display_name}
             </FileItem>
         </div>
     );

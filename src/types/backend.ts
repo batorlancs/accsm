@@ -10,18 +10,11 @@ export interface Track {
     pretty_name: string;
 }
 
-export interface AccsmData {
-    lastModified: string; // ISO string from DateTime<Utc>
-    tags: string[];
-    setupType: string;
-}
-
 export interface SetupFile {
     carName: string;
     basicSetup: any; // JSON value
     advancedSetup: any; // JSON value
     trackBopType?: number;
-    ACCSMData: AccsmData;
     [key: string]: any; // For other_fields
 }
 
@@ -29,8 +22,6 @@ export interface SetupInfo {
     filename: string;
     display_name: string;
     last_modified: string; // ISO string
-    tags: string[];
-    setup_type: string;
 }
 
 export interface TrackFolder {
