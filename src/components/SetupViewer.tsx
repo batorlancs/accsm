@@ -1,8 +1,11 @@
-import { Car, CarFront, FileText, Wrench, X } from "lucide-react";
+import { CarFront, Wrench, X } from "lucide-react";
+import ReactJson from "react-json-view";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { useCars, useSetup, useTracks } from "@/hooks/useBackend";
+import { useCars, useEditSetup, useSetup, useTracks } from "@/hooks/useBackend";
 import { getBrandSvg } from "@/lib/brandSvgs";
 import { getCountryFlag } from "@/lib/countryFlags";
+import { Kbd, KbdGroup } from "./ui/kbd";
 
 interface SetupViewerProps {
     car: string;
@@ -31,6 +34,8 @@ export function SetupViewer({
         error: tracksError,
     } = useTracks();
 
+    const editSetup = useEditSetup();
+
     if (isLoading || isCarsLoading || isTracksLoading) {
         return null;
     }
@@ -56,6 +61,29 @@ export function SetupViewer({
 
     const fileNameWithoutExtension = filename.replace(/\.[^/.]+$/, "");
     const fileNameExtension = filename.split(".").pop() || "";
+
+    const handleJson = (edit: any) => {
+        const { updated_src, name, namespace } = edit;
+
+        // Save the updated setup
+        editSetup.mutate(
+            {
+                car,
+                track,
+                filename,
+                content: updated_src,
+            },
+            {
+                onError: (error) => {
+                    const keyPath =
+                        namespace.length > 0
+                            ? `${namespace.join(".")}.${name}`
+                            : name;
+                    toast.error(`Failed to update ${keyPath}: ${error}`);
+                },
+            },
+        );
+    };
 
     return (
         <div className="space-y-4 p-4">
@@ -121,6 +149,33 @@ export function SetupViewer({
                         <X className="h-4 w-4" />
                     </Button>
                 )}
+            </div>
+            <div className="">
+                <div className="bg-[#151515] p-4 rounded opacity-80">
+                    <div className="text-xs text-muted-foreground/40 mb-3">
+                        <div>
+                            Try{" "}
+                            <KbdGroup>
+                                <Kbd>Ctrl</Kbd>
+                                <span>+</span>
+                                <Kbd>Enter</Kbd>
+                            </KbdGroup>{" "}
+                            to submit changes when editing values
+                        </div>
+                    </div>
+                    <ReactJson
+                        key={`${track}-${car}-${filename}`}
+                        src={setup}
+                        name={false}
+                        iconStyle="square"
+                        collapsed={1}
+                        onEdit={handleJson}
+                        // onAdd={handleJson}
+                        // onDelete={handleJson}
+                        enableClipboard={false}
+                        theme="chalk"
+                    />
+                </div>
             </div>
         </div>
     );
