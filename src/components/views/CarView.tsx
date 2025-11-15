@@ -1,4 +1,5 @@
 import { Car } from "lucide-react";
+import { useEffect } from "react";
 import { useCars, useFolderStructure } from "@/hooks/useBackend";
 
 interface CarViewProps {
@@ -33,6 +34,13 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
             .flatMap((car) => car.tracks.map((track) => track.track_id))
             .filter((trackId, index, arr) => arr.indexOf(trackId) === index)
             .length || 0;
+
+    // Auto-select first car when available
+    useEffect(() => {
+        if (!selectedCar && availableCars.length > 0 && !isLoading) {
+            onSelectCar(availableCars[0].car_id);
+        }
+    }, [availableCars, selectedCar, onSelectCar, isLoading]);
 
     if (isLoading) {
         return (
@@ -81,7 +89,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                                     </h3>
                                 </div>
 
-                                <span className="text-xs text-muted-foreground shrink-0">
+                                <span className="text-xs opacity-80 shrink-0">
                                     {getSetupCountForCar(car.car_id)}
                                 </span>
                             </div>

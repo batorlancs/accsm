@@ -1,4 +1,4 @@
-import { Car, FileText, MapPin } from "lucide-react";
+
 import { useCallback, useState } from "react";
 import {
     Tabs,
@@ -7,63 +7,76 @@ import {
     TabsPanels,
     TabsTab,
 } from "@/components/animate-ui/components/base/tabs";
-import { EmptyState } from "@/components/EmptyState";
 import { FileDropModal } from "@/components/FileDropModal";
 import { GlobalDragDropOverlay } from "@/components/GlobalDragDropOverlay";
 import { ImprovedChangePathDialog } from "@/components/ImprovedChangePathDialog";
 import { MenuBar } from "@/components/MenuBar";
-import { NewSetupForm } from "@/components/NewSetupForm";
-import { SetupViewer } from "@/components/SetupViewer";
+import { CarViewer, ExplorerViewer, TrackViewer } from "@/components/viewers";
 import { CarView } from "@/components/views/CarView";
 import { SetupView } from "@/components/views/SetupView";
 import { TrackView } from "@/components/views/TrackView";
 import { useSetupsEvents } from "@/hooks/useSetupsEvents";
 
-type MainViewState =
+type ExplorerViewState =
     | { type: "empty" }
     | { type: "viewing"; car: string; track: string; filename: string }
     | { type: "creating" };
+
+type TabType = "explorer" | "tracks" | "cars";
 
 export function AccSetupManager() {
     // Initialize real-time event listening
     useSetupsEvents();
 
-    const [viewState, setViewState] = useState<MainViewState>({
+    // Current active tab
+    const [activeTab, setActiveTab] = useState<TabType>("explorer");
+    
+    // Explorer tab state
+    const [explorerViewState, setExplorerViewState] = useState<ExplorerViewState>({
         type: "empty",
     });
+    
+    // Tracks tab state
+    const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
+    
+    // Cars tab state
+    const [selectedCar, setSelectedCar] = useState<string | null>(null);
+    
+    // Global state
     const [isPathDialogOpen, setIsPathDialogOpen] = useState(false);
     const [isFileDropModalOpen, setIsFileDropModalOpen] = useState(false);
-    const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
-    const [selectedCar, setSelectedCar] = useState<string | null>(null);
 
+    // Explorer tab handlers
     const handleSelectSetup = (
         car: string,
         track: string,
         filename: string,
     ) => {
-        setViewState({ type: "viewing", car, track, filename });
+        setExplorerViewState({ type: "viewing", car, track, filename });
     };
 
     const handleCreateNew = () => {
-        setViewState({ type: "creating" });
+        setExplorerViewState({ type: "creating" });
     };
 
     const handleCancelCreate = () => {
-        setViewState({ type: "empty" });
+        setExplorerViewState({ type: "empty" });
     };
 
     const handleSuccessCreate = () => {
-        setViewState({ type: "empty" });
+        setExplorerViewState({ type: "empty" });
     };
 
     const handleDeleteSetup = () => {
-        setViewState({ type: "empty" });
+        setExplorerViewState({ type: "empty" });
     };
 
+    // Tracks tab handlers
     const handleSelectTrack = (trackId: string) => {
         setSelectedTrack(trackId === selectedTrack ? null : trackId);
     };
 
+    // Cars tab handlers
     const handleSelectCar = (carId: string) => {
         setSelectedCar(carId === selectedCar ? null : carId);
     };
@@ -78,11 +91,11 @@ export function AccSetupManager() {
     }, []);
 
     const selectedSetup =
-        viewState.type === "viewing"
+        explorerViewState.type === "viewing"
             ? {
-                  car: viewState.car,
-                  track: viewState.track,
-                  filename: viewState.filename,
+                  car: explorerViewState.car,
+                  track: explorerViewState.track,
+                  filename: explorerViewState.filename,
               }
             : null;
 
@@ -91,10 +104,14 @@ export function AccSetupManager() {
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Sidebar - Tabbed Explorer */}
                 <div className="w-80 border-r border-border/50 bg-muted/50">
-                    <Tabs defaultValue="setups" className="h-full">
+                    <Tabs 
+                        value={activeTab} 
+                        onValueChange={(value) => setActiveTab(value as TabType)}
+                        className="h-full"
+                    >
                         <div className="p-2 h-11">
                             <TabsList className="w-full">
-                                <TabsTab value="setups">Explorer</TabsTab>
+                                <TabsTab value="explorer">Explorer</TabsTab>
                                 <TabsTab value="tracks">Tracks</TabsTab>
                                 <TabsTab value="cars">Cars</TabsTab>
                             </TabsList>
@@ -104,7 +121,7 @@ export function AccSetupManager() {
                             className="overflow-hidden flex-1 h-full border-t border-border/50 p-2"
                         >
                             <TabsPanel
-                                value="setups"
+                                value="explorer"
                                 className="h-full min-h-full flex-1 flex"
                             >
                                 <SetupView
@@ -137,32 +154,32 @@ export function AccSetupManager() {
                     </Tabs>
                 </div>
 
-                {/* Main Area */}
+                {/* Main Area - Viewers */}
                 <div className="flex-1">
                     {/* Menu Bar */}
                     <MenuBar
                         onSettingsClick={() => setIsPathDialogOpen(true)}
                         onAddClick={() => setIsFileDropModalOpen(true)}
                     />
-                    <div className="h-full p-4 overflow-y-auto">
-                        {viewState.type === "empty" && (
-                            <EmptyState onCreateNew={handleCreateNew} />
+                    <div className="h-full overflow-y-auto">
+                        {activeTab === "explorer" && (
+                            <div className="h-full p-4">
+                                <ExplorerViewer
+                                    viewState={explorerViewState}
+                                    onCreateNew={handleCreateNew}
+                                    onCancelCreate={handleCancelCreate}
+                                    onSuccessCreate={handleSuccessCreate}
+                                    onDeleteSetup={handleDeleteSetup}
+                                />
+                            </div>
                         )}
 
-                        {viewState.type === "viewing" && (
-                            <SetupViewer
-                                car={viewState.car}
-                                track={viewState.track}
-                                filename={viewState.filename}
-                                onDelete={handleDeleteSetup}
-                            />
+                        {activeTab === "tracks" && (
+                            <TrackViewer trackId={selectedTrack} />
                         )}
 
-                        {viewState.type === "creating" && (
-                            <NewSetupForm
-                                onCancel={handleCancelCreate}
-                                onSuccess={handleSuccessCreate}
-                            />
+                        {activeTab === "cars" && (
+                            <CarViewer carId={selectedCar} />
                         )}
                     </div>
                 </div>

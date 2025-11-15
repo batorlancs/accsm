@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { useState } from "react";
+import { useEffect } from "react";
 import { useFolderStructure, useTracks } from "@/hooks/useBackend";
 
 interface TrackViewProps {
@@ -30,6 +30,13 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                 .reduce((total, track) => total + track.setups.length, 0) || 0
         );
     };
+
+    // Auto-select first track when available
+    useEffect(() => {
+        if (!selectedTrack && availableTracks.length > 0 && !isLoading) {
+            onSelectTrack(availableTracks[0]);
+        }
+    }, [availableTracks, selectedTrack, onSelectTrack, isLoading]);
 
     if (isLoading) {
         return (
@@ -78,7 +85,9 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                                     </h3>
                                 </div>
 
-                                <span className="text-xs text-muted-foreground shrink-0">
+                                <span
+                                    className={`text-xs opacity-80 shrink-0 ${isSelected ? "text-primary" : ""}`}
+                                >
                                     {getSetupCountForTrack(trackId)}
                                 </span>
                             </div>
