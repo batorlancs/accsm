@@ -54,18 +54,31 @@ export function SetupViewer({
     const carData = cars[car];
     const trackData = tracks[track];
 
+    const fileNameWithoutExtension = filename.replace(/\.[^/.]+$/, "");
+    const fileNameExtension = filename.split(".").pop() || "";
+
     return (
         <div className="space-y-4 p-4">
             <div className="flex items-start justify-between">
                 <div>
                     <div className="flex items-center gap-3">
-                        <div className="p-8 bg-muted rounded">
+                        <div className="bg-muted rounded flex flex-col items-center justify-center p-2 gap-2 size-24">
                             <Wrench className="text-muted-foreground" />
+                            <p className="text-xs text-muted-foreground font-bold opacity-50">
+                                SETUP
+                            </p>
                         </div>
                         <div className="">
-                            <h2 className="text-md font-medium">{filename}</h2>
+                            <h2 className="text-lg font-medium">
+                                {fileNameWithoutExtension}
+                                <span className="text-muted-foreground">
+                                    {fileNameExtension
+                                        ? `.${fileNameExtension}`
+                                        : ""}
+                                </span>
+                            </h2>
 
-                            <div className="flex items-center gap-2 mt-2 opacity-60">
+                            <div className="flex items-center gap-2 mt-1 opacity-60">
                                 <span className="text-sm shrink-0 w-4 flex items-center justify-center">
                                     {getCountryFlag(trackData?.country || "")}
                                 </span>
