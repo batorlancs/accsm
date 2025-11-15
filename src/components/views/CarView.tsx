@@ -72,7 +72,11 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                             // biome-ignore lint/a11y/useKeyWithClickEvents: off
                             <div
                                 key={car.car_id}
-                                onClick={() => onSelectCar(car.car_id)}
+                                onClick={() => {
+                                    if (!isSelected) {
+                                        onSelectCar(car.car_id);
+                                    }
+                                }}
                                 className={`
                                     flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-all
                                     ${

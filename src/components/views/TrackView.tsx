@@ -67,7 +67,11 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                             // biome-ignore lint/a11y/useKeyWithClickEvents: off
                             <div
                                 key={trackId}
-                                onClick={() => onSelectTrack(trackId)}
+                                onClick={() => {
+                                    if (!isSelected) {
+                                        onSelectTrack(trackId);
+                                    }
+                                }}
                                 className={`
                                     flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-all
                                     ${
