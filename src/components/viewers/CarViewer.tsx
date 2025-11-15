@@ -74,13 +74,12 @@ export function CarViewer({ carId }: CarViewerProps) {
 
     if (selectedSetup) {
         return (
-            <ViewerContainer title="Setup Details" onBack={handleBack}>
-                <SetupViewer
-                    car={selectedSetup.car}
-                    track={selectedSetup.track}
-                    filename={selectedSetup.filename}
-                />
-            </ViewerContainer>
+            <SetupViewer
+                car={selectedSetup.car}
+                track={selectedSetup.track}
+                filename={selectedSetup.filename}
+                onClose={handleBack}
+            />
         );
     }
 
