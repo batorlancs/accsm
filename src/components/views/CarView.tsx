@@ -1,6 +1,7 @@
 import { Car } from "lucide-react";
 import { useEffect } from "react";
 import { useCars, useFolderStructure } from "@/hooks/useBackend";
+import { getBrandSvg } from "@/lib/brandSvgs";
 
 interface CarViewProps {
     selectedCar: string | null;
@@ -81,7 +82,18 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                                     }
                                 `}
                             >
-                                <Car className="h-4 w-4 shrink-0" />
+                                {(() => {
+                                    const brandSvg = getBrandSvg(carInfo?.brand_name || "");
+                                    return brandSvg ? (
+                                        <img 
+                                            src={brandSvg} 
+                                            alt={`${carInfo?.brand_name} logo`}
+                                            className="h-4 w-4 shrink-0 object-contain"
+                                        />
+                                    ) : (
+                                        <Car className="h-4 w-4 shrink-0" />
+                                    );
+                                })()}
 
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-sm truncate">
