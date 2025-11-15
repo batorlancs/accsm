@@ -2,7 +2,6 @@ import {
     FolderContent,
     FolderItem,
     FolderTrigger,
-    SubFiles,
 } from "@/components/animate-ui/components/radix/files";
 import type { CarFolder } from "@/types/backend";
 import { TrackNode } from "./TrackNode";
@@ -33,17 +32,15 @@ export function CarNode({
             </FolderTrigger>
 
             <FolderContent>
-                <SubFiles>
-                    {car.tracks.map((track) => (
-                        <TrackNode
-                            key={track.track_id}
-                            car={car}
-                            track={track}
-                            onSelectSetup={onSelectSetup}
-                            isSetupSelected={isSetupSelected}
-                        />
-                    ))}
-                </SubFiles>
+                {car.tracks.map((track) => (
+                    <TrackNode
+                        key={track.track_id}
+                        car={car}
+                        track={track}
+                        onSelectSetup={onSelectSetup}
+                        isSetupSelected={isSetupSelected}
+                    />
+                ))}
             </FolderContent>
         </FolderItem>
     );

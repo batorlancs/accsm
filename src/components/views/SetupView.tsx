@@ -15,9 +15,16 @@ interface SetupViewProps {
     } | null;
     onSelectSetup: (car: string, track: string, filename: string) => void;
     onChangePathClick?: () => void;
+    openFolders?: string[];
+    onOpenFoldersChange?: (openFolders: string[]) => void;
 }
 
-export function SetupView({ selectedSetup, onSelectSetup }: SetupViewProps) {
+export function SetupView({ 
+    selectedSetup, 
+    onSelectSetup, 
+    openFolders = [], 
+    onOpenFoldersChange 
+}: SetupViewProps) {
     const { data: folderStructure, isLoading, error } = useFolderStructure();
     const refreshMutation = useRefreshFolderStructure();
 
@@ -64,7 +71,11 @@ export function SetupView({ selectedSetup, onSelectSetup }: SetupViewProps) {
                         No cars found in the setups folder
                     </div>
                 ) : (
-                    <Files className="w-full">
+                    <Files 
+                        className="w-full"
+                        open={openFolders}
+                        onOpenChange={onOpenFoldersChange}
+                    >
                         {folderStructure?.cars.map((car) => (
                             <CarNode
                                 key={car.car_id}

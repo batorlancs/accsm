@@ -36,6 +36,9 @@ export function AccSetupManager() {
         type: "empty",
     });
     
+    // Explorer folder expansion state
+    const [openFolders, setOpenFolders] = useState<string[]>([]);
+    
     // Tracks tab state
     const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
     
@@ -130,6 +133,8 @@ export function AccSetupManager() {
                                     onChangePathClick={() =>
                                         setIsPathDialogOpen(true)
                                     }
+                                    openFolders={openFolders}
+                                    onOpenFoldersChange={setOpenFolders}
                                 />
                             </TabsPanel>
                             <TabsPanel
