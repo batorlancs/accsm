@@ -1,6 +1,8 @@
-import { Car, FileText, X } from "lucide-react";
-import { useCars, useSetup, useTracks } from "@/hooks/useBackend";
+import { Car, CarFront, FileText, Wrench, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCars, useSetup, useTracks } from "@/hooks/useBackend";
+import { getBrandSvg } from "@/lib/brandSvgs";
+import { getCountryFlag } from "@/lib/countryFlags";
 
 interface SetupViewerProps {
     car: string;
@@ -10,7 +12,12 @@ interface SetupViewerProps {
     onClose?: () => void;
 }
 
-export function SetupViewer({ car, track, filename, onClose }: SetupViewerProps) {
+export function SetupViewer({
+    car,
+    track,
+    filename,
+    onClose,
+}: SetupViewerProps) {
     const { data: setup, isLoading, error } = useSetup(car, track, filename);
     const {
         data: cars,
@@ -51,10 +58,45 @@ export function SetupViewer({ car, track, filename, onClose }: SetupViewerProps)
         <div className="space-y-4 p-4">
             <div className="flex items-start justify-between">
                 <div>
-                    <h2 className="text-lg flex items-center gap-2">
-                        <FileText className="h-5 w-5" />
-                        {filename}
-                    </h2>
+                    <div className="flex items-center gap-3">
+                        <div className="p-8 bg-muted rounded">
+                            <Wrench className="text-muted-foreground" />
+                        </div>
+                        <div className="">
+                            <h2 className="text-md font-medium">{filename}</h2>
+
+                            <div className="flex items-center gap-2 mt-2 opacity-60">
+                                <span className="text-sm shrink-0 w-4 flex items-center justify-center">
+                                    {getCountryFlag(trackData?.country || "")}
+                                </span>
+                                <span className="text-xs">
+                                    {trackData.pretty_name}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2 mt-1 opacity-60">
+                                <span className="text-sm shrink-0 w-4 flex items-center justify-center">
+                                    {" "}
+                                    {(() => {
+                                        const brandSvg = getBrandSvg(
+                                            carData?.brand_name || "",
+                                        );
+                                        return brandSvg ? (
+                                            <img
+                                                src={brandSvg}
+                                                alt={`${carData?.brand_name} logo`}
+                                                className="size-4 shrink-0 object-contain"
+                                            />
+                                        ) : (
+                                            <CarFront className="size-4 shrink-0" />
+                                        );
+                                    })()}
+                                </span>
+                                <span className="text-xs">
+                                    {carData.pretty_name}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 {onClose && (
                     <Button
@@ -66,18 +108,6 @@ export function SetupViewer({ car, track, filename, onClose }: SetupViewerProps)
                         <X className="h-4 w-4" />
                     </Button>
                 )}
-            </div>
-
-            <div className="text-sm text-muted-foreground space-y-2">
-                <div>
-                    <span className="font-medium">Track:</span>{" "}
-                    {trackData.pretty_name}
-                </div>
-                <div className="flex items-center gap-2">
-                    <Car className="h-4 w-4" />
-                    <span className="font-medium">Car:</span>{" "}
-                    {carData.pretty_name}
-                </div>
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import { File } from "lucide-react";
+import { File, Wrench } from "lucide-react";
 import {
     Empty,
     EmptyDescription,
@@ -13,10 +13,10 @@ export function EmptyState() {
             <Empty>
                 <EmptyHeader>
                     <EmptyMedia variant="icon">
-                        <File />
+                        <Wrench className="opacity-50" />
                     </EmptyMedia>
                     <EmptyTitle>No setup selected</EmptyTitle>
-                    <EmptyDescription>
+                    <EmptyDescription className="text-sm">
                         Choose a setup from the sidebar or add a new one to get
                         started
                     </EmptyDescription>
