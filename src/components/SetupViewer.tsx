@@ -1,32 +1,5 @@
-import {
-    Calendar,
-    Car,
-    Edit,
-    FileText,
-    Save,
-    Tag,
-    Trash2,
-    X,
-} from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import {
-    useDeleteSetup,
-    useEditSetup,
-    useSetup,
-    useValidateSetup,
-} from "@/hooks/useBackend";
-import type { SetupFile } from "@/types/backend";
+import { Car, FileText } from "lucide-react";
+import { useSetup } from "@/hooks/useBackend";
 
 interface SetupViewerProps {
     car: string;
@@ -35,225 +8,94 @@ interface SetupViewerProps {
     onDelete?: () => void;
 }
 
-export function SetupViewer({
-    car,
-    track,
-    filename,
-    onDelete,
-}: SetupViewerProps) {
+export function SetupViewer({ car, track, filename }: SetupViewerProps) {
     const { data: setup, isLoading, error } = useSetup(car, track, filename);
-    const editMutation = useEditSetup();
-    const deleteMutation = useDeleteSetup();
-    const validateMutation = useValidateSetup();
-
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedContent, setEditedContent] = useState("");
-    const [validationError, setValidationError] = useState<string | null>(null);
-
-    // Update edited values when setup loads
-    useEffect(() => {
-        if (setup) {
-            setEditedContent(JSON.stringify(setup, null, 2));
-        }
-    }, [setup]);
-
-    const handleEdit = () => {
-        setIsEditing(true);
-        setValidationError(null);
-    };
-
-    const handleCancel = () => {
-        if (setup) {
-            setEditedContent(JSON.stringify(setup, null, 2));
-        }
-        setIsEditing(false);
-        setValidationError(null);
-    };
-
-    const validateAndSave = async () => {
-        try {
-            // Parse the JSON content
-            const parsedContent = JSON.parse(editedContent);
-
-            // Validate the setup
-            await validateMutation.mutateAsync({
-                car,
-                content: parsedContent,
-            });
-
-            // Save the setup
-            await editMutation.mutateAsync({
-                car,
-                track,
-                filename,
-                content: parsedContent,
-            });
-
-            setIsEditing(false);
-            setValidationError(null);
-        } catch (error) {
-            if (error instanceof SyntaxError) {
-                setValidationError("Invalid JSON format");
-            } else {
-                setValidationError(String(error));
-            }
-            toast.error(`Validation failed: ${error}`);
-        }
-    };
-
-    const handleDelete = async () => {
-        if (!confirm(`Are you sure you want to delete ${filename}?`)) {
-            return;
-        }
-
-        try {
-            await deleteMutation.mutateAsync({ car, track, filename });
-            onDelete?.();
-        } catch (error) {
-            toast.error(`Failed to delete setup: ${error}`);
-        }
-    };
 
     if (isLoading) {
-        return (
-            <div className="h-full">
-                <div className="flex items-center justify-center h-full">
-                    <div className="text-muted-foreground">
-                        Loading setup...
-                    </div>
-                </div>
-            </div>
-        );
+        return <div className="text-muted-foreground">Loading setup...</div>;
     }
 
     if (error) {
         return (
-            <div className="h-full">
-                <div>
-                    <h2 className="text-red-500">Error</h2>
-                </div>
-                <div>
-                    <p className="text-sm text-red-500">
-                        Failed to load setup: {String(error)}
-                    </p>
-                </div>
+            <div>
+                <h2 className="text-red-500">Error</h2>
+                <p className="text-sm text-red-500">
+                    Failed to load setup: {String(error)}
+                </p>
             </div>
         );
     }
 
     if (!setup) {
-        return (
-            <div className="h-full">
-                <div className="flex items-center justify-center h-full">
-                    <div className="text-muted-foreground">Setup not found</div>
-                </div>
-            </div>
-        );
+        return <div className="text-muted-foreground">Setup not found</div>;
     }
 
     return (
-        <div className="h-full flex flex-col">
-            <div className="flex-shrink-0">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h2 className="text-lg flex items-center gap-2">
-                            <FileText className="h-5 w-5" />
-                            {filename}
-                        </h2>
-                        <div className="text-sm text-muted-foreground mt-1 space-y-1">
-                            <div className="flex items-center gap-2">
-                                <Car className="h-3 w-3" />
-                                <span>{setup.carName}</span>
-                            </div>
+        <div className="space-y-4 p-4">
+            <div>
+                <h2 className="text-lg flex items-center gap-2">
+                    <FileText className="h-5 w-5" />
+                    {filename}
+                </h2>
+            </div>
 
-                        </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                        {isEditing ? (
-                            <>
-                                <Button
-                                    onClick={validateAndSave}
-                                    disabled={
-                                        editMutation.isPending ||
-                                        validateMutation.isPending
-                                    }
-                                    size="sm"
-                                >
-                                    <Save className="h-4 w-4 mr-2" />
-                                    Save
-                                </Button>
-                                <Button
-                                    onClick={handleCancel}
-                                    variant="outline"
-                                    size="sm"
-                                >
-                                    <X className="h-4 w-4 mr-2" />
-                                    Cancel
-                                </Button>
-                            </>
-                        ) : (
-                            <>
-                                <Button
-                                    onClick={handleEdit}
-                                    variant="outline"
-                                    size="sm"
-                                >
-                                    <Edit className="h-4 w-4 mr-2" />
-                                    Edit
-                                </Button>
-                                <Button
-                                    onClick={handleDelete}
-                                    variant="destructive"
-                                    size="sm"
-                                    disabled={deleteMutation.isPending}
-                                >
-                                    <Trash2 className="h-4 w-4 mr-2" />
-                                    Delete
-                                </Button>
-                            </>
-                        )}
-                    </div>
+            <div className="text-sm text-muted-foreground space-y-2">
+                <div>
+                    <span className="font-medium">Track:</span> {track}
+                </div>
+                <div className="flex items-center gap-2">
+                    <Car className="h-4 w-4" />
+                    <span className="font-medium">Car:</span> {setup.carName}
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col gap-4 overflow-hidden">
-                {isEditing ? (
-                    <>
-                        {validationError && (
-                            <div className="text-sm text-red-500 bg-red-50 p-2 rounded">
-                                {validationError}
-                            </div>
-                        )}
-
-                        <div className="flex-1 flex flex-col">
-                            <label className="text-sm font-medium mb-2">
-                                Setup JSON
-                            </label>
-                            <Textarea
-                                value={editedContent}
-                                onChange={(e) =>
-                                    setEditedContent(e.target.value)
-                                }
-                                className="flex-1 font-mono text-xs"
-                                placeholder="Enter setup JSON content..."
-                            />
-                        </div>
-                    </>
-                ) : (
-                    // View mode
-                    <div className="flex-1 flex flex-col">
-                        <label className="text-sm font-medium mb-2 mt-4">
-                            Setup JSON
-                        </label>
-                        <Textarea
-                            value={JSON.stringify(setup, null, 2)}
-                            readOnly
-                            className="flex-1 font-mono text-xs bg-muted"
-                        />
-                    </div>
-                )}
-            </div>
+            {/* <div className="bg-blue-300"> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/*     <p>asd</p> */}
+            {/* </div> */}
         </div>
     );
 }
+

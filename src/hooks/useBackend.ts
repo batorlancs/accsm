@@ -34,7 +34,7 @@ export function useRefreshFolderStructure() {
         mutationFn: TauriAPI.refreshFolderStructure,
         onSuccess: (data) => {
             queryClient.setQueryData(queryKeys.folderStructure, data);
-            toast.success("Folder structure refreshed");
+            toast.success("Refreshed all setups!");
         },
         onError: (error) => {
             toast.error(`Failed to refresh: ${error}`);

@@ -18,8 +18,7 @@ import { useSetupsEvents } from "@/hooks/useSetupsEvents";
 
 type ExplorerViewState =
     | { type: "empty" }
-    | { type: "viewing"; car: string; track: string; filename: string }
-    | { type: "creating" };
+    | { type: "viewing"; car: string; track: string; filename: string };
 
 type TabType = "explorer" | "tracks" | "cars";
 
@@ -58,17 +57,7 @@ export function AccSetupManager() {
         setExplorerViewState({ type: "viewing", car, track, filename });
     };
 
-    const handleCreateNew = () => {
-        setExplorerViewState({ type: "creating" });
-    };
 
-    const handleCancelCreate = () => {
-        setExplorerViewState({ type: "empty" });
-    };
-
-    const handleSuccessCreate = () => {
-        setExplorerViewState({ type: "empty" });
-    };
 
     const handleDeleteSetup = () => {
         setExplorerViewState({ type: "empty" });
@@ -172,9 +161,6 @@ export function AccSetupManager() {
                         {activeTab === "explorer" && (
                             <ExplorerViewer
                                 viewState={explorerViewState}
-                                onCreateNew={handleCreateNew}
-                                onCancelCreate={handleCancelCreate}
-                                onSuccessCreate={handleSuccessCreate}
                                 onDeleteSetup={handleDeleteSetup}
                             />
                         )}
