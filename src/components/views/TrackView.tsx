@@ -1,6 +1,6 @@
-import { MapPin } from "lucide-react";
 import { useEffect } from "react";
 import { useFolderStructure, useTracks } from "@/hooks/useBackend";
+import { getCountryFlag } from "@/lib/countryFlags";
 
 interface TrackViewProps {
     selectedTrack: string | null;
@@ -77,7 +77,9 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                                     }
                                 `}
                             >
-                                <MapPin className="h-4 w-4 shrink-0" />
+                                <span className="text-sm shrink-0">
+                                    {getCountryFlag(trackInfo?.country || "")}
+                                </span>
 
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-sm truncate">
