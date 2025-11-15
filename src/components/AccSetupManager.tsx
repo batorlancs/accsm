@@ -1,4 +1,3 @@
-
 import { useCallback, useState } from "react";
 import {
     Tabs,
@@ -30,21 +29,22 @@ export function AccSetupManager() {
 
     // Current active tab
     const [activeTab, setActiveTab] = useState<TabType>("explorer");
-    
+
     // Explorer tab state
-    const [explorerViewState, setExplorerViewState] = useState<ExplorerViewState>({
-        type: "empty",
-    });
-    
+    const [explorerViewState, setExplorerViewState] =
+        useState<ExplorerViewState>({
+            type: "empty",
+        });
+
     // Explorer folder expansion state
     const [openFolders, setOpenFolders] = useState<string[]>([]);
-    
+
     // Tracks tab state
     const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
-    
+
     // Cars tab state
     const [selectedCar, setSelectedCar] = useState<string | null>(null);
-    
+
     // Global state
     const [isPathDialogOpen, setIsPathDialogOpen] = useState(false);
     const [isFileDropModalOpen, setIsFileDropModalOpen] = useState(false);
@@ -107,9 +107,11 @@ export function AccSetupManager() {
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Sidebar - Tabbed Explorer */}
                 <div className="w-80 border-r border-border/50 bg-muted/50">
-                    <Tabs 
-                        value={activeTab} 
-                        onValueChange={(value) => setActiveTab(value as TabType)}
+                    <Tabs
+                        value={activeTab}
+                        onValueChange={(value) =>
+                            setActiveTab(value as TabType)
+                        }
                         className="h-full"
                     >
                         <div className="p-2 h-11">
@@ -160,23 +162,21 @@ export function AccSetupManager() {
                 </div>
 
                 {/* Main Area - Viewers */}
-                <div className="flex-1">
+                <div className="flex-1 overflow-hidden max-w-full flex flex-col">
                     {/* Menu Bar */}
                     <MenuBar
                         onSettingsClick={() => setIsPathDialogOpen(true)}
                         onAddClick={() => setIsFileDropModalOpen(true)}
                     />
-                    <div className="h-full overflow-y-auto">
+                    <div className="flex-1 overflow-y-auto">
                         {activeTab === "explorer" && (
-                            <div className="h-full p-4">
-                                <ExplorerViewer
-                                    viewState={explorerViewState}
-                                    onCreateNew={handleCreateNew}
-                                    onCancelCreate={handleCancelCreate}
-                                    onSuccessCreate={handleSuccessCreate}
-                                    onDeleteSetup={handleDeleteSetup}
-                                />
-                            </div>
+                            <ExplorerViewer
+                                viewState={explorerViewState}
+                                onCreateNew={handleCreateNew}
+                                onCancelCreate={handleCancelCreate}
+                                onSuccessCreate={handleSuccessCreate}
+                                onDeleteSetup={handleDeleteSetup}
+                            />
                         )}
 
                         {activeTab === "tracks" && (
