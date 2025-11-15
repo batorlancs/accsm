@@ -1,19 +1,27 @@
-import { FileText } from "lucide-react";
-import React from "react";
+import { File } from "lucide-react";
+import {
+    Empty,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "./ui/empty";
 
-interface EmptyStateProps {}
-
-export function EmptyState({}: EmptyStateProps) {
+export function EmptyState() {
     return (
-        <div className="h-full">
-            <div className="flex flex-col items-center justify-center h-full text-center p-8">
-                <FileText className="h-16 w-16 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No Setup Selected</h3>
-                <p className="text-muted-foreground mb-6 max-w-md">
-                    Select a setup from the explorer to view and edit it, or
-                    add a new setup using the + Add button in the menu.
-                </p>
-            </div>
+        <div className="flex h-full w-full items-center justify-center pb-24">
+            <Empty>
+                <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                        <File />
+                    </EmptyMedia>
+                    <EmptyTitle>No setup selected</EmptyTitle>
+                    <EmptyDescription>
+                        Choose a setup from the sidebar or add a new one to get
+                        started
+                    </EmptyDescription>
+                </EmptyHeader>
+            </Empty>
         </div>
     );
 }

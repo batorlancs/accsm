@@ -25,6 +25,7 @@ export function ExplorerViewer({
                 track={viewState.track}
                 filename={viewState.filename}
                 onDelete={onDeleteSetup}
+                onClose={onDeleteSetup}
             />
         );
     }
