@@ -23,7 +23,7 @@ export function SetupViewer({ car, track, filename }: SetupViewerProps) {
     } = useTracks();
 
     if (isLoading || isCarsLoading || isTracksLoading) {
-        return <div className="text-muted-foreground">Loading setup...</div>;
+        return null;
     }
 
     if (error || carsError || tracksError) {

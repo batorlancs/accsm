@@ -77,16 +77,18 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                                     flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-all
                                     ${
                                         isSelected
-                                            ? "bg-primary/10 hover:bg-primary/15 opacity-100 text-primary"
+                                            ? "bg-foreground/5 opacity-100"
                                             : "opacity-60 hover:opacity-80"
                                     }
                                 `}
                             >
                                 {(() => {
-                                    const brandSvg = getBrandSvg(carInfo?.brand_name || "");
+                                    const brandSvg = getBrandSvg(
+                                        carInfo?.brand_name || "",
+                                    );
                                     return brandSvg ? (
-                                        <img 
-                                            src={brandSvg} 
+                                        <img
+                                            src={brandSvg}
                                             alt={`${carInfo?.brand_name} logo`}
                                             className="h-4 w-4 shrink-0 object-contain"
                                         />

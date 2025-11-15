@@ -72,7 +72,7 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                                     flex items-center gap-2 px-2 py-1 rounded cursor-pointer transition-all
                                     ${
                                         isSelected
-                                            ? "bg-primary/10 hover:bg-primary/15 opacity-100 text-primary"
+                                            ? "bg-foreground/5 opacity-100"
                                             : "opacity-60 hover:opacity-80"
                                     }
                                 `}
@@ -87,9 +87,7 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                                     </h3>
                                 </div>
 
-                                <span
-                                    className={`text-xs opacity-80 shrink-0 ${isSelected ? "text-primary" : ""}`}
-                                >
+                                <span className={`text-xs opacity-80 shrink-0`}>
                                     {getSetupCountForTrack(trackId)}
                                 </span>
                             </div>

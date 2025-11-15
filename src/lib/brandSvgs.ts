@@ -3,7 +3,8 @@
 
 const brandSvgs = import.meta.glob('/src/assets/brands/*.svg', { 
   eager: true,
-  as: 'url'
+  query: '?url',
+  import: 'default'
 }) as Record<string, string>;
 
 // Map brand names to their corresponding SVG file paths

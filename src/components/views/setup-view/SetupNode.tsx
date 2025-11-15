@@ -1,7 +1,7 @@
 import { FileText } from "lucide-react";
 import { FileItem } from "@/components/animate-ui/components/radix/files";
 import { cn } from "@/lib/utils";
-import type { CarFolder, TrackFolder, SetupInfo } from "@/types/backend";
+import type { CarFolder, SetupInfo, TrackFolder } from "@/types/backend";
 
 interface SetupNodeProps {
     car: CarFolder;
@@ -17,9 +17,7 @@ export function SetupNode({ setup, isSelected, onSelect }: SetupNodeProps) {
         // biome-ignore lint/a11y/useKeyWithClickEvents: off
         <div
             className={cn(
-                isSelected
-                    ? "bg-primary/10 hover:bg-primary/15 text-primary"
-                    : "",
+                isSelected ? "bg-foreground/5" : "",
                 "cursor-pointer rounded transition duration-75",
             )}
             onClick={onSelect}
@@ -36,3 +34,4 @@ export function SetupNode({ setup, isSelected, onSelect }: SetupNodeProps) {
         </div>
     );
 }
+
