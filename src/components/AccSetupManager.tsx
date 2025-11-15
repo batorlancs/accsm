@@ -87,35 +87,21 @@ export function AccSetupManager() {
             : null;
 
     return (
-        <div className="h-screen flex flex-col bg-background border-t border-border/50">
-            {/* Menu Bar */}
-            <MenuBar
-                onSettingsClick={() => setIsPathDialogOpen(true)}
-                onAddClick={() => setIsFileDropModalOpen(true)}
-            />
-
+        <div className="h-screen max-h-screen min-h-screen flex flex-col bg-background border-t border-border/50">
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Sidebar - Tabbed Explorer */}
-                <div className="w-80 border-r border-border/50 bg-muted/50 p-2">
+                <div className="w-80 border-r border-border/50 bg-muted/50">
                     <Tabs defaultValue="setups" className="h-full">
-                        <TabsList className="w-full">
-                            <TabsTab value="setups">
-                                {/* <FileText className="" /> */}
-                                Explorer
-                            </TabsTab>
-                            <TabsTab value="tracks">
-                                {/* <MapPin className="" /> */}
-                                Tracks
-                            </TabsTab>
-                            <TabsTab value="cars">
-                                {/* <Car className="" /> */}
-                                Cars
-                            </TabsTab>
-                        </TabsList>
-
+                        <div className="p-2 h-11">
+                            <TabsList className="w-full">
+                                <TabsTab value="setups">Explorer</TabsTab>
+                                <TabsTab value="tracks">Tracks</TabsTab>
+                                <TabsTab value="cars">Cars</TabsTab>
+                            </TabsList>
+                        </div>
                         <TabsPanels
                             mode="layout"
-                            className="overflow-hidden flex-1 h-full"
+                            className="overflow-hidden flex-1 h-full border-t border-border/50 p-2"
                         >
                             <TabsPanel
                                 value="setups"
@@ -152,26 +138,33 @@ export function AccSetupManager() {
                 </div>
 
                 {/* Main Area */}
-                <div className="flex-1 p-4">
-                    {viewState.type === "empty" && (
-                        <EmptyState onCreateNew={handleCreateNew} />
-                    )}
+                <div className="flex-1">
+                    {/* Menu Bar */}
+                    <MenuBar
+                        onSettingsClick={() => setIsPathDialogOpen(true)}
+                        onAddClick={() => setIsFileDropModalOpen(true)}
+                    />
+                    <div className="h-full p-4 overflow-y-auto">
+                        {viewState.type === "empty" && (
+                            <EmptyState onCreateNew={handleCreateNew} />
+                        )}
 
-                    {viewState.type === "viewing" && (
-                        <SetupViewer
-                            car={viewState.car}
-                            track={viewState.track}
-                            filename={viewState.filename}
-                            onDelete={handleDeleteSetup}
-                        />
-                    )}
+                        {viewState.type === "viewing" && (
+                            <SetupViewer
+                                car={viewState.car}
+                                track={viewState.track}
+                                filename={viewState.filename}
+                                onDelete={handleDeleteSetup}
+                            />
+                        )}
 
-                    {viewState.type === "creating" && (
-                        <NewSetupForm
-                            onCancel={handleCancelCreate}
-                            onSuccess={handleSuccessCreate}
-                        />
-                    )}
+                        {viewState.type === "creating" && (
+                            <NewSetupForm
+                                onCancel={handleCancelCreate}
+                                onSuccess={handleSuccessCreate}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
 
