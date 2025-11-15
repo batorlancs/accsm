@@ -1,5 +1,5 @@
 import { Car } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SetupViewer } from "@/components/SetupViewer";
 import { useCars, useFolderStructure, useTracks } from "@/hooks/useBackend";
 import { getBrandSvg } from "@/lib/brandSvgs";
@@ -23,6 +23,11 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
     const { data: folderStructure, isLoading } = useFolderStructure();
     const { data: cars } = useCars();
     const { data: tracks } = useTracks();
+
+    // Reset selected setup when track changes
+    useEffect(() => {
+        setSelectedSetup(null);
+    }, [trackId]);
 
     if (isLoading) {
         return <div>Loading...</div>;

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SetupViewer } from "@/components/SetupViewer";
 import { useCars, useFolderStructure, useTracks } from "@/hooks/useBackend";
 import { getBrandSvg } from "@/lib/brandSvgs";
@@ -22,6 +22,11 @@ export function CarViewer({ carId }: CarViewerProps) {
     const { data: folderStructure, isLoading } = useFolderStructure();
     const { data: cars } = useCars();
     const { data: tracks } = useTracks();
+
+    // Reset selected setup when car changes
+    useEffect(() => {
+        setSelectedSetup(null);
+    }, [carId]);
 
     if (isLoading) {
         return <div>Loading...</div>;
