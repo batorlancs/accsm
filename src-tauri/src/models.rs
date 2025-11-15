@@ -7,6 +7,8 @@ use std::collections::HashMap;
 pub struct Car {
     pub id: String,
     pub pretty_name: String,
+    pub brand_name: String,
+    pub brand_country: String,
 }
 
 /// Track metadata structure
@@ -14,6 +16,7 @@ pub struct Car {
 pub struct Track {
     pub id: String,
     pub pretty_name: String,
+    pub country: String,
 }
 
 /// Complete setup file structure

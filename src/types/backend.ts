@@ -3,11 +3,14 @@
 export interface Car {
     id: string;
     pretty_name: string;
+    brand_name: string;
+    brand_country: string;
 }
 
 export interface Track {
     id: string;
     pretty_name: string;
+    country: string;
 }
 
 export interface SetupFile {
