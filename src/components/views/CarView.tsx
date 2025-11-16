@@ -123,7 +123,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
     return (
         <div className="h-full flex flex-col">
             {/* Search and Filter Controls */}
-            <div className="mb-2">
+            <div className="p-2">
                 <SearchableDropdown
                     options={categoryOptions}
                     placeholder="Search..."
@@ -136,7 +136,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                 />
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto p-2 pt-0">
                 <div className="space-y-1">
                     {filteredCars.map((car) => {
                         const carInfo = carsData?.[car.car_id];
@@ -207,7 +207,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
             </div>
 
             {/* Stats Footer */}
-            <div className="p-2">
+            <div className="p-4">
                 {folderStructure && (
                     <div className="text-xs text-muted-foreground opacity-80">
                         {searchQuery || selectedCategory !== "all" ? (

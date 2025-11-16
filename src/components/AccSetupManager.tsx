@@ -128,7 +128,7 @@ export function AccSetupManager() {
                             </TabsPanel>
                             <TabsPanel
                                 value="tracks"
-                                className="h-full overflow-y-auto p-2"
+                                className="h-full overflow-y-auto"
                             >
                                 <TrackView
                                     selectedTrack={selectedTrack}
@@ -137,7 +137,7 @@ export function AccSetupManager() {
                             </TabsPanel>
                             <TabsPanel
                                 value="cars"
-                                className="h-full overflow-y-auto p-2"
+                                className="h-full overflow-y-auto"
                             >
                                 <CarView
                                     selectedCar={selectedCar}

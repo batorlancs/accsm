@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { CarFront, Wrench } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { IconNumber } from "@/components/shared";
 import { useFolderStructure, useTracks } from "@/hooks/useBackend";
 import { getCountryFlag } from "@/lib/countryFlags";
-import { IconNumber } from "@/components/shared";
-import { Wrench, CarFront } from "lucide-react";
+import { SearchableDropdown } from "../ui/searchable-dropdown";
 
 interface TrackViewProps {
     selectedTrack: string | null;
@@ -14,6 +15,9 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
         useFolderStructure();
     const { data: tracksData, isLoading: tracksLoading } = useTracks();
 
+    // Search state
+    const [searchQuery, setSearchQuery] = useState("");
+
     const isLoading = folderLoading || tracksLoading;
 
     // Get all unique tracks from folder structure
@@ -22,6 +26,24 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
             .flatMap((car) => car.tracks.map((track) => track.track_id))
             .filter((trackId, index, arr) => arr.indexOf(trackId) === index) ||
         [];
+
+    // Filter and search tracks
+    const filteredTracks = useMemo(() => {
+        let filtered = availableTracks;
+
+        // Filter by search query
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            filtered = filtered.filter((trackId) => {
+                const trackInfo = tracksData?.[trackId];
+                const searchableText =
+                    `${trackInfo?.pretty_name || trackId} ${trackInfo?.full_name || ""} ${trackInfo?.country || ""}`.toLowerCase();
+                return searchableText.includes(query);
+            });
+        }
+
+        return filtered;
+    }, [availableTracks, tracksData, searchQuery]);
 
     // Calculate setup count for a specific track
     const getSetupCountForTrack = (trackId: string) => {
@@ -36,18 +58,23 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
     // Calculate car count for a specific track
     const getCarCountForTrack = (trackId: string) => {
         return (
-            folderStructure?.cars
-                .filter((car) => car.tracks.some((track) => track.track_id === trackId))
-                .length || 0
+            folderStructure?.cars.filter((car) =>
+                car.tracks.some((track) => track.track_id === trackId),
+            ).length || 0
         );
     };
 
-    // Auto-select first track when available
+    // Auto-select first track when available (from filtered tracks)
     useEffect(() => {
-        if (!selectedTrack && availableTracks.length > 0 && !isLoading) {
-            onSelectTrack(availableTracks[0]);
+        if (!selectedTrack && filteredTracks.length > 0 && !isLoading) {
+            onSelectTrack(filteredTracks[0]);
         }
-    }, [availableTracks, selectedTrack, onSelectTrack, isLoading]);
+    }, [filteredTracks, selectedTrack, onSelectTrack, isLoading]);
+
+    // Handle search input changes
+    const handleSearchChange = (value: string) => {
+        setSearchQuery(value);
+    };
 
     if (isLoading) {
         return (
@@ -67,9 +94,18 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
 
     return (
         <div className="h-full flex flex-col justify-between">
-            <div className="flex-1 overflow-y-auto">
+            <div className="p-2">
+                <SearchableDropdown
+                    placeholder="Search..."
+                    className="opacity-80 hover:opacity-100 transition-opacity duration-200"
+                    defaultValue=""
+                    onChange={handleSearchChange}
+                    showSearchIcon
+                />
+            </div>
+            <div className="flex-1 overflow-y-auto p-2 pt-0">
                 <div className="space-y-1">
-                    {availableTracks.map((trackId) => {
+                    {filteredTracks.map((trackId) => {
                         const trackInfo = tracksData?.[trackId];
                         const isSelected = selectedTrack === trackId;
 
@@ -103,31 +139,43 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                                 </div>
 
                                 <div className="flex items-center gap-2">
-                                    <IconNumber 
-                                        icon={Wrench} 
-                                        number={getSetupCountForTrack(trackId)} 
+                                    <IconNumber
+                                        icon={Wrench}
+                                        number={getSetupCountForTrack(trackId)}
                                     />
-                                    <IconNumber 
-                                        icon={CarFront} 
-                                        number={getCarCountForTrack(trackId)} 
+                                    <IconNumber
+                                        icon={CarFront}
+                                        number={getCarCountForTrack(trackId)}
                                     />
                                 </div>
                             </div>
                         );
                     })}
 
-                    {availableTracks.length === 0 && (
-                        <div className="p-4 text-center text-muted-foreground">
-                            No tracks found
+                    {filteredTracks.length === 0 && (
+                        <div className="p-4 text-center text-muted-foreground text-xs">
+                            {searchQuery
+                                ? "No tracks match your search criteria"
+                                : "No tracks found"}
                         </div>
                     )}
                 </div>
             </div>
-            <div className="p-2 mt-5">
+            {/* Stats Footer */}
+            <div className="p-4">
                 {folderStructure && (
                     <div className="text-xs text-muted-foreground opacity-80">
-                        {folderStructure.total_setups} setups overall for{" "}
-                        {folderStructure.cars.length} cars
+                        {searchQuery ? (
+                            <>
+                                Showing {filteredTracks.length} of{" "}
+                                {availableTracks.length} tracks
+                            </>
+                        ) : (
+                            <>
+                                {folderStructure.total_setups} setups overall for{" "}
+                                {folderStructure.cars.length} cars
+                            </>
+                        )}
                     </div>
                 )}
             </div>
