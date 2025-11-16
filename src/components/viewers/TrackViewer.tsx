@@ -4,17 +4,18 @@ import { useCars, useFolderStructure, useTracks } from "@/hooks/useBackend";
 import { getBrandSvg } from "@/lib/brandSvgs";
 import { getCountryFlag } from "@/lib/countryFlags";
 import type { SetupInfo } from "@/types/backend";
-import { ViewerHeader } from "./shared/ViewerHeader";
-import { SetupGroup } from "./shared/SetupGroup";
 import { EmptyState } from "./shared/EmptyState";
+import { SetupGroup } from "./shared/SetupGroup";
 import { useSetupSelection } from "./shared/useSetupSelection";
+import { ViewerHeader } from "./shared/ViewerHeader";
 
 interface TrackViewerProps {
     trackId: string;
 }
 
 export function TrackViewer({ trackId }: TrackViewerProps) {
-    const { selectedSetup, selectSetup, clearSelection } = useSetupSelection(trackId);
+    const { selectedSetup, selectSetup, clearSelection } =
+        useSetupSelection(trackId);
     const { data: folderStructure, isLoading } = useFolderStructure();
     const { data: cars } = useCars();
     const { data: tracks } = useTracks();
@@ -72,7 +73,7 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
     return (
         <div>
             <ViewerHeader
-                title={trackName}
+                title={trackData?.full_name}
                 subtitle={trackData?.country}
                 icon={<span>{getCountryFlag(trackData?.country || "")}</span>}
             />
@@ -95,7 +96,9 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
                                 )
                             }
                             setups={group.setups}
-                            onSetupClick={(setup) => handleSetupClick(group.carId, setup)}
+                            onSetupClick={(setup) =>
+                                handleSetupClick(group.carId, setup)
+                            }
                         />
                     );
                 })}
@@ -106,4 +109,3 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
         </div>
     );
 }
-

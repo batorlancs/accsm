@@ -3,17 +3,18 @@ import { useCars, useFolderStructure, useTracks } from "@/hooks/useBackend";
 import { getBrandSvg } from "@/lib/brandSvgs";
 import { getCountryFlag } from "@/lib/countryFlags";
 import type { SetupInfo } from "@/types/backend";
-import { ViewerHeader } from "./shared/ViewerHeader";
-import { SetupGroup } from "./shared/SetupGroup";
 import { EmptyState } from "./shared/EmptyState";
+import { SetupGroup } from "./shared/SetupGroup";
 import { useSetupSelection } from "./shared/useSetupSelection";
+import { ViewerHeader } from "./shared/ViewerHeader";
 
 interface CarViewerProps {
     carId: string;
 }
 
 export function CarViewer({ carId }: CarViewerProps) {
-    const { selectedSetup, selectSetup, clearSelection } = useSetupSelection(carId);
+    const { selectedSetup, selectSetup, clearSelection } =
+        useSetupSelection(carId);
     const { data: folderStructure, isLoading } = useFolderStructure();
     const { data: cars } = useCars();
     const { data: tracks } = useTracks();
@@ -85,7 +86,7 @@ export function CarViewer({ carId }: CarViewerProps) {
     return (
         <div>
             <ViewerHeader
-                title={carName}
+                title={carData?.full_name}
                 subtitle={carData?.brand_name}
                 icon={(() => {
                     const brandSvg = getBrandSvg(carData?.brand_name || "");
@@ -103,9 +104,13 @@ export function CarViewer({ carId }: CarViewerProps) {
                     <SetupGroup
                         key={group.trackId}
                         title={group.trackName}
-                        icon={<span>{getCountryFlag(group.country || "")}</span>}
+                        icon={
+                            <span>{getCountryFlag(group.country || "")}</span>
+                        }
                         setups={group.setups}
-                        onSetupClick={(setup) => handleSetupClick(group.trackId, setup)}
+                        onSetupClick={(setup) =>
+                            handleSetupClick(group.trackId, setup)
+                        }
                     />
                 ))}
                 {trackGroups.length === 0 && (
