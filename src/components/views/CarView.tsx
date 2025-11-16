@@ -1,8 +1,12 @@
-import { Car, Wrench, MapPin } from "lucide-react";
-import { useEffect } from "react";
+import { Car, MapPin, Wrench } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { IconNumber } from "@/components/shared";
+import {
+    SearchableDropdown,
+    type SearchableDropdownOption,
+} from "@/components/ui/searchable-dropdown";
 import { useCars, useFolderStructure } from "@/hooks/useBackend";
 import { getBrandSvg } from "@/lib/brandSvgs";
-import { IconNumber } from "@/components/shared";
 
 interface CarViewProps {
     selectedCar: string | null;
@@ -14,10 +18,50 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
         useFolderStructure();
     const { data: carsData, isLoading: carsLoading } = useCars();
 
+    // Search and filter state
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
     const isLoading = folderLoading || carsLoading;
 
     // Get all available cars from folder structure
     const availableCars = folderStructure?.cars || [];
+
+    // Define category options
+    const categoryOptions: SearchableDropdownOption[] = [
+        { value: "all", label: "All" },
+        { value: "gt2", label: "GT2" },
+        { value: "gt3", label: "GT3" },
+        { value: "gt4", label: "GT4" },
+        { value: "cup", label: "Cup" },
+        { value: "m2", label: "M2" },
+    ];
+
+    // Filter and search cars
+    const filteredCars = useMemo(() => {
+        let filtered = availableCars;
+
+        // Filter by category
+        if (selectedCategory !== "all") {
+            filtered = filtered.filter((car) => {
+                const carInfo = carsData?.[car.car_id];
+                return carInfo?.car_type === selectedCategory;
+            });
+        }
+
+        // Filter by search query
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            filtered = filtered.filter((car) => {
+                const carInfo = carsData?.[car.car_id];
+                const searchableText =
+                    `${carInfo?.pretty_name || car.car_name} ${carInfo?.brand_name || ""} ${carInfo?.full_name || ""}`.toLowerCase();
+                return searchableText.includes(query);
+            });
+        }
+
+        return filtered;
+    }, [availableCars, carsData, selectedCategory, searchQuery]);
 
     // Calculate setup count for a specific car
     const getSetupCountForCar = (carId: string) => {
@@ -43,12 +87,22 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
             .filter((trackId, index, arr) => arr.indexOf(trackId) === index)
             .length || 0;
 
-    // Auto-select first car when available
+    // Auto-select first car when available (from filtered cars)
     useEffect(() => {
-        if (!selectedCar && availableCars.length > 0 && !isLoading) {
-            onSelectCar(availableCars[0].car_id);
+        if (!selectedCar && filteredCars.length > 0 && !isLoading) {
+            onSelectCar(filteredCars[0].car_id);
         }
-    }, [availableCars, selectedCar, onSelectCar, isLoading]);
+    }, [filteredCars, selectedCar, onSelectCar, isLoading]);
+
+    // Handle search input changes
+    const handleSearchChange = (value: string) => {
+        setSearchQuery(value);
+    };
+
+    // Handle category selection
+    const handleCategorySelect = (option: SearchableDropdownOption) => {
+        setSelectedCategory(option.value);
+    };
 
     if (isLoading) {
         return (
@@ -67,10 +121,24 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
     }
 
     return (
-        <div className="h-full flex flex-col justify-between">
+        <div className="h-full flex flex-col">
+            {/* Search and Filter Controls */}
+            <div className="mb-2">
+                <SearchableDropdown
+                    options={categoryOptions}
+                    placeholder="Search..."
+                    dropdownLabel="Category"
+                    className="opacity-80 hover:opacity-100 transition-opacity duration-200"
+                    defaultValue=""
+                    onChange={handleSearchChange}
+                    onSelect={handleCategorySelect}
+                    showSearchIcon
+                />
+            </div>
+
             <div className="flex-1 overflow-y-auto">
                 <div className="space-y-1">
-                    {availableCars.map((car) => {
+                    {filteredCars.map((car) => {
                         const carInfo = carsData?.[car.car_id];
                         const isSelected = selectedCar === car.car_id;
 
@@ -115,31 +183,46 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                                 </div>
 
                                 <div className="flex items-center gap-2">
-                                    <IconNumber 
-                                        icon={Wrench} 
-                                        number={getSetupCountForCar(car.car_id)} 
+                                    <IconNumber
+                                        icon={Wrench}
+                                        number={getSetupCountForCar(car.car_id)}
                                     />
-                                    <IconNumber 
-                                        icon={MapPin} 
-                                        number={getTrackCountForCar(car.car_id)} 
+                                    <IconNumber
+                                        icon={MapPin}
+                                        number={getTrackCountForCar(car.car_id)}
                                     />
                                 </div>
                             </div>
                         );
                     })}
 
-                    {availableCars.length === 0 && (
-                        <div className="p-4 text-center text-muted-foreground">
-                            No cars found
+                    {filteredCars.length === 0 && (
+                        <div className="p-4 text-center text-muted-foreground text-xs">
+                            {searchQuery || selectedCategory !== "all"
+                                ? "No cars match your search criteria"
+                                : "No cars found"}
                         </div>
                     )}
                 </div>
             </div>
-            <div className="p-2 mt-5">
+
+            {/* Stats Footer */}
+            <div className="p-2">
                 {folderStructure && (
                     <div className="text-xs text-muted-foreground opacity-80">
-                        {folderStructure.total_setups} setups overall covering{" "}
-                        {uniqueTrackCount} tracks
+                        {searchQuery || selectedCategory !== "all" ? (
+                            <>
+                                Showing {filteredCars.length} of{" "}
+                                {availableCars.length} cars
+                                {selectedCategory !== "all" &&
+                                    ` (${selectedCategory.toUpperCase()})`}
+                            </>
+                        ) : (
+                            <>
+                                {folderStructure.total_setups} setups overall
+                                covering {uniqueTrackCount} tracks
+                            </>
+                        )}
                     </div>
                 )}
             </div>
