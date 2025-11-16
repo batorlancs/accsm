@@ -50,6 +50,7 @@ export interface GetSetupParams {
     car: string;
     track: string;
     filename: string;
+    [key: string]: unknown;
 }
 
 export interface SaveSetupParams {
@@ -57,17 +58,20 @@ export interface SaveSetupParams {
     track: string;
     filename: string;
     content: any;
+    [key: string]: unknown;
 }
 
 export interface DeleteSetupParams {
     car: string;
     track: string;
     filename: string;
+    [key: string]: unknown;
 }
 
 export interface ValidateSetupParams {
     car: string;
     content: any;
+    [key: string]: unknown;
 }
 
 // Event payload types

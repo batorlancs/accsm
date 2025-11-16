@@ -164,11 +164,11 @@ export function AccSetupManager() {
                         )}
 
                         {activeTab === "tracks" && (
-                            <TrackViewer trackId={selectedTrack} />
+                            <TrackViewer trackId={selectedTrack || ""} />
                         )}
 
                         {activeTab === "cars" && (
-                            <CarViewer carId={selectedCar} />
+                            <CarViewer carId={selectedCar || ""} />
                         )}
                     </div>
                 </div>

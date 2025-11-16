@@ -12,7 +12,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { TauriAPI } from "@/services/api";
-import type { SetupImportData, Track, ValidationResult } from "@/types/backend";
+import type { SetupImportData, ValidationResult } from "@/types/backend";
 
 interface ValidationResultsProps {
     results: ValidationResult[];

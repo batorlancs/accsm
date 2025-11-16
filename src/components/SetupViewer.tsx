@@ -3,7 +3,7 @@ import {
     BadgeCheckIcon,
     BadgePlus,
     CarFront,
-    CheckCircle2,
+
     Fuel,
     Wrench,
     X,

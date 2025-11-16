@@ -1,4 +1,4 @@
-import { File, Wrench } from "lucide-react";
+import { Wrench } from "lucide-react";
 import {
     Empty,
     EmptyDescription,

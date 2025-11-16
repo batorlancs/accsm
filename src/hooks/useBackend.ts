@@ -3,7 +3,6 @@ import { toast } from "sonner";
 import { TauriAPI } from "@/services/api";
 import type {
     DeleteSetupParams,
-    GetSetupParams,
     SaveSetupParams,
     ValidateSetupParams,
 } from "@/types/backend";

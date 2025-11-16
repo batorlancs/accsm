@@ -2,19 +2,16 @@ import { FileIcon, FolderIcon, FolderOpenIcon } from "lucide-react";
 import type * as React from "react";
 
 import {
-    FileHighlight as FileHighlightPrimitive,
     FileIcon as FileIconPrimitive,
     FileLabel as FileLabelPrimitive,
     type FileLabelProps as FileLabelPrimitiveProps,
     File as FilePrimitive,
     type FileProps as FilePrimitiveProps,
-    FilesHighlight as FilesHighlightPrimitive,
     Files as FilesPrimitive,
     type FilesProps as FilesPrimitiveProps,
     FolderContent as FolderContentPrimitive,
     type FolderContentProps as FolderContentPrimitiveProps,
     FolderHeader as FolderHeaderPrimitive,
-    FolderHighlight as FolderHighlightPrimitive,
     FolderIcon as FolderIconPrimitive,
     FolderItem as FolderItemPrimitive,
     type FolderItemProps as FolderItemPrimitiveProps,

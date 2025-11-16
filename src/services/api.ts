@@ -9,7 +9,6 @@ import type {
     ImportResult,
     SaveSetupParams,
     SetupFile,
-    SetupsChangedEvent,
     SetupImportData,
     Track,
     ValidateSetupParams,
