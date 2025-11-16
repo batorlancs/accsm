@@ -22,7 +22,9 @@ export function SetupGroup({
                     {icon}
                     <h3>
                         {title}
-                        <span className="opacity-60"> ({setups.length})</span>
+                        <span className="opacity-60 pl-1">
+                            ({setups.length})
+                        </span>
                     </h3>
                 </div>
             </div>
@@ -42,4 +44,3 @@ export function SetupGroup({
         </div>
     );
 }
-

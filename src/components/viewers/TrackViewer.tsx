@@ -83,7 +83,7 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
                     },
                 ]}
             />
-            <div className="p-4 space-y-4">
+            <div className="p-4 grid grid-cols-2 gap-x-4 gap-y-6">
                 {carGroups.map((group) => {
                     return (
                         <SetupGroup
