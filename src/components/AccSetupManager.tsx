@@ -57,8 +57,6 @@ export function AccSetupManager() {
         setExplorerViewState({ type: "viewing", car, track, filename });
     };
 
-
-
     const handleDeleteSetup = () => {
         setExplorerViewState({ type: "empty" });
     };
@@ -112,7 +110,7 @@ export function AccSetupManager() {
                         </div>
                         <TabsPanels
                             mode="layout"
-                            className="overflow-hidden flex-1 h-full border-t border-border/50 p-2"
+                            className="overflow-hidden flex-1 h-full border-t border-border/50"
                         >
                             <TabsPanel
                                 value="explorer"
@@ -130,7 +128,7 @@ export function AccSetupManager() {
                             </TabsPanel>
                             <TabsPanel
                                 value="tracks"
-                                className="h-full overflow-y-auto"
+                                className="h-full overflow-y-auto p-2"
                             >
                                 <TrackView
                                     selectedTrack={selectedTrack}
@@ -139,7 +137,7 @@ export function AccSetupManager() {
                             </TabsPanel>
                             <TabsPanel
                                 value="cars"
-                                className="h-full overflow-y-auto"
+                                className="h-full overflow-y-auto p-2"
                             >
                                 <CarView
                                     selectedCar={selectedCar}

@@ -19,11 +19,11 @@ interface SetupViewProps {
     onOpenFoldersChange?: (openFolders: string[]) => void;
 }
 
-export function SetupView({ 
-    selectedSetup, 
-    onSelectSetup, 
-    openFolders = [], 
-    onOpenFoldersChange 
+export function SetupView({
+    selectedSetup,
+    onSelectSetup,
+    openFolders = [],
+    onOpenFoldersChange,
 }: SetupViewProps) {
     const { data: folderStructure, isLoading, error } = useFolderStructure();
     const refreshMutation = useRefreshFolderStructure();
@@ -60,8 +60,8 @@ export function SetupView({
     }
 
     return (
-        <div className="h-full flex flex-col justify-between">
-            <div className="flex-1 overflow-y-auto h-full">
+        <div className="w-full h-full flex flex-col justify-between">
+            <div className="flex-1 overflow-y-auto p-2 h-full pb-6">
                 {isLoading ? (
                     <div className="p-4 text-center text-muted-foreground">
                         Loading folder structure...
@@ -71,7 +71,7 @@ export function SetupView({
                         No cars found in the setups folder
                     </div>
                 ) : (
-                    <Files 
+                    <Files
                         className="w-full"
                         open={openFolders}
                         onOpenChange={onOpenFoldersChange}
@@ -87,15 +87,22 @@ export function SetupView({
                     </Files>
                 )}
             </div>
-            <div className="p-2 mt-5">
+            <div className="p-4">
                 {folderStructure && (
                     <div className="text-xs text-muted-foreground opacity-80">
                         {folderStructure.total_setups} setups across{" "}
                         {folderStructure.cars.length} cars and{" "}
-                        {folderStructure.cars
-                            .flatMap((car) => car.tracks.map((track) => track.track_id))
-                            .filter((trackId, index, arr) => arr.indexOf(trackId) === index)
-                            .length} tracks
+                        {
+                            folderStructure.cars
+                                .flatMap((car) =>
+                                    car.tracks.map((track) => track.track_id),
+                                )
+                                .filter(
+                                    (trackId, index, arr) =>
+                                        arr.indexOf(trackId) === index,
+                                ).length
+                        }{" "}
+                        tracks
                     </div>
                 )}
             </div>

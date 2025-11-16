@@ -337,4 +337,10 @@ code {
     letter-spacing:
     var(--tracking-normal);
   }
+  
+  /* Custom Scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.05) transparent;
+  }
 }
