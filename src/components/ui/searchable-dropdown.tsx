@@ -22,7 +22,7 @@ export interface SearchableDropdownOption {
 
 export interface SearchableDropdownProps {
     /** Array of options to display in dropdown */
-    options: SearchableDropdownOption[];
+    options?: SearchableDropdownOption[];
     /** Default selected option value */
     defaultValue?: string;
     /** Placeholder text for the search input */
@@ -62,7 +62,9 @@ export function SearchableDropdown({
     const [selectedOption, setSelectedOption] = React.useState<
         SearchableDropdownOption | undefined
     >(
-        options.find((opt) => opt.value === defaultValue) || options[0], // Default to first option if no default
+        options?.find((opt) => opt.value === defaultValue) ??
+            options?.[0] ??
+            undefined,
     );
 
     // Handle input change
@@ -101,39 +103,44 @@ export function SearchableDropdown({
                     className="text-sm"
                 />
 
-                <InputGroupAddon align="inline-end">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <InputGroupButton
-                                variant="ghost"
-                                className="pr-1.5 text-xs"
-                                disabled={disabled}
-                                type="button"
-                            >
-                                {selectedOption?.label || dropdownLabel}{" "}
-                                <ChevronDownIcon className="size-3" />
-                            </InputGroupButton>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            {options.map((option) => (
-                                <DropdownMenuItem
-                                    key={option.value}
-                                    onClick={() => handleOptionSelect(option)}
-                                    className={cn(
-                                        "flex items-center justify-between",
-                                        selectedOption?.value ===
-                                            option.value && "bg-accent/50",
-                                    )}
+                {options ? (
+                    <InputGroupAddon align="inline-end">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <InputGroupButton
+                                    variant="ghost"
+                                    className="pr-1.5 text-xs"
+                                    disabled={disabled}
+                                    type="button"
                                 >
-                                    <span>{option.label}</span>
-                                    {selectedOption?.value === option.value && (
-                                        <CheckIcon className="size-3" />
-                                    )}
-                                </DropdownMenuItem>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </InputGroupAddon>
+                                    {selectedOption?.label || dropdownLabel}{" "}
+                                    <ChevronDownIcon className="size-3" />
+                                </InputGroupButton>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                {options.map((option) => (
+                                    <DropdownMenuItem
+                                        key={option.value}
+                                        onClick={() =>
+                                            handleOptionSelect(option)
+                                        }
+                                        className={cn(
+                                            "flex items-center justify-between",
+                                            selectedOption?.value ===
+                                                option.value && "bg-accent/50",
+                                        )}
+                                    >
+                                        <span>{option.label}</span>
+                                        {selectedOption?.value ===
+                                            option.value && (
+                                            <CheckIcon className="size-3" />
+                                        )}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </InputGroupAddon>
+                ) : null}
             </InputGroup>
         </form>
     );
