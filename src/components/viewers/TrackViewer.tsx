@@ -1,9 +1,8 @@
-import { Car } from "lucide-react";
 import { SetupViewer } from "@/components/SetupViewer";
 import { useCars, useFolderStructure, useTracks } from "@/hooks/useBackend";
-import { getBrandSvg } from "@/lib/brandSvgs";
 import { getCountryFlag } from "@/lib/countryFlags";
 import type { SetupInfo } from "@/types/backend";
+import { CarBrandIcon } from "../ui/car-brand-icon";
 import { EmptyState } from "./shared/EmptyState";
 import { SetupGroup } from "./shared/SetupGroup";
 import { useSetupSelection } from "./shared/useSetupSelection";
@@ -30,7 +29,6 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
 
     // Find the track name
     const trackData = tracks[trackId];
-    const trackName = trackData?.pretty_name || trackId;
 
     // Group setups by car for this track
     const carGroups: {
@@ -74,27 +72,24 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
         <div>
             <ViewerHeader
                 title={trackData?.full_name}
-                subtitle={trackData?.country}
-                icon={<span>{getCountryFlag(trackData?.country || "")}</span>}
+                subtitles={[
+                    {
+                        title: trackData?.country,
+                        icon: (
+                            <span>
+                                {getCountryFlag(trackData?.country || "")}
+                            </span>
+                        ),
+                    },
+                ]}
             />
             <div className="p-4 space-y-4">
                 {carGroups.map((group) => {
-                    const brandSvg = getBrandSvg(group.brandName);
                     return (
                         <SetupGroup
                             key={group.carId}
                             title={group.carName}
-                            icon={
-                                brandSvg ? (
-                                    <img
-                                        src={brandSvg}
-                                        alt={`${group.brandName} logo`}
-                                        className="size-4 object-contain"
-                                    />
-                                ) : (
-                                    <Car className="size-4" />
-                                )
-                            }
+                            icon={<CarBrandIcon name={group.brandName} />}
                             setups={group.setups}
                             onSetupClick={(setup) =>
                                 handleSetupClick(group.carId, setup)

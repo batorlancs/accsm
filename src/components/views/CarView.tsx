@@ -1,4 +1,4 @@
-import { Car, MapPin, Wrench } from "lucide-react";
+import { MapPin, Wrench } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { IconNumber } from "@/components/shared";
 import {
@@ -6,7 +6,7 @@ import {
     type SearchableDropdownOption,
 } from "@/components/ui/searchable-dropdown";
 import { useCars, useFolderStructure } from "@/hooks/useBackend";
-import { getBrandSvg } from "@/lib/brandSvgs";
+import { CarBrandIcon } from "../ui/car-brand-icon";
 
 interface CarViewProps {
     selectedCar: string | null;
@@ -161,20 +161,9 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                                     }
                                 `}
                             >
-                                {(() => {
-                                    const brandSvg = getBrandSvg(
-                                        carInfo?.brand_name || "",
-                                    );
-                                    return brandSvg ? (
-                                        <img
-                                            src={brandSvg}
-                                            alt={`${carInfo?.brand_name} logo`}
-                                            className="h-4 w-4 shrink-0 object-contain"
-                                        />
-                                    ) : (
-                                        <Car className="h-4 w-4 shrink-0" />
-                                    );
-                                })()}
+                                <CarBrandIcon
+                                    name={carInfo?.brand_name || ""}
+                                />
 
                                 <div className="flex-1 min-w-0">
                                     <h3 className="text-sm truncate">

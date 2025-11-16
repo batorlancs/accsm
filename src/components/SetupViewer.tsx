@@ -2,8 +2,6 @@ import {
     BadgeAlert,
     BadgeCheckIcon,
     BadgePlus,
-    CarFront,
-
     Fuel,
     Wrench,
     X,
@@ -13,9 +11,9 @@ import ReactJson from "react-json-view";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useCars, useEditSetup, useSetup, useTracks } from "@/hooks/useBackend";
-import { getBrandSvg } from "@/lib/brandSvgs";
 import { getCountryFlag } from "@/lib/countryFlags";
 import { Badge } from "./ui/badge";
+import { CarBrandIcon } from "./ui/car-brand-icon";
 import { Kbd, KbdGroup } from "./ui/kbd";
 
 interface SetupViewerProps {
@@ -158,21 +156,9 @@ export function SetupViewer({
                             </div>
                             <div className="flex items-center gap-2 mt-1 opacity-60">
                                 <span className="text-sm shrink-0 w-4 flex items-center justify-center">
-                                    {" "}
-                                    {(() => {
-                                        const brandSvg = getBrandSvg(
-                                            carData?.brand_name || "",
-                                        );
-                                        return brandSvg ? (
-                                            <img
-                                                src={brandSvg}
-                                                alt={`${carData?.brand_name} logo`}
-                                                className="size-4 shrink-0 object-contain"
-                                            />
-                                        ) : (
-                                            <CarFront className="size-4 shrink-0" />
-                                        );
-                                    })()}
+                                    <CarBrandIcon
+                                        name={carData.brand_name || ""}
+                                    />
                                 </span>
                                 <span className="text-xs">
                                     {carData.pretty_name}

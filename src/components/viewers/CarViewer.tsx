@@ -1,8 +1,8 @@
 import { SetupViewer } from "@/components/SetupViewer";
 import { useCars, useFolderStructure, useTracks } from "@/hooks/useBackend";
-import { getBrandSvg } from "@/lib/brandSvgs";
 import { getCountryFlag } from "@/lib/countryFlags";
 import type { SetupInfo } from "@/types/backend";
+import { CarBrandIcon } from "../ui/car-brand-icon";
 import { EmptyState } from "./shared/EmptyState";
 import { SetupGroup } from "./shared/SetupGroup";
 import { useSetupSelection } from "./shared/useSetupSelection";
@@ -28,31 +28,12 @@ export function CarViewer({ carId }: CarViewerProps) {
     }
 
     const carData = cars[carId];
-    const carName = carData?.pretty_name || carId;
 
     // Find the car folder
     const carFolder = folderStructure.cars.find((c) => c.car_id === carId);
 
     if (!carFolder) {
-        return (
-            <div>
-                <ViewerHeader
-                    title={carName}
-                    subtitle={carData?.brand_name}
-                    icon={(() => {
-                        const brandSvg = getBrandSvg(carData?.brand_name || "");
-                        return brandSvg ? (
-                            <img
-                                src={brandSvg}
-                                alt={`${carData?.brand_name} logo`}
-                                className="h-4 w-4 object-contain"
-                            />
-                        ) : null;
-                    })()}
-                />
-                <EmptyState message="No setups found for this car" />
-            </div>
-        );
+        return null;
     }
 
     // Group setups by track
@@ -86,18 +67,25 @@ export function CarViewer({ carId }: CarViewerProps) {
     return (
         <div>
             <ViewerHeader
-                title={carData?.full_name}
-                subtitle={carData?.brand_name}
-                icon={(() => {
-                    const brandSvg = getBrandSvg(carData?.brand_name || "");
-                    return brandSvg ? (
-                        <img
-                            src={brandSvg}
-                            alt={`${carData?.brand_name} logo`}
-                            className="h-4 w-4 object-contain"
-                        />
-                    ) : null;
-                })()}
+                title={
+                    <>
+                        {carData?.full_name}
+                        <span className="opacity-50 font-normal pl-2">
+                            ({carData?.year})
+                        </span>
+                    </>
+                }
+                subtitles={[
+                    {
+                        title: carData?.brand_name,
+                        icon: <CarBrandIcon name={carData?.brand_name} />,
+                    },
+                ]}
+                corner={
+                    <span className="text-sm opacity-50">
+                        {carData?.car_type.toUpperCase()}
+                    </span>
+                }
             />
             <div className="p-4 space-y-4">
                 {trackGroups.map((group) => (
