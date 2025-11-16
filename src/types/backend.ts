@@ -34,12 +34,14 @@ export interface SetupInfo {
 export interface TrackFolder {
     track_id: string;
     track_name: string;
+    country?: string;
     setups: SetupInfo[];
 }
 
 export interface CarFolder {
     car_id: string;
     car_name: string;
+    brand_name?: string;
     tracks: TrackFolder[];
 }
 

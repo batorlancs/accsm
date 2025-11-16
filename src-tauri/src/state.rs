@@ -195,6 +195,7 @@ impl AppStateManager {
         Ok(CarFolder {
             car_id: car.id.clone(),
             car_name: car.pretty_name.clone(),
+            brand_name: Some(car.brand_name.clone()),
             tracks,
         })
     }
@@ -250,6 +251,7 @@ impl AppStateManager {
         Ok(TrackFolder {
             track_id: track.id.clone(),
             track_name: track.pretty_name.clone(),
+            country: Some(track.country.clone()),
             setups,
         })
     }

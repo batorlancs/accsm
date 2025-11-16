@@ -1,4 +1,4 @@
-import { FileText } from "lucide-react";
+import { WrenchIcon } from "lucide-react";
 import { FileItem } from "@/components/animate-ui/components/radix/files";
 import { cn } from "@/lib/utils";
 import type { CarFolder, SetupInfo, TrackFolder } from "@/types/backend";
@@ -23,7 +23,7 @@ export function SetupNode({ setup, isSelected, onSelect }: SetupNodeProps) {
             onClick={onSelect}
         >
             <FileItem
-                icon={FileText}
+                icon={WrenchIcon}
                 onClick={onSelect}
                 outerClassName={
                     isSelected ? "opacity-100! hover:opacity-100!" : ""
@@ -34,4 +34,3 @@ export function SetupNode({ setup, isSelected, onSelect }: SetupNodeProps) {
         </div>
     );
 }
-

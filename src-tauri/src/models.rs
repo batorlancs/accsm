@@ -48,6 +48,7 @@ pub struct SetupInfo {
 pub struct TrackFolder {
     pub track_id: String,
     pub track_name: String,
+    pub country: Option<String>,
     pub setups: Vec<SetupInfo>,
 }
 
@@ -56,6 +57,7 @@ pub struct TrackFolder {
 pub struct CarFolder {
     pub car_id: String,
     pub car_name: String,
+    pub brand_name: Option<String>,
     pub tracks: Vec<TrackFolder>,
 }
 
