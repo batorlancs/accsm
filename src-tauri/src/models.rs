@@ -7,9 +7,9 @@ use std::collections::HashMap;
 pub struct Car {
     pub id: String,
     pub pretty_name: String,
+    pub full_name: String,
     pub brand_name: String,
     pub brand_country: String,
-    pub short_name: String,
     pub year: u16,
     pub car_type: String,
 }
@@ -19,6 +19,7 @@ pub struct Car {
 pub struct Track {
     pub id: String,
     pub pretty_name: String,
+    pub full_name: String,
     pub country: String,
 }
 

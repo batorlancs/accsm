@@ -3,9 +3,9 @@
 export interface Car {
     id: string;
     pretty_name: string;
+    full_name: string;
     brand_name: string;
     brand_country: string;
-    short_name: string;
     year: number;
     car_type: string;
 }
@@ -13,6 +13,7 @@ export interface Car {
 export interface Track {
     id: string;
     pretty_name: string;
+    full_name: string;
     country: string;
 }
 
