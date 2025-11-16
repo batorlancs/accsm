@@ -1,7 +1,8 @@
 import { load, type Store } from "@tauri-apps/plugin-store";
 
-// biome-ignore lint/suspicious/noEmptyInterface: off
-export interface AppStore {}
+export interface AppStore {
+    carFilterCategory: string;
+}
 
 /**
  * StoreManager is a singleton class that manages the application store.

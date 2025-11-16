@@ -6,6 +6,7 @@ import {
     type SearchableDropdownOption,
 } from "@/components/ui/searchable-dropdown";
 import { useCars, useFolderStructure } from "@/hooks/useBackend";
+import { store } from "@/lib/store-manager";
 import { CarBrandIcon } from "../ui/car-brand-icon";
 
 interface CarViewProps {
@@ -21,6 +22,15 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
     // Search and filter state
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+    useEffect(() => {
+        const loadCategory = async () => {
+            const stored = await store.get("carFilterCategory");
+            if (!stored) return;
+            setSelectedCategory(stored); // could be undefined if nothing is stored
+        };
+        loadCategory();
+    }, []);
 
     const isLoading = folderLoading || carsLoading;
 
@@ -102,6 +112,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
     // Handle category selection
     const handleCategorySelect = (option: SearchableDropdownOption) => {
         setSelectedCategory(option.value);
+        store.set("carFilterCategory", option.value);
     };
 
     if (isLoading) {
@@ -126,6 +137,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
             <div className="p-2">
                 <SearchableDropdown
                     options={categoryOptions}
+                    defaultOptionValue={selectedCategory}
                     placeholder="Search..."
                     dropdownLabel="Category"
                     className="opacity-80 hover:opacity-100 transition-opacity duration-200"
@@ -171,7 +183,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                                     </h3>
                                 </div>
 
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 opacity-60">
                                     <IconNumber
                                         icon={Wrench}
                                         number={getSetupCountForCar(car.car_id)}

@@ -138,7 +138,7 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                                     </h3>
                                 </div>
 
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 opacity-60">
                                     <IconNumber
                                         icon={Wrench}
                                         number={getSetupCountForTrack(trackId)}
@@ -172,8 +172,8 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                             </>
                         ) : (
                             <>
-                                {folderStructure.total_setups} setups overall for{" "}
-                                {folderStructure.cars.length} cars
+                                {folderStructure.total_setups} setups overall
+                                for {folderStructure.cars.length} cars
                             </>
                         )}
                     </div>

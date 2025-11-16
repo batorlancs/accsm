@@ -23,6 +23,8 @@ export interface SearchableDropdownOption {
 export interface SearchableDropdownProps {
     /** Array of options to display in dropdown */
     options?: SearchableDropdownOption[];
+    /* The value of the default selected option */
+    defaultOptionValue?: string;
     /** Default selected option value */
     defaultValue?: string;
     /** Placeholder text for the search input */
@@ -48,6 +50,7 @@ export interface SearchableDropdownProps {
 
 export function SearchableDropdown({
     options,
+    defaultOptionValue,
     defaultValue = "",
     placeholder = "Enter search query",
     dropdownLabel = "Search In...",
@@ -62,7 +65,7 @@ export function SearchableDropdown({
     const [selectedOption, setSelectedOption] = React.useState<
         SearchableDropdownOption | undefined
     >(
-        options?.find((opt) => opt.value === defaultValue) ??
+        options?.find((opt) => opt.value === defaultOptionValue) ??
             options?.[0] ??
             undefined,
     );
