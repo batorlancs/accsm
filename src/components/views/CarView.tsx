@@ -23,13 +23,20 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
+    // Load persisted values
     useEffect(() => {
-        const loadCategory = async () => {
-            const stored = await store.get("carFilterCategory");
-            if (!stored) return;
-            setSelectedCategory(stored); // could be undefined if nothing is stored
+        const loadPersistedValues = async () => {
+            const storedCategory = await store.get("carFilterCategory");
+            const storedSearch = await store.get("carSearchQuery");
+            
+            if (storedCategory) {
+                setSelectedCategory(storedCategory);
+            }
+            if (storedSearch) {
+                setSearchQuery(storedSearch);
+            }
         };
-        loadCategory();
+        loadPersistedValues();
     }, []);
 
     const isLoading = folderLoading || carsLoading;
@@ -107,6 +114,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
     // Handle search input changes
     const handleSearchChange = (value: string) => {
         setSearchQuery(value);
+        store.set("carSearchQuery", value);
     };
 
     // Handle category selection
@@ -141,7 +149,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
                     placeholder="Search..."
                     dropdownLabel="Category"
                     className="opacity-80 hover:opacity-100 transition-opacity duration-200"
-                    defaultValue=""
+                    defaultValue={searchQuery}
                     onChange={handleSearchChange}
                     onSelect={handleCategorySelect}
                     showSearchIcon

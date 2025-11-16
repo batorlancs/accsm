@@ -2,6 +2,8 @@ import { load, type Store } from "@tauri-apps/plugin-store";
 
 export interface AppStore {
     carFilterCategory: string;
+    carSearchQuery: string;
+    trackSearchQuery: string;
 }
 
 /**

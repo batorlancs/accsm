@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { IconNumber } from "@/components/shared";
 import { useFolderStructure, useTracks } from "@/hooks/useBackend";
 import { getCountryFlag } from "@/lib/countryFlags";
+import { store } from "@/lib/store-manager";
 import { SearchableDropdown } from "../ui/searchable-dropdown";
 
 interface TrackViewProps {
@@ -17,6 +18,17 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
 
     // Search state
     const [searchQuery, setSearchQuery] = useState("");
+
+    // Load persisted search query
+    useEffect(() => {
+        const loadSearchQuery = async () => {
+            const stored = await store.get("trackSearchQuery");
+            if (stored) {
+                setSearchQuery(stored);
+            }
+        };
+        loadSearchQuery();
+    }, []);
 
     const isLoading = folderLoading || tracksLoading;
 
@@ -74,6 +86,7 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
     // Handle search input changes
     const handleSearchChange = (value: string) => {
         setSearchQuery(value);
+        store.set("trackSearchQuery", value);
     };
 
     if (isLoading) {
@@ -98,7 +111,7 @@ export function TrackView({ selectedTrack, onSelectTrack }: TrackViewProps) {
                 <SearchableDropdown
                     placeholder="Search..."
                     className="opacity-80 hover:opacity-100 transition-opacity duration-200"
-                    defaultValue=""
+                    defaultValue={searchQuery}
                     onChange={handleSearchChange}
                     showSearchIcon
                 />

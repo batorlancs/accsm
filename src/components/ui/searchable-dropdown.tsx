@@ -70,6 +70,21 @@ export function SearchableDropdown({
             undefined,
     );
 
+    // Update selected option when defaultOptionValue changes
+    React.useEffect(() => {
+        if (options && defaultOptionValue) {
+            const foundOption = options.find((opt) => opt.value === defaultOptionValue);
+            if (foundOption) {
+                setSelectedOption(foundOption);
+            }
+        }
+    }, [defaultOptionValue, options]);
+
+    // Update input value when defaultValue changes
+    React.useEffect(() => {
+        setInputValue(defaultValue);
+    }, [defaultValue]);
+
     // Handle input change
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
