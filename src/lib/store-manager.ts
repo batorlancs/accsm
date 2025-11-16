@@ -1,6 +1,5 @@
 import { load, type Store } from "@tauri-apps/plugin-store";
 
-// Define your store type here
 // biome-ignore lint/suspicious/noEmptyInterface: off
 export interface AppStore {}
 
