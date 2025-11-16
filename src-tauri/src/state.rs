@@ -263,7 +263,7 @@ impl AppStateManager {
         })?;
 
         // Parse as raw JSON to validate structure
-        let _json_content: serde_json::Value = 
+        let _json_content: serde_json::Value =
             serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
                 file_path: file_path.to_string_lossy().to_string(),
                 error: e.to_string(),
@@ -324,10 +324,11 @@ impl AppStateManager {
         })?;
 
         // Parse as SetupFile
-        let setup: SetupFile = serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
-            file_path: file_path.to_string_lossy().to_string(),
-            error: e.to_string(),
-        })?;
+        let setup: SetupFile =
+            serde_json::from_str(&content).map_err(|e| AccError::InvalidSetupJson {
+                file_path: file_path.to_string_lossy().to_string(),
+                error: e.to_string(),
+            })?;
 
         // Validate car name matches
         if setup.car_name != car_data.id {
