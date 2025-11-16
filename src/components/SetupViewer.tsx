@@ -1,10 +1,21 @@
-import { CarFront, Wrench, X } from "lucide-react";
+import {
+    BadgeAlert,
+    BadgeCheckIcon,
+    BadgePlus,
+    CarFront,
+    CheckCircle2,
+    Fuel,
+    Wrench,
+    X,
+} from "lucide-react";
+import { useState } from "react";
 import ReactJson from "react-json-view";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useCars, useEditSetup, useSetup, useTracks } from "@/hooks/useBackend";
 import { getBrandSvg } from "@/lib/brandSvgs";
 import { getCountryFlag } from "@/lib/countryFlags";
+import { Badge } from "./ui/badge";
 import { Kbd, KbdGroup } from "./ui/kbd";
 
 interface SetupViewerProps {
@@ -21,6 +32,7 @@ export function SetupViewer({
     filename,
     onClose,
 }: SetupViewerProps) {
+    const [isLfmBadgeHovered, setIsLfmBadgeHovered] = useState(false);
     const { data: setup, isLoading, error } = useSetup(car, track, filename);
     const {
         data: cars,
@@ -63,6 +75,7 @@ export function SetupViewer({
     const fileNameExtension = filename.split(".").pop() || "";
 
     const handleJson = (edit: any) => {
+        setIsLfmBadgeHovered(false);
         const { updated_src, name, namespace } = edit;
 
         // Save the updated setup
@@ -80,6 +93,35 @@ export function SetupViewer({
                             ? `${namespace.join(".")}.${name}`
                             : name;
                     toast.error(`Failed to update ${keyPath}: ${error}`);
+                },
+            },
+        );
+    };
+
+    const isLfmCompatible = setup.basicSetup?.electronics?.telemetryLaps === 99;
+
+    const handleMakeLfmCompatible = () => {
+        const updatedSetup = {
+            ...setup,
+            basicSetup: {
+                ...setup.basicSetup,
+                electronics: {
+                    ...setup.basicSetup?.electronics,
+                    telemetryLaps: 99,
+                },
+            },
+        };
+
+        editSetup.mutate(
+            {
+                car,
+                track,
+                filename,
+                content: updatedSetup,
+            },
+            {
+                onError: (error) => {
+                    toast.error(`Failed to update setup: ${error}`);
                 },
             },
         );
@@ -148,6 +190,56 @@ export function SetupViewer({
                     >
                         <X className="h-4 w-4" />
                     </Button>
+                )}
+            </div>
+
+            <div className="flex items-center justify-between mt-6">
+                <div className="flex flex-wrap gap-2">
+                    <Badge variant="secondary">
+                        <Fuel className="w-3 h-3 mr-1 opacity-50" />
+                        {setup.basicSetup?.strategy?.fuel || 0}L
+                    </Badge>
+
+                    <Badge variant="secondary">
+                        <span className="opacity-50">ABS</span>{" "}
+                        {setup.basicSetup?.electronics?.abs || 0}
+                    </Badge>
+
+                    <Badge variant="secondary">
+                        <span className="opacity-50">TC1</span>{" "}
+                        {setup.basicSetup?.electronics?.tC1 || 0}
+                    </Badge>
+
+                    <Badge variant="secondary">
+                        <span className="opacity-50">TC2</span>{" "}
+                        {setup.basicSetup?.electronics?.tC2 || 0}
+                    </Badge>
+                </div>
+                {isLfmCompatible ? (
+                    <Badge className="">
+                        <BadgeCheckIcon className="w-3 h-3 mr-1" />
+                        LFM Compatible
+                    </Badge>
+                ) : (
+                    <Badge
+                        variant="secondary"
+                        className="cursor-pointer transition-all duration-400 hover:bg-green-500/50"
+                        onMouseEnter={() => setIsLfmBadgeHovered(true)}
+                        onMouseLeave={() => setIsLfmBadgeHovered(false)}
+                        onClick={handleMakeLfmCompatible}
+                    >
+                        {isLfmBadgeHovered ? (
+                            <>
+                                <BadgePlus className="w-3 h-3 mr-1" />
+                                Make LFM Compatible
+                            </>
+                        ) : (
+                            <>
+                                <BadgeAlert className="w-3 h-3 mr-1" />
+                                LFM Incompatible
+                            </>
+                        )}
+                    </Badge>
                 )}
             </div>
             <div className="">
