@@ -5,6 +5,9 @@ export interface Car {
     pretty_name: string;
     brand_name: string;
     brand_country: string;
+    short_name: string;
+    year: number;
+    car_type: string;
 }
 
 export interface Track {

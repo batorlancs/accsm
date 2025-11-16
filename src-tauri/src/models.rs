@@ -9,6 +9,9 @@ pub struct Car {
     pub pretty_name: String,
     pub brand_name: String,
     pub brand_country: String,
+    pub short_name: String,
+    pub year: u16,
+    pub car_type: String,
 }
 
 /// Track metadata structure
