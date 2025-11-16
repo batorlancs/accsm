@@ -60,7 +60,7 @@ export function SetupView({
     }
 
     return (
-        <div className="w-full h-full flex flex-col justify-between">
+        <div className="w-full h-full flex flex-col justify-between overflow-x-hidden">
             <div className="flex-1 overflow-y-auto p-2 h-full pb-6">
                 {isLoading ? (
                     <div className="p-4 text-center text-muted-foreground">
