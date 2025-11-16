@@ -26,7 +26,9 @@ export function SetupNode({ setup, isSelected, onSelect }: SetupNodeProps) {
                 icon={WrenchIcon}
                 onClick={onSelect}
                 outerClassName={
-                    isSelected ? "opacity-100! hover:opacity-100!" : ""
+                    isSelected
+                        ? "opacity-80! hover:opacity-100!"
+                        : "opacity-40! hover:opacity-60!"
                 }
             >
                 {setup.display_name}

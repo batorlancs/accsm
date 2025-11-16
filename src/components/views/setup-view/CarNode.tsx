@@ -1,18 +1,17 @@
+import { FolderIcon, FolderOpenIcon } from "lucide-react";
 import {
     FolderContent,
     FolderItem,
 } from "@/components/animate-ui/components/radix/files";
 import {
-    FolderHeader as FolderHeaderPrimitive,
-    FolderTrigger as FolderTriggerPrimitive,
-    FolderIcon as FolderIconPrimitive,
     FileLabel as FileLabelPrimitive,
+    FolderHeader as FolderHeaderPrimitive,
+    FolderIcon as FolderIconPrimitive,
     Folder as FolderPrimitive,
+    FolderTrigger as FolderTriggerPrimitive,
 } from "@/components/animate-ui/primitives/radix/files";
 import type { CarFolder } from "@/types/backend";
 import { TrackNode } from "./TrackNode";
-import { CarBrandIcon } from "@/components/ui/car-brand-icon";
-import { cn } from "@/lib/utils";
 
 interface CarNodeProps {
     car: CarFolder;
@@ -20,11 +19,7 @@ interface CarNodeProps {
     isSetupSelected: (car: string, track: string, filename: string) => boolean;
 }
 
-export function CarNode({
-    car,
-    onSelectSetup,
-    isSetupSelected,
-}: CarNodeProps) {
+export function CarNode({ car, onSelectSetup, isSetupSelected }: CarNodeProps) {
     return (
         <FolderItem value={car.car_id}>
             <FolderHeaderPrimitive>
@@ -34,18 +29,10 @@ export function CarNode({
                             <div className="flex items-center gap-2">
                                 <FolderIconPrimitive
                                     closeIcon={
-                                        car.brand_name ? (
-                                            <CarBrandIcon name={car.brand_name} className="size-4" />
-                                        ) : (
-                                            <div className="size-4" />
-                                        )
+                                        <FolderIcon className="size-4 opacity-60" />
                                     }
                                     openIcon={
-                                        car.brand_name ? (
-                                            <CarBrandIcon name={car.brand_name} className="size-4" />
-                                        ) : (
-                                            <div className="size-4" />
-                                        )
+                                        <FolderOpenIcon className="size-4 opacity-60" />
                                     }
                                 />
                                 <FileLabelPrimitive className="text-sm">
@@ -79,3 +66,4 @@ export function CarNode({
         </FolderItem>
     );
 }
+

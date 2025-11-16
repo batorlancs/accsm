@@ -1,17 +1,17 @@
+import { FolderIcon, FolderOpenIcon } from "lucide-react";
 import {
     FolderContent,
     FolderItem,
 } from "@/components/animate-ui/components/radix/files";
 import {
-    FolderHeader as FolderHeaderPrimitive,
-    FolderTrigger as FolderTriggerPrimitive,
-    FolderIcon as FolderIconPrimitive,
     FileLabel as FileLabelPrimitive,
+    FolderHeader as FolderHeaderPrimitive,
+    FolderIcon as FolderIconPrimitive,
     Folder as FolderPrimitive,
+    FolderTrigger as FolderTriggerPrimitive,
 } from "@/components/animate-ui/primitives/radix/files";
 import type { CarFolder, TrackFolder } from "@/types/backend";
 import { SetupNode } from "./SetupNode";
-import { getCountryFlag } from "@/lib/countryFlags";
 
 interface TrackNodeProps {
     car: CarFolder;
@@ -35,18 +35,10 @@ export function TrackNode({
                             <div className="flex items-center gap-2">
                                 <FolderIconPrimitive
                                     closeIcon={
-                                        track.country ? (
-                                            <span className="text-sm">{getCountryFlag(track.country)}</span>
-                                        ) : (
-                                            <div className="size-4" />
-                                        )
+                                        <FolderIcon className="size-4 opacity-60" />
                                     }
                                     openIcon={
-                                        track.country ? (
-                                            <span className="text-sm">{getCountryFlag(track.country)}</span>
-                                        ) : (
-                                            <div className="size-4" />
-                                        )
+                                        <FolderOpenIcon className="size-4 opacity-60" />
                                     }
                                 />
                                 <FileLabelPrimitive className="text-sm">
@@ -86,3 +78,4 @@ export function TrackNode({
         </FolderItem>
     );
 }
+
