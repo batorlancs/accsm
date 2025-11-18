@@ -53,7 +53,7 @@ pub fn get_cars() -> HashMap<String, Car> {
         ),
         (
             "audi_r8_lms",
-            "R8 LMS GT3",
+            "R8 LMS",
             "Audi R8 LMS",
             "Audi",
             "Germany",
@@ -62,7 +62,7 @@ pub fn get_cars() -> HashMap<String, Car> {
         ),
         (
             "audi_r8_lms_evo",
-            "R8 LMS GT3 Evo",
+            "R8 LMS Evo",
             "Audi R8 LMS Evo",
             "Audi",
             "Germany",
@@ -71,7 +71,7 @@ pub fn get_cars() -> HashMap<String, Car> {
         ),
         (
             "audi_r8_lms_evo_ii",
-            "R8 LMS GT3 Evo II",
+            "R8 LMS Evo II",
             "Audi R8 LMS Evo II",
             "Audi",
             "Germany",
@@ -89,8 +89,8 @@ pub fn get_cars() -> HashMap<String, Car> {
         ),
         (
             "bentley_continental_gt3_2016",
-            "Continental GT3 '16",
-            "Bentley Continental GT3",
+            "Continental GT3 '15",
+            "Bentley Continental GT3 '15",
             "Bentley",
             "United Kingdom",
             2016,
@@ -99,7 +99,7 @@ pub fn get_cars() -> HashMap<String, Car> {
         (
             "bentley_continental_gt3_2018",
             "Continental GT3 '18",
-            "Bentley Continental GT3",
+            "Bentley Continental GT3 '18",
             "Bentley",
             "United Kingdom",
             2018,
@@ -120,7 +120,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "BMW M4 GT3",
             "BMW",
             "Germany",
-            2021,
+            2022,
             "gt3",
         ),
         (
@@ -138,7 +138,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "BMW M6 GT3",
             "BMW",
             "Germany",
-            2016,
+            2017,
             "gt3",
         ),
         (
@@ -174,7 +174,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "Ferrari 488 GT3",
             "Ferrari",
             "Italy",
-            2016,
+            2018,
             "gt3",
         ),
         (
@@ -251,9 +251,9 @@ pub fn get_cars() -> HashMap<String, Car> {
         ),
         (
             "lamborghini_gallardo_rex",
-            "Engineering R-EX GT3",
-            "Reiter Engineering  R-EX GT3",
-            "Reiter",
+            "R-EX GT3",
+            "Reiter Engineering R-EX GT3",
+            "Reiter Engineering",
             "Italy",
             2017,
             "gt3",
@@ -309,7 +309,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "Lexus RC F GT3",
             "Lexus",
             "Japan",
-            2017,
+            2016,
             "gt3",
         ),
         (
@@ -363,7 +363,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "McLaren 720S GT3 Evo",
             "McLaren",
             "United Kingdom",
-            2023,
+            2022,
             "gt3",
         ),
         (
@@ -530,7 +530,12 @@ pub fn get_tracks() -> HashMap<String, Track> {
             "United Kingdom",
         ),
         ("cota", "COTA", "Circuit of The Americas", "United States"),
-        ("donington", "Donington", "Donington Park", "United Kingdom"),
+        (
+            "donington",
+            "Donington Park",
+            "Donington Park",
+            "United Kingdom",
+        ),
         ("Hungaroring", "Hungaroring", "Hungaroring", "Hungary"),
         ("Imola", "Imola", "Autodromo Enzo e Dino Ferrari", "Italy"),
         (
@@ -551,13 +556,8 @@ pub fn get_tracks() -> HashMap<String, Track> {
             "WeatherTech Raceway Laguna Seca",
             "United States",
         ),
-        (
-            "misano",
-            "Misano",
-            "Misano World Circuit Marco Simoncelli",
-            "Italy",
-        ),
-        ("monza", "Monza", "Autodromo Nazionale Monza", "Italy"),
+        ("misano", "Misano", "Misano World Circuit", "Italy"),
+        ("monza", "Monza", "Monza Circuit", "Italy"),
         (
             "mount_panorama",
             "Mount Panorama",
@@ -591,7 +591,7 @@ pub fn get_tracks() -> HashMap<String, Track> {
         (
             "Silverstone",
             "Silverstone",
-            "Silverstone Circuit",
+            "Silverstone",
             "United Kingdom",
         ),
         (
@@ -602,7 +602,12 @@ pub fn get_tracks() -> HashMap<String, Track> {
         ),
         ("Spa", "Spa", "Circuit de Spa-Francorchamps", "Belgium"),
         ("Suzuka", "Suzuka", "Suzuka Circuit", "Japan"),
-        ("Valencia", "Valencia", "Circuit Ricardo Tormo", "Spain"),
+        (
+            "Valencia",
+            "Valencia",
+            "Circuit Ricardo Tormo Valencia",
+            "Spain",
+        ),
         (
             "watkins_glen",
             "Watkins Glen",
