@@ -28,7 +28,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
         const loadPersistedValues = async () => {
             const storedCategory = await store.get("carFilterCategory");
             const storedSearch = await store.get("carSearchQuery");
-            
+
             if (storedCategory) {
                 setSelectedCategory(storedCategory);
             }
@@ -50,8 +50,10 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
         { value: "gt2", label: "GT2" },
         { value: "gt3", label: "GT3" },
         { value: "gt4", label: "GT4" },
-        { value: "cup", label: "Cup" },
-        { value: "m2", label: "M2" },
+        { value: "cup", label: "CUP" },
+        { value: "st", label: "ST" },
+        { value: "chl", label: "CHL" },
+        { value: "tcx", label: "TCX" },
     ];
 
     // Filter and search cars
