@@ -36,7 +36,7 @@ export function CarNode({ car, onSelectSetup, isSetupSelected }: CarNodeProps) {
                                     }
                                 />
                                 <FileLabelPrimitive className="text-sm">
-                                    {car.car_name}
+                                    {car.brand_name} {car.car_name}
                                 </FileLabelPrimitive>
                             </div>
                             <span className="text-xs text-muted-foreground pl-2">
@@ -66,4 +66,3 @@ export function CarNode({ car, onSelectSetup, isSetupSelected }: CarNodeProps) {
         </FolderItem>
     );
 }
-
