@@ -44,8 +44,8 @@ pub fn get_cars() -> HashMap<String, Car> {
         ),
         (
             "audi_r8_gt4",
-            "R8 GT4",
-            "Audi R8 GT4",
+            "R8 LMS GT4",
+            "Audi R8 LMS GT4",
             "Audi",
             "Germany",
             2017,
@@ -84,7 +84,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "Audi R8 LMS GT2",
             "Audi",
             "Germany",
-            2019,
+            2021,
             "gt2",
         ),
         (
@@ -112,7 +112,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "BMW",
             "Germany",
             2020,
-            "m2",
+            "tcx",
         ),
         (
             "bmw_m4_gt3",
@@ -166,7 +166,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "Ferrari",
             "Italy",
             2020,
-            "st",
+            "chl",
         ),
         (
             "ferrari_488_gt3",
@@ -201,7 +201,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "Ginetta G55 GT4",
             "Ginetta",
             "United Kingdom",
-            2017,
+            2012,
             "gt4",
         ),
         (
@@ -237,7 +237,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "KTM X-Bow GT2",
             "KTM",
             "Austria",
-            2021,
+            2023,
             "gt2",
         ),
         (
@@ -292,16 +292,16 @@ pub fn get_cars() -> HashMap<String, Car> {
             "Lamborghini",
             "Italy",
             2015,
-            "gtc",
+            "st",
         ),
         (
             "lamborghini_huracan_st_evo2",
             "Huracán ST Evo2",
-            "Lamborghini Huracán Super Trofeo Evo2",
+            "Lamborghini Huracán ST Evo2",
             "Lamborghini",
             "Italy",
             2021,
-            "gtc",
+            "st",
         ),
         (
             "lexus_rc_f_gt3",
@@ -327,7 +327,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "Maserati MC GT4",
             "Maserati",
             "Italy",
-            2017,
+            2016,
             "gt4",
         ),
         (
@@ -336,7 +336,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "McLaren 570S GT4",
             "McLaren",
             "United Kingdom",
-            2017,
+            2016,
             "gt4",
         ),
         (
@@ -399,7 +399,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "Mercedes-AMG GT4",
             "Mercedes-AMG",
             "Germany",
-            2017,
+            2016,
             "gt4",
         ),
         (
@@ -423,7 +423,7 @@ pub fn get_cars() -> HashMap<String, Car> {
         (
             "porsche_718_cayman_gt4_mr",
             "718 Cayman GT4 MR",
-            "Porsche 718 Cayman GT4 Clubsport MR",
+            "Porsche 718 Cayman GT4 Clubsport",
             "Porsche",
             "Germany",
             2019,
@@ -431,7 +431,7 @@ pub fn get_cars() -> HashMap<String, Car> {
         ),
         (
             "porsche_935",
-            "935 GT2",
+            "935",
             "Porsche 935",
             "Porsche",
             "Germany",
@@ -444,7 +444,7 @@ pub fn get_cars() -> HashMap<String, Car> {
             "Porsche 991 II GT2 RS CS EVO",
             "Porsche",
             "Germany",
-            2019,
+            2023,
             "gt2",
         ),
         (
