@@ -44,17 +44,38 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
     // Get all available cars from folder structure
     const availableCars = folderStructure?.cars || [];
 
-    // Define category options
-    const categoryOptions: SearchableDropdownOption[] = [
-        { value: "all", label: "All" },
-        { value: "gt2", label: "GT2" },
-        { value: "gt3", label: "GT3" },
-        { value: "gt4", label: "GT4" },
-        { value: "cup", label: "CUP" },
-        { value: "st", label: "ST" },
-        { value: "chl", label: "CHL" },
-        { value: "tcx", label: "TCX" },
-    ];
+    // Define category options with counts
+    const categoryOptions: SearchableDropdownOption[] = useMemo(() => {
+        const categories = [
+            { value: "all", label: "All" },
+            { value: "gt2", label: "GT2" },
+            { value: "gt3", label: "GT3" },
+            { value: "gt4", label: "GT4" },
+            { value: "cup", label: "CUP" },
+            { value: "st", label: "ST" },
+            { value: "chl", label: "CHL" },
+            { value: "tcx", label: "TCX" },
+        ];
+
+        return categories.map((category) => {
+            if (category.value === "all") {
+                return {
+                    ...category,
+                    count: availableCars.length,
+                };
+            }
+
+            const count = availableCars.filter((car) => {
+                const carInfo = carsData?.[car.car_id];
+                return carInfo?.car_type === category.value;
+            }).length;
+
+            return {
+                ...category,
+                count,
+            };
+        });
+    }, [availableCars, carsData]);
 
     // Filter and search cars
     const filteredCars = useMemo(() => {
