@@ -95,7 +95,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
             filtered = filtered.filter((car) => {
                 const carInfo = carsData?.[car.car_id];
                 const searchableText =
-                    `${carInfo?.pretty_name || car.car_name} ${carInfo?.brand_name || ""} ${carInfo?.full_name || ""}`.toLowerCase();
+                    `${carInfo?.pretty_name || car.car_name} ${carInfo?.brand_name || ""} ${carInfo?.full_name || ""} ${carInfo?.car_type || ""}`.toLowerCase();
                 return searchableText.includes(query);
             });
         }
