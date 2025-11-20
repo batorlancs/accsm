@@ -299,7 +299,7 @@ export function SetupViewer({
     };
 
     return (
-        <div className="space-y-4 p-4">
+        <div className="space-y-2 p-4">
             <div className="flex items-start justify-between">
                 <div>
                     <div className="flex items-center gap-3">
@@ -352,7 +352,7 @@ export function SetupViewer({
                 )}
             </div>
 
-            <div className="flex items-center justify-between mt-6">
+            <div className="flex items-center justify-between mt-8">
                 <div className="flex flex-wrap gap-2 flex-1">
                     <SetupValueInput
                         icon={<Fuel className="size-3" />}
@@ -424,7 +424,7 @@ export function SetupViewer({
                 </div>
             </div>
 
-            <div className="flex items-center justify-between mt-4">
+            <div className="flex items-start justify-between">
                 <div>
                     {isLfmCompatible ? (
                         <Badge className="bg-green-600/30 opacity-70">
@@ -456,21 +456,25 @@ export function SetupViewer({
                 <div className="space-x-2">
                     <Button
                         variant="outline"
-                        size="icon-xs"
+                        size="xs"
+                        className="opacity-80 hover:opacity-100 transition-opacity duration-200"
                         onClick={() => {
                             openRenameSetup(car, track, filename);
                         }}
                     >
                         <EditIcon />
+                        Rename
                     </Button>
                     <Button
                         variant="destructive"
-                        size="icon-xs"
+                        size="xs"
+                        className="opacity-80 hover:opacity-100 transition-opacity duration-200"
                         onClick={() => {
                             openDeleteSetup(car, track, filename);
                         }}
                     >
                         <Trash2Icon />
+                        Delete
                     </Button>
                 </div>
             </div>

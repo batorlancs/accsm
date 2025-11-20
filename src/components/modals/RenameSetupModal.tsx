@@ -140,26 +140,19 @@ export function RenameSetupModal({
                     </div>
                 </div>
 
-                <div className="space-y-2">
-                    <Label htmlFor="setup-name">Setup Name</Label>
-                    {/** biome-ignore lint/correctness/useUniqueElementIds: off */}
-                    <Input
-                        id="setup-name"
-                        value={newName}
-                        onChange={(e) => setNewName(e.target.value)}
-                        placeholder="Enter setup name"
-                        autoFocus
-                        onKeyDown={(e) => {
-                            if (
-                                e.key === "Enter" &&
-                                isNameChanged &&
-                                isValidName
-                            ) {
-                                handleConfirm();
-                            }
-                        }}
-                    />
-                </div>
+                {/** biome-ignore lint/correctness/useUniqueElementIds: off */}
+                <Input
+                    id="setup-name"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Enter setup name"
+                    autoFocus
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" && isNameChanged && isValidName) {
+                            handleConfirm();
+                        }
+                    }}
+                />
 
                 <DialogFooter>
                     <Button
