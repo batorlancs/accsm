@@ -1,6 +1,6 @@
-import * as React from "react";
 import { Edit3 } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import * as React from "react";
 import {
     InputGroup,
     InputGroupAddon,
@@ -14,22 +14,25 @@ export interface ValidationRule {
     message: string;
 }
 
-export interface InputWithIconProps
-    extends Omit<React.ComponentProps<"input">, "onChange" | "onSubmit"> {
+type InputWithIconProps = Omit<
+    React.ComponentProps<"input">,
+    "onChange" | "onSubmit"
+> & {
     icon?: React.ReactNode;
     iconPosition?: "start" | "end";
     inputType?: "text" | "number";
     validation?: ValidationRule[];
     onChange?: (value: string, isValid: boolean) => void;
     onError?: (errors: string[]) => void;
-    onSubmit?: (value: string) => void;
+    onSubmit?: (value: string) => Promise<void> | void;
+    onSubmitError?: (error: string) => void;
     className?: string;
     inputClassName?: string;
     groupClassName?: string;
     editable?: boolean;
     editIcon?: React.ReactNode;
     displayValue?: string;
-}
+};
 
 export const InputWithIcon = React.forwardRef<
     HTMLInputElement,
@@ -44,6 +47,7 @@ export const InputWithIcon = React.forwardRef<
             onChange,
             onError,
             onSubmit,
+            onSubmitError,
             className,
             inputClassName,
             groupClassName,
@@ -57,7 +61,11 @@ export const InputWithIcon = React.forwardRef<
         const [value, setValue] = React.useState(
             props.defaultValue?.toString() || "",
         );
+        const [originalValue, setOriginalValue] = React.useState(
+            props.defaultValue?.toString() || "",
+        );
         const [errors, setErrors] = React.useState<string[]>([]);
+        const [submitError, setSubmitError] = React.useState<string>("");
         const [hasBlurred, setHasBlurred] = React.useState(false);
         const [isEditing, setIsEditing] = React.useState(!editable);
         const [isHovering, setIsHovering] = React.useState(false);
@@ -95,19 +103,36 @@ export const InputWithIcon = React.forwardRef<
             }
         };
 
-        const handleSubmitAndExit = () => {
+        const handleSubmitAndExit = async () => {
             setHasBlurred(true);
+            setSubmitError(""); // Clear any previous submit errors
             const isValid = validateValue(value);
 
             if (!isValid) {
                 onError?.(errors);
+                return;
             }
 
-            onSubmit?.(value);
-            
-            if (editable) {
-                setIsEditing(false);
-                setIsHovering(false); // Reset hover state when exiting edit mode
+            try {
+                await onSubmit?.(value);
+                
+                // If submission is successful, update the original value
+                if (editable) {
+                    setOriginalValue(value);
+                    setIsEditing(false);
+                    setIsHovering(false); // Reset hover state when exiting edit mode
+                }
+            } catch (error) {
+                // If submission fails, revert to original value and show error
+                const errorMessage = error instanceof Error ? error.message : "Submission failed";
+                setValue(originalValue);
+                setSubmitError(errorMessage);
+                onSubmitError?.(errorMessage);
+                
+                if (editable) {
+                    setIsEditing(false);
+                    setIsHovering(false);
+                }
             }
         };
 
@@ -122,14 +147,17 @@ export const InputWithIcon = React.forwardRef<
                 handleSubmitAndExit();
             }
             if (e.key === "Escape" && editable) {
+                setValue(originalValue); // Revert to original value on escape
+                setSubmitError(""); // Clear submit errors
                 setIsEditing(false);
-                setValue(props.defaultValue?.toString() || "");
             }
             props.onKeyDown?.(e);
         };
 
         const handleEditClick = () => {
             if (editable && !isEditing) {
+                setOriginalValue(value); // Store the current value as the original
+                setSubmitError(""); // Clear any submit errors when starting to edit
                 setIsEditing(true);
                 setIsHovering(false); // Reset hover state when entering edit mode
                 // Focus the input after it becomes visible
@@ -140,9 +168,11 @@ export const InputWithIcon = React.forwardRef<
         };
 
         // Use imperative handle to expose the input ref
+        // biome-ignore lint/style/noNonNullAssertion: off
         React.useImperativeHandle(ref, () => inputRef.current!, []);
 
         const hasErrors = hasBlurred && errors.length > 0;
+        const hasSubmitError = submitError.length > 0;
         const displayText = displayValue || value || props.placeholder || "";
 
         if (editable && !isEditing) {
@@ -152,7 +182,7 @@ export const InputWithIcon = React.forwardRef<
                         className={cn(
                             "group/editable relative cursor-pointer",
                             "min-h-9 flex items-center",
-                            groupClassName
+                            groupClassName,
                         )}
                         onMouseEnter={() => setIsHovering(true)}
                         onMouseLeave={() => setIsHovering(false)}
@@ -161,49 +191,51 @@ export const InputWithIcon = React.forwardRef<
                         whileTap={{ scale: 0.99 }}
                         transition={{ duration: 0.2, ease: "easeInOut" }}
                     >
-                        <motion.div 
+                        <motion.div
                             className={cn(
                                 "flex items-center gap-2 w-full px-3 py-2 rounded-md border border-input bg-background",
-                                hasErrors && "border-destructive"
+                                (hasErrors || hasSubmitError) && "border-destructive",
                             )}
                             animate={{
-                                backgroundColor: isHovering ? "hsl(var(--accent) / 0.3)" : "hsl(var(--background))"
+                                backgroundColor: isHovering
+                                    ? "hsl(var(--accent) / 0.3)"
+                                    : "hsl(var(--background))",
                             }}
                             transition={{ duration: 0.2, ease: "easeInOut" }}
                         >
                             {icon && iconPosition === "start" && (
-                                <motion.div 
+                                <motion.div
                                     className="text-muted-foreground [&>svg:not([class*='size-'])]:size-4"
-                                    animate={{ 
+                                    animate={{
                                         opacity: isHovering ? 0.7 : 1,
-                                        scale: isHovering ? 0.95 : 1
+                                        scale: isHovering ? 0.95 : 1,
                                     }}
                                     transition={{ duration: 0.2 }}
                                 >
                                     {icon}
                                 </motion.div>
                             )}
-                            
-                            <motion.span 
+
+                            <motion.span
                                 className={cn(
                                     "flex-1 text-sm",
-                                    !value && "text-muted-foreground"
+                                    !value && "text-muted-foreground",
                                 )}
-                                animate={{ 
+                                animate={{
                                     opacity: isHovering ? 0.7 : 1,
-                                    x: isHovering ? 2 : 0
+                                    x: isHovering ? 2 : 0,
                                 }}
                                 transition={{ duration: 0.2 }}
                             >
                                 {displayText}
                             </motion.span>
-                            
+
                             {icon && iconPosition === "end" && (
-                                <motion.div 
+                                <motion.div
                                     className="text-muted-foreground [&>svg:not([class*='size-'])]:size-4"
-                                    animate={{ 
+                                    animate={{
                                         opacity: isHovering ? 0.7 : 1,
-                                        scale: isHovering ? 0.95 : 1
+                                        scale: isHovering ? 0.95 : 1,
                                     }}
                                     transition={{ duration: 0.2 }}
                                 >
@@ -211,11 +243,11 @@ export const InputWithIcon = React.forwardRef<
                                 </motion.div>
                             )}
                         </motion.div>
-                        
+
                         {/* Edit overlay */}
                         <AnimatePresence>
                             {isHovering && (
-                                <motion.div 
+                                <motion.div
                                     className="absolute inset-0 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-md border border-input"
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
@@ -233,10 +265,11 @@ export const InputWithIcon = React.forwardRef<
                         </AnimatePresence>
                     </motion.div>
 
-                    {hasErrors && (
+                    {(hasErrors || hasSubmitError) && (
                         <div className="space-y-1">
                             {errors.map((error, index) => (
                                 <p
+                                    // biome-ignore lint/suspicious/noArrayIndexKey: off
                                     key={index}
                                     className="text-sm text-destructive"
                                     role="alert"
@@ -244,6 +277,14 @@ export const InputWithIcon = React.forwardRef<
                                     {error}
                                 </p>
                             ))}
+                            {hasSubmitError && (
+                                <p
+                                    className="text-sm text-destructive"
+                                    role="alert"
+                                >
+                                    {submitError}
+                                </p>
+                            )}
                         </div>
                     )}
                 </div>
@@ -278,10 +319,11 @@ export const InputWithIcon = React.forwardRef<
                     )}
                 </InputGroup>
 
-                {hasErrors && (
+                {(hasErrors || hasSubmitError) && (
                     <div className="space-y-1">
                         {errors.map((error, index) => (
                             <p
+                                // biome-ignore lint/suspicious/noArrayIndexKey: off
                                 key={index}
                                 className="text-sm text-destructive"
                                 role="alert"
@@ -289,6 +331,14 @@ export const InputWithIcon = React.forwardRef<
                                 {error}
                             </p>
                         ))}
+                        {hasSubmitError && (
+                            <p
+                                className="text-sm text-destructive"
+                                role="alert"
+                            >
+                                {submitError}
+                            </p>
+                        )}
                     </div>
                 )}
             </div>
@@ -298,54 +348,53 @@ export const InputWithIcon = React.forwardRef<
 
 InputWithIcon.displayName = "InputWithIcon";
 
-// Common validation rules
-export const validationRules = {
-    required: (message = "This field is required"): ValidationRule => ({
-        validate: (value) => value.trim().length > 0,
-        message,
-    }),
-
-    minLength: (min: number, message?: string): ValidationRule => ({
-        validate: (value) => value.length >= min,
-        message: message || `Must be at least ${min} characters`,
-    }),
-
-    maxLength: (max: number, message?: string): ValidationRule => ({
-        validate: (value) => value.length <= max,
-        message: message || `Must be no more than ${max} characters`,
-    }),
-
-    email: (
-        message = "Please enter a valid email address",
-    ): ValidationRule => ({
-        validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-        message,
-    }),
-
-    number: (message = "Please enter a valid number"): ValidationRule => ({
-        validate: (value) => !isNaN(Number(value)) && value.trim() !== "",
-        message,
-    }),
-
-    positiveNumber: (
-        message = "Please enter a positive number",
-    ): ValidationRule => ({
-        validate: (value) => !isNaN(Number(value)) && Number(value) > 0,
-        message,
-    }),
-
-    integer: (message = "Please enter a whole number"): ValidationRule => ({
-        validate: (value) =>
-            Number.isInteger(Number(value)) && !isNaN(Number(value)),
-        message,
-    }),
-
-    range: (min: number, max: number, message?: string): ValidationRule => ({
-        validate: (value) => {
-            const num = Number(value);
-            return !isNaN(num) && num >= min && num <= max;
-        },
-        message: message || `Must be between ${min} and ${max}`,
-    }),
-};
-
+// // Common validation rules
+// export const validationRules = {
+//     required: (message = "This field is required"): ValidationRule => ({
+//         validate: (value) => value.trim().length > 0,
+//         message,
+//     }),
+//
+//     minLength: (min: number, message?: string): ValidationRule => ({
+//         validate: (value) => value.length >= min,
+//         message: message || `Must be at least ${min} characters`,
+//     }),
+//
+//     maxLength: (max: number, message?: string): ValidationRule => ({
+//         validate: (value) => value.length <= max,
+//         message: message || `Must be no more than ${max} characters`,
+//     }),
+//
+//     email: (
+//         message = "Please enter a valid email address",
+//     ): ValidationRule => ({
+//         validate: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+//         message,
+//     }),
+//
+//     number: (message = "Please enter a valid number"): ValidationRule => ({
+//         validate: (value) => !isNaN(Number(value)) && value.trim() !== "",
+//         message,
+//     }),
+//
+//     positiveNumber: (
+//         message = "Please enter a positive number",
+//     ): ValidationRule => ({
+//         validate: (value) => !isNaN(Number(value)) && Number(value) > 0,
+//         message,
+//     }),
+//
+//     integer: (message = "Please enter a whole number"): ValidationRule => ({
+//         validate: (value) =>
+//             Number.isInteger(Number(value)) && !isNaN(Number(value)),
+//         message,
+//     }),
+//
+//     range: (min: number, max: number, message?: string): ValidationRule => ({
+//         validate: (value) => {
+//             const num = Number(value);
+//             return !isNaN(num) && num >= min && num <= max;
+//         },
+//         message: message || `Must be between ${min} and ${max}`,
+//     }),
+// };
