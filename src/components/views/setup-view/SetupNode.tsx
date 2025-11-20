@@ -18,7 +18,7 @@ export function SetupNode({ setup, isSelected, onSelect }: SetupNodeProps) {
         <div
             className={cn(
                 isSelected ? "bg-foreground/5" : "",
-                "cursor-pointer rounded transition duration-75",
+                "cursor-pointer rounded transition duration-75 pl-1",
             )}
             onClick={onSelect}
         >
