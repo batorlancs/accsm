@@ -14,7 +14,58 @@ import { useCars, useEditSetup, useSetup, useTracks } from "@/hooks/useBackend";
 import { getCountryFlag } from "@/lib/countryFlags";
 import { Badge } from "./ui/badge";
 import { CarBrandIcon } from "./ui/car-brand-icon";
+import { InputWithIcon } from "./ui/input-with-icon";
 import { Kbd, KbdGroup } from "./ui/kbd";
+
+interface SetupValueInputProps {
+    icon: React.ReactNode;
+    label: string;
+    value: number;
+    suffix?: string;
+    onUpdate: (newValue: number) => void;
+}
+
+function SetupValueInput({
+    icon,
+    label,
+    value,
+    suffix = "",
+    onUpdate,
+}: SetupValueInputProps) {
+    const handleSubmit = async (newValue: string) => {
+        const numValue = Number(newValue);
+        if (isNaN(numValue)) {
+            throw new Error("Please enter a valid number");
+        }
+
+        onUpdate(numValue);
+    };
+
+    return (
+        <InputWithIcon
+            icon={icon}
+            inputType="number"
+            defaultValue={value.toString()}
+            displayValue={`${value}${suffix}`}
+            editable={true}
+            showErrors={false}
+            validation={[
+                {
+                    validate: (val) => !isNaN(Number(val)) && val.trim() !== "",
+                    message: "Please enter a valid number",
+                },
+            ]}
+            onSubmit={handleSubmit}
+            onSubmitError={(error) => {
+                toast.error(
+                    `Failed to update ${label.toLowerCase()}: ${error}`,
+                );
+            }}
+            className="flex-1 min-w-0"
+            groupClassName=""
+        />
+    );
+}
 
 interface SetupViewerProps {
     car: string;
@@ -96,7 +147,9 @@ export function SetupViewer({
         );
     };
 
-    const isLfmCompatible = setup.basicSetup?.electronics?.telemetryLaps === 99;
+    const isLfmCompatible =
+        setup.basicSetup?.electronics?.telemetryLaps > 0 &&
+        setup.basicSetup?.electronics?.telemetryLaps <= 99;
 
     const handleMakeLfmCompatible = () => {
         const updatedSetup = {
@@ -125,6 +178,114 @@ export function SetupViewer({
         );
     };
 
+    const handleUpdateFuel = (newValue: number) => {
+        const updatedSetup = {
+            ...setup,
+            basicSetup: {
+                ...setup.basicSetup,
+                strategy: {
+                    ...setup.basicSetup?.strategy,
+                    fuel: newValue,
+                },
+            },
+        };
+
+        editSetup.mutate(
+            {
+                car,
+                track,
+                filename,
+                content: updatedSetup,
+            },
+            {
+                onError: (error) => {
+                    toast.error(`Failed to update fuel: ${error}`);
+                },
+            },
+        );
+    };
+
+    const handleUpdateAbs = (newValue: number) => {
+        const updatedSetup = {
+            ...setup,
+            basicSetup: {
+                ...setup.basicSetup,
+                electronics: {
+                    ...setup.basicSetup?.electronics,
+                    abs: newValue,
+                },
+            },
+        };
+
+        editSetup.mutate(
+            {
+                car,
+                track,
+                filename,
+                content: updatedSetup,
+            },
+            {
+                onError: (error) => {
+                    toast.error(`Failed to update ABS: ${error}`);
+                },
+            },
+        );
+    };
+
+    const handleUpdateTc1 = (newValue: number) => {
+        const updatedSetup = {
+            ...setup,
+            basicSetup: {
+                ...setup.basicSetup,
+                electronics: {
+                    ...setup.basicSetup?.electronics,
+                    tC1: newValue,
+                },
+            },
+        };
+
+        editSetup.mutate(
+            {
+                car,
+                track,
+                filename,
+                content: updatedSetup,
+            },
+            {
+                onError: (error) => {
+                    toast.error(`Failed to update TC1: ${error}`);
+                },
+            },
+        );
+    };
+
+    const handleUpdateTc2 = (newValue: number) => {
+        const updatedSetup = {
+            ...setup,
+            basicSetup: {
+                ...setup.basicSetup,
+                electronics: {
+                    ...setup.basicSetup?.electronics,
+                    tC2: newValue,
+                },
+            },
+        };
+
+        editSetup.mutate(
+            {
+                car,
+                track,
+                filename,
+                content: updatedSetup,
+            },
+            {
+                onError: (error) => {
+                    toast.error(`Failed to update TC2: ${error}`);
+                },
+            },
+        );
+    };
+
     return (
         <div className="space-y-4 p-4">
             <div className="flex items-start justify-between">
@@ -147,7 +308,7 @@ export function SetupViewer({
                             </h2>
 
                             <div className="flex items-center gap-2 mt-1 opacity-60">
-                                <span className="text-sm shrink-0 w-4 flex items-center justify-center">
+                                <span className="text-sm shrink-0 w-6 flex items-center justify-center">
                                     {getCountryFlag(trackData?.country || "")}
                                 </span>
                                 <span className="text-xs">
@@ -155,7 +316,7 @@ export function SetupViewer({
                                 </span>
                             </div>
                             <div className="flex items-center gap-2 mt-1 opacity-60">
-                                <span className="text-sm shrink-0 w-4 flex items-center justify-center">
+                                <span className="text-sm shrink-0 w-6 flex items-center justify-center">
                                     <CarBrandIcon
                                         name={carData.brand_name || ""}
                                     />
@@ -180,53 +341,48 @@ export function SetupViewer({
             </div>
 
             <div className="flex items-center justify-between mt-6">
-                <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary">
-                        <Fuel className="w-3 h-3 mr-1 opacity-50" />
-                        {setup.basicSetup?.strategy?.fuel || 0}L
-                    </Badge>
+                <div className="flex flex-wrap gap-2 flex-1">
+                    <SetupValueInput
+                        icon={<Fuel className="size-3" />}
+                        label="Fuel"
+                        value={setup.basicSetup?.strategy?.fuel || 0}
+                        suffix="L"
+                        onUpdate={handleUpdateFuel}
+                    />
 
-                    <Badge variant="secondary">
-                        <span className="opacity-50">ABS</span>{" "}
-                        {setup.basicSetup?.electronics?.abs || 0}
-                    </Badge>
+                    <SetupValueInput
+                        icon={
+                            <span className="text-xs font-medium pt-[2px]">
+                                ABS
+                            </span>
+                        }
+                        label="ABS"
+                        value={setup.basicSetup?.electronics?.abs || 0}
+                        onUpdate={handleUpdateAbs}
+                    />
 
-                    <Badge variant="secondary">
-                        <span className="opacity-50">TC1</span>{" "}
-                        {setup.basicSetup?.electronics?.tC1 || 0}
-                    </Badge>
+                    <SetupValueInput
+                        icon={
+                            <span className="text-xs font-medium pt-[2px]">
+                                TC1
+                            </span>
+                        }
+                        label="TC1"
+                        value={setup.basicSetup?.electronics?.tC1 || 0}
+                        onUpdate={handleUpdateTc1}
+                    />
 
-                    <Badge variant="secondary">
-                        <span className="opacity-50">TC2</span>{" "}
-                        {setup.basicSetup?.electronics?.tC2 || 0}
-                    </Badge>
+                    <SetupValueInput
+                        icon={
+                            <span className="text-xs font-medium pt-[2px]">
+                                TC2
+                            </span>
+                        }
+                        label="TC2"
+                        value={setup.basicSetup?.electronics?.tC2 || 0}
+                        onUpdate={handleUpdateTc2}
+                    />
                 </div>
-                {isLfmCompatible ? (
-                    <Badge className="">
-                        <BadgeCheckIcon className="w-3 h-3 mr-1" />
-                        LFM Compatible
-                    </Badge>
-                ) : (
-                    <Badge
-                        variant="secondary"
-                        className="cursor-pointer transition-all duration-400 hover:bg-green-500/50"
-                        onMouseEnter={() => setIsLfmBadgeHovered(true)}
-                        onMouseLeave={() => setIsLfmBadgeHovered(false)}
-                        onClick={handleMakeLfmCompatible}
-                    >
-                        {isLfmBadgeHovered ? (
-                            <>
-                                <BadgePlus className="w-3 h-3 mr-1" />
-                                Make LFM Compatible
-                            </>
-                        ) : (
-                            <>
-                                <BadgeAlert className="w-3 h-3 mr-1" />
-                                LFM Incompatible
-                            </>
-                        )}
-                    </Badge>
-                )}
             </div>
             <div className="">
                 <div className="bg-[#151515] p-4 rounded opacity-80">
@@ -255,6 +411,32 @@ export function SetupViewer({
                     />
                 </div>
             </div>
+            {isLfmCompatible ? (
+                <Badge className="bg-green-500/50">
+                    <BadgeCheckIcon className="mr-1 mb-[2px]" />
+                    LFM: Telemtry Laps is set
+                </Badge>
+            ) : (
+                <Badge
+                    variant="secondary"
+                    className="cursor-pointer transition-all duration-400 hover:bg-orange-500/50"
+                    onMouseEnter={() => setIsLfmBadgeHovered(true)}
+                    onMouseLeave={() => setIsLfmBadgeHovered(false)}
+                    onClick={handleMakeLfmCompatible}
+                >
+                    {isLfmBadgeHovered ? (
+                        <>
+                            <BadgePlus className="mr-1 mb-[2px]" />
+                            LFM: Set Telemetry Laps to 99
+                        </>
+                    ) : (
+                        <>
+                            <BadgeAlert className="mr-1 mb-[2px]" />
+                            LFM: Telemetry Laps is not set
+                        </>
+                    )}
+                </Badge>
+            )}
         </div>
     );
 }

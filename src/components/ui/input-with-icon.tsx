@@ -32,6 +32,7 @@ type InputWithIconProps = Omit<
     editable?: boolean;
     editIcon?: React.ReactNode;
     displayValue?: string;
+    showErrors?: boolean;
 };
 
 export const InputWithIcon = React.forwardRef<
@@ -54,6 +55,7 @@ export const InputWithIcon = React.forwardRef<
             editable = false,
             editIcon = <Edit3 />,
             displayValue,
+            showErrors = true,
             ...props
         },
         ref,
@@ -113,10 +115,15 @@ export const InputWithIcon = React.forwardRef<
                 return;
             }
 
+            // Only call onSubmit if the value has actually changed
+            const hasValueChanged = value !== originalValue;
+
             try {
-                await onSubmit?.(value);
-                
-                // If submission is successful, update the original value
+                if (hasValueChanged) {
+                    await onSubmit?.(value);
+                }
+
+                // If submission is successful (or no submission needed), update the original value
                 if (editable) {
                     setOriginalValue(value);
                     setIsEditing(false);
@@ -124,11 +131,14 @@ export const InputWithIcon = React.forwardRef<
                 }
             } catch (error) {
                 // If submission fails, revert to original value and show error
-                const errorMessage = error instanceof Error ? error.message : "Submission failed";
+                const errorMessage =
+                    error instanceof Error
+                        ? error.message
+                        : "Submission failed";
                 setValue(originalValue);
                 setSubmitError(errorMessage);
                 onSubmitError?.(errorMessage);
-                
+
                 if (editable) {
                     setIsEditing(false);
                     setIsHovering(false);
@@ -194,7 +204,8 @@ export const InputWithIcon = React.forwardRef<
                         <motion.div
                             className={cn(
                                 "flex items-center gap-2 w-full px-3 py-2 rounded-md border border-input bg-background",
-                                (hasErrors || hasSubmitError) && "border-destructive",
+                                (hasErrors || hasSubmitError) &&
+                                    "border-destructive",
                             )}
                             animate={{
                                 backgroundColor: isHovering
@@ -205,7 +216,7 @@ export const InputWithIcon = React.forwardRef<
                         >
                             {icon && iconPosition === "start" && (
                                 <motion.div
-                                    className="text-muted-foreground [&>svg:not([class*='size-'])]:size-4"
+                                    className="text-muted-foreground flex"
                                     animate={{
                                         opacity: isHovering ? 0.7 : 1,
                                         scale: isHovering ? 0.95 : 1,
@@ -254,18 +265,15 @@ export const InputWithIcon = React.forwardRef<
                                     exit={{ opacity: 0 }}
                                     transition={{ duration: 0.2 }}
                                 >
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                        <div className="[&>svg:not([class*='size-'])]:size-4">
-                                            {editIcon}
-                                        </div>
-                                        Click to edit
+                                    <div className="[&>svg:not([class*='size-'])]:size-3 text-muted-foreground">
+                                        {editIcon}
                                     </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
                     </motion.div>
 
-                    {(hasErrors || hasSubmitError) && (
+                    {showErrors && (hasErrors || hasSubmitError) && (
                         <div className="space-y-1">
                             {errors.map((error, index) => (
                                 <p
@@ -319,7 +327,7 @@ export const InputWithIcon = React.forwardRef<
                     )}
                 </InputGroup>
 
-                {(hasErrors || hasSubmitError) && (
+                {showErrors && (hasErrors || hasSubmitError) && (
                     <div className="space-y-1">
                         {errors.map((error, index) => (
                             <p
