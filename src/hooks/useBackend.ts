@@ -84,7 +84,7 @@ export function useEditSetup() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (params: SaveSetupParams) => TauriAPI.editSetup(params),
+        mutationFn: (params: SaveSetupParams & { customToastMessage?: string }) => TauriAPI.editSetup(params),
         onSuccess: (_, variables) => {
             // Invalidate the specific setup and folder structure
             queryClient.invalidateQueries({
@@ -97,7 +97,7 @@ export function useEditSetup() {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.folderStructure,
             });
-            toast.success("Setup updated successfully");
+            toast.success(variables.customToastMessage || "Setup updated successfully");
         },
         onError: (error) => {
             toast.error(`Failed to update setup: ${error}`);

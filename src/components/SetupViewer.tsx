@@ -134,6 +134,7 @@ export function SetupViewer({
                 track,
                 filename,
                 content: updated_src,
+                customToastMessage: "Setup has been saved",
             },
             {
                 onError: (error) => {
@@ -169,6 +170,7 @@ export function SetupViewer({
                 track,
                 filename,
                 content: updatedSetup,
+                customToastMessage: "Telemetry laps set to 99 for LFM compatibility",
             },
             {
                 onError: (error) => {
@@ -196,6 +198,7 @@ export function SetupViewer({
                 track,
                 filename,
                 content: updatedSetup,
+                customToastMessage: `Fuel changed to ${newValue}L`,
             },
             {
                 onError: (error) => {
@@ -223,6 +226,7 @@ export function SetupViewer({
                 track,
                 filename,
                 content: updatedSetup,
+                customToastMessage: `ABS changed to ${newValue}`,
             },
             {
                 onError: (error) => {
@@ -250,6 +254,7 @@ export function SetupViewer({
                 track,
                 filename,
                 content: updatedSetup,
+                customToastMessage: `TC1 changed to ${newValue}`,
             },
             {
                 onError: (error) => {
@@ -277,6 +282,7 @@ export function SetupViewer({
                 track,
                 filename,
                 content: updatedSetup,
+                customToastMessage: `TC2 changed to ${newValue}`,
             },
             {
                 onError: (error) => {
