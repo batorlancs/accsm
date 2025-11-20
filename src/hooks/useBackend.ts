@@ -41,6 +41,16 @@ export function useRefreshFolderStructure() {
     });
 }
 
+export function useForceFolderStructureRefresh() {
+    const queryClient = useQueryClient();
+
+    return () => {
+        queryClient.invalidateQueries({
+            queryKey: queryKeys.folderStructure,
+        });
+    };
+}
+
 // Setup queries
 export function useSetup(
     car: string,
@@ -59,7 +69,7 @@ export function useSaveSetup() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (params: SaveSetupParams) => TauriAPI.saveSetup(params),
+        mutationFn: (params: SaveSetupParams & { silent?: boolean; customToastMessage?: string }) => TauriAPI.saveSetup(params),
         onSuccess: (_, variables) => {
             // Invalidate the specific setup and folder structure
             queryClient.invalidateQueries({
@@ -72,7 +82,10 @@ export function useSaveSetup() {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.folderStructure,
             });
-            toast.success("Setup saved successfully");
+            
+            if (!variables.silent) {
+                toast.success(variables.customToastMessage || "Setup saved successfully");
+            }
         },
         onError: (error) => {
             toast.error(`Failed to save setup: ${error}`);
@@ -109,7 +122,7 @@ export function useDeleteSetup() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (params: DeleteSetupParams) => TauriAPI.deleteSetup(params),
+        mutationFn: (params: DeleteSetupParams & { silent?: boolean; customToastMessage?: string }) => TauriAPI.deleteSetup(params),
         onSuccess: (_, variables) => {
             // Remove the specific setup from cache and invalidate folder structure
             queryClient.removeQueries({
@@ -122,7 +135,10 @@ export function useDeleteSetup() {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.folderStructure,
             });
-            toast.success("Setup deleted successfully");
+            
+            if (!variables.silent) {
+                toast.success(variables.customToastMessage || "Setup deleted successfully");
+            }
         },
         onError: (error) => {
             toast.error(`Failed to delete setup: ${error}`);

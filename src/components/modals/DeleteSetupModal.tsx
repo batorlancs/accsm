@@ -10,7 +10,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { useDeleteSetup } from "@/hooks/useBackend";
+import { useDeleteSetup, useForceFolderStructureRefresh } from "@/hooks/useBackend";
 import { getCountryFlag } from "@/lib/countryFlags";
 import type { SetupModalData } from "./useGlobalModals";
 
@@ -26,6 +26,7 @@ export function DeleteSetupModal({
     onClose,
 }: DeleteSetupModalProps) {
     const deleteSetup = useDeleteSetup();
+    const forceFolderRefresh = useForceFolderStructureRefresh();
 
     if (!data) return null;
 
@@ -34,10 +35,14 @@ export function DeleteSetupModal({
 
     const handleConfirm = async () => {
         try {
-            await deleteSetup.mutateAsync({ car, track, filename });
-            toast.success(
-                `Setup "${fileNameWithoutExtension}" has been deleted`,
-            );
+            await deleteSetup.mutateAsync({ 
+                car, 
+                track, 
+                filename,
+                silent: true
+            });
+            toast.success(`Setup "${fileNameWithoutExtension}" has been deleted`);
+            forceFolderRefresh();
             onClose();
         } catch (error) {
             toast.error(`Failed to delete setup: ${error}`);

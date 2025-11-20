@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useDeleteSetup, useSaveSetup, useSetup } from "@/hooks/useBackend";
+import { useDeleteSetup, useSaveSetup, useSetup, useForceFolderStructureRefresh } from "@/hooks/useBackend";
 import { getCountryFlag } from "@/lib/countryFlags";
 import type { SetupModalData } from "./useGlobalModals";
 
@@ -33,6 +33,7 @@ export function RenameSetupModal({
 
     const saveSetup = useSaveSetup();
     const deleteSetup = useDeleteSetup();
+    const forceFolderRefresh = useForceFolderStructureRefresh();
 
     // Get the current setup data - always call with consistent parameters
     const { data: setupData } = useSetup(
@@ -76,20 +77,27 @@ export function RenameSetupModal({
 
         setIsRenaming(true);
         try {
-            // First save with new filename
+            // First save with new filename (silent)
             await saveSetup.mutateAsync({
                 car,
                 track,
                 filename: newFilename,
                 content: setupData,
+                silent: true,
             });
 
-            // Then delete the old file
-            await deleteSetup.mutateAsync({ car, track, filename });
+            // Then delete the old file (silent)
+            await deleteSetup.mutateAsync({ 
+                car, 
+                track, 
+                filename,
+                silent: true,
+            });
 
             toast.success(
                 `Setup renamed from "${fileNameWithoutExtension}" to "${newName.trim()}"`,
             );
+            forceFolderRefresh();
             onClose();
         } catch (error) {
             toast.error(`Failed to rename setup: ${error}`);
