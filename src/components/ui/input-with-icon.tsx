@@ -217,27 +217,17 @@ export const InputWithIcon = React.forwardRef<
                             {isHovering && (
                                 <motion.div 
                                     className="absolute inset-0 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-md border border-input"
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ duration: 0.15, ease: "easeOut" }}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
                                 >
-                                    <motion.div 
-                                        className="flex items-center gap-2 text-sm text-muted-foreground"
-                                        initial={{ y: 2, opacity: 0 }}
-                                        animate={{ y: 0, opacity: 1 }}
-                                        exit={{ y: -2, opacity: 0 }}
-                                        transition={{ duration: 0.15, delay: 0.05 }}
-                                    >
-                                        <motion.div 
-                                            className="[&>svg:not([class*='size-'])]:size-4"
-                                            animate={{ rotate: [0, -5, 5, 0] }}
-                                            transition={{ duration: 0.4, delay: 0.1 }}
-                                        >
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <div className="[&>svg:not([class*='size-'])]:size-4">
                                             {editIcon}
-                                        </motion.div>
+                                        </div>
                                         Click to edit
-                                    </motion.div>
+                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
