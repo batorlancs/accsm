@@ -266,7 +266,7 @@ export const InputWithIcon = React.forwardRef<
                         <AnimatePresence>
                             {isHovering && (
                                 <motion.div
-                                    className="absolute inset-0 flex items-center justify-center bg-background/90 backdrop-blur-sm rounded-md border border-input"
+                                    className="absolute inset-0 flex items-center justify-center bg-muted/90 backdrop-blur-sm rounded-md border border-input"
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}

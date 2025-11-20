@@ -2,7 +2,10 @@ import {
     BadgeAlert,
     BadgeCheckIcon,
     BadgePlus,
+    Edit2Icon,
+    EditIcon,
     Fuel,
+    Trash2Icon,
     Wrench,
     X,
 } from "lucide-react";
@@ -12,6 +15,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useCars, useEditSetup, useSetup, useTracks } from "@/hooks/useBackend";
 import { getCountryFlag } from "@/lib/countryFlags";
+import { ExampleUsage, useSetupModals } from "./modals";
 import { Badge } from "./ui/badge";
 import { CarBrandIcon } from "./ui/car-brand-icon";
 import { InputWithIcon } from "./ui/input-with-icon";
@@ -83,6 +87,7 @@ export function SetupViewer({
 }: SetupViewerProps) {
     const [isLfmBadgeHovered, setIsLfmBadgeHovered] = useState(false);
     const { data: setup, isLoading, error } = useSetup(car, track, filename);
+    const { openDeleteSetup, openRenameSetup, isReady } = useSetupModals();
     const {
         data: cars,
         isLoading: isCarsLoading,
@@ -170,7 +175,8 @@ export function SetupViewer({
                 track,
                 filename,
                 content: updatedSetup,
-                customToastMessage: "Telemetry laps set to 99 for LFM compatibility",
+                customToastMessage:
+                    "Telemetry laps set to 99 for LFM compatibility",
             },
             {
                 onError: (error) => {
@@ -417,32 +423,57 @@ export function SetupViewer({
                     />
                 </div>
             </div>
-            {isLfmCompatible ? (
-                <Badge className="bg-green-600/30 opacity-70">
-                    <BadgeCheckIcon className="mr-1 mb-[2px]" />
-                    LFM: Telemtry Laps is set
-                </Badge>
-            ) : (
-                <Badge
-                    variant="secondary"
-                    className="cursor-pointer transition-all duration-400 hover:bg-orange-600/30 opacity-70"
-                    onMouseEnter={() => setIsLfmBadgeHovered(true)}
-                    onMouseLeave={() => setIsLfmBadgeHovered(false)}
-                    onClick={handleMakeLfmCompatible}
-                >
-                    {isLfmBadgeHovered ? (
-                        <>
-                            <BadgePlus className="mr-1 mb-[2px]" />
-                            LFM: Set Telemetry Laps to 99
-                        </>
+
+            <div className="flex items-center justify-between mt-4">
+                <div>
+                    {isLfmCompatible ? (
+                        <Badge className="bg-green-600/30 opacity-70">
+                            <BadgeCheckIcon className="mr-1 mb-[2px]" />
+                            LFM: Telemtry Laps is set
+                        </Badge>
                     ) : (
-                        <>
-                            <BadgeAlert className="mr-1 mb-[2px]" />
-                            LFM: Telemetry Laps is not set
-                        </>
+                        <Badge
+                            variant="secondary"
+                            className="cursor-pointer transition-all duration-400 hover:bg-orange-600/30 opacity-70"
+                            onMouseEnter={() => setIsLfmBadgeHovered(true)}
+                            onMouseLeave={() => setIsLfmBadgeHovered(false)}
+                            onClick={handleMakeLfmCompatible}
+                        >
+                            {isLfmBadgeHovered ? (
+                                <>
+                                    <BadgePlus className="mr-1 mb-[2px]" />
+                                    LFM: Set Telemetry Laps to 99
+                                </>
+                            ) : (
+                                <>
+                                    <BadgeAlert className="mr-1 mb-[2px]" />
+                                    LFM: Telemetry Laps is not set
+                                </>
+                            )}
+                        </Badge>
                     )}
-                </Badge>
-            )}
+                </div>
+                <div className="space-x-2">
+                    <Button
+                        variant="outline"
+                        size="icon-xs"
+                        onClick={() => {
+                            openRenameSetup(car, track, filename);
+                        }}
+                    >
+                        <EditIcon />
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        size="icon-xs"
+                        onClick={() => {
+                            openDeleteSetup(car, track, filename);
+                        }}
+                    >
+                        <Trash2Icon />
+                    </Button>
+                </div>
+            </div>
         </div>
     );
 }

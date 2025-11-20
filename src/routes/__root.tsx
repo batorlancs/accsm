@@ -2,6 +2,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { GlobalModals } from "@/components/modals";
 import { Toaster } from "@/components/ui/sonner";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
@@ -13,6 +14,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     component: () => (
         <>
             <Outlet />
+            <GlobalModals />
             <Toaster />
             <TanStackDevtools
                 config={{
