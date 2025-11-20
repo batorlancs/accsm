@@ -66,6 +66,13 @@ export const InputWithIcon = React.forwardRef<
         const [originalValue, setOriginalValue] = React.useState(
             props.defaultValue?.toString() || "",
         );
+
+        // Update internal state when defaultValue prop changes
+        React.useEffect(() => {
+            const newDefaultValue = props.defaultValue?.toString() || "";
+            setValue(newDefaultValue);
+            setOriginalValue(newDefaultValue);
+        }, [props.defaultValue]);
         const [errors, setErrors] = React.useState<string[]>([]);
         const [submitError, setSubmitError] = React.useState<string>("");
         const [hasBlurred, setHasBlurred] = React.useState(false);
