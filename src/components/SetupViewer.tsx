@@ -5,6 +5,7 @@ import {
     Edit2Icon,
     EditIcon,
     Fuel,
+    Loader2,
     Trash2Icon,
     Wrench,
     X,
@@ -106,24 +107,32 @@ export function SetupViewer({
 
     const editSetup = useEditSetup();
 
-    if (isLoading || isCarsLoading || isTracksLoading) {
-        return null;
+    if (isLoading || isCarsLoading || isTracksLoading || !isReady) {
+        return (
+            <div className="flex h-full w-full items-center justify-center">
+                <Loader2 className="animate-spin size-6 text-muted-foreground opacity-50" />
+            </div>
+        );
     }
 
     if (error || carsError || tracksError) {
         return (
-            <div>
+            <div className="p-4">
                 <h2 className="text-red-500">Error</h2>
                 <p className="text-sm text-red-500">
                     Failed to load setup:{" "}
-                    {String(error || carsError || tracksError)}
+                    {String(
+                        error?.message ||
+                            carsError?.message ||
+                            tracksError?.message,
+                    )}
                 </p>
             </div>
         );
     }
 
     if (!setup || !cars || !tracks) {
-        return <div className="text-muted-foreground">Setup not found</div>;
+        return <div className="text-muted-foreground p-4">Setup not found</div>;
     }
 
     const carData = cars[car];

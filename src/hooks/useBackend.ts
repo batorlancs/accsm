@@ -35,8 +35,7 @@ export function useRefreshFolderStructure() {
             TauriAPI.refreshFolderStructure(),
         onSuccess: (data, variables) => {
             queryClient.setQueryData(queryKeys.folderStructure, data);
-            if (!variables.silent)
-                toast.success("Refreshed all setups!");
+            if (!variables.silent) toast.success("Refreshed all setups!");
         },
         onError: (error) => {
             toast.error(`Failed to refresh: ${error}`);
@@ -154,7 +153,7 @@ export function useRenameSetup() {
             }
         },
         onError: (error) => {
-            toast.error(`Failed to rename setup: ${error}`);
+            toast.error(`Failed to rename setup: ${error.message}`);
         },
     });
 }
