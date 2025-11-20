@@ -14,25 +14,25 @@ const BRAND_OVERRIDES: Record<
     }
 > = {
     audi: {
-        outerClassName: "bg-red-500/30 rounded p-[2px]",
-        className: "brightness-0 invert",
+        outerClassName: "bg-red-400/20 rounded p-[2px]",
+        className: "brightness-0 invert-[0.8] size-[15px] mx-0",
     },
     honda: {
         className: "brightness-0 invert-[0.7]",
     },
     mclaren: {
-        className: "",
+        className: "opacity-80",
         style: {
             filter: "brightness(0) saturate(100%) invert(56%) sepia(91%) saturate(1673%) hue-rotate(359deg) brightness(102%) contrast(104%)",
         },
     },
     bentley: {
         outerClassName: "bg-neutral-500/30 rounded p-[2px]",
-        className: "brightness-0 invert",
+        className: "brightness-0 invert size-[15px] mx-0",
     },
     alpine: {
-        outerClassName: "bg-blue-500/30 rounded p-[2px]",
-        className: "brightness-0 invert",
+        outerClassName: "bg-blue-400/20 rounded p-[2px]",
+        className: "brightness-0 invert size-[15px] mx-0",
     },
     jaguar: {
         className: "brightness-0 invert-[0.6]",
@@ -45,7 +45,7 @@ const BRAND_OVERRIDES: Record<
     },
     "aston martin": {
         outerClassName: "bg-[#01665E]/30 rounded p-[2px]",
-        className: "brightness-0 invert-[0.8]",
+        className: "brightness-0 invert-[0.8] size-[15px] mx-0",
     },
     chevrolet: {
         className: "brightness-0 invert-[0.6]",
@@ -65,11 +65,10 @@ export function CarBrandIcon({
     ...props
 }: BrandIconProps) {
     const brandSvg = getBrandSvg(name);
-    console.log("Brand SVG for", name, ":", brandSvg);
     const brandOverride = BRAND_OVERRIDES[name.toLowerCase()];
 
     const imgClassName = cn(
-        "object-contain size-4",
+        "object-contain size-4 mx-[1.5px]",
         brandOverride?.className,
         className,
     );
