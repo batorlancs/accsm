@@ -53,6 +53,22 @@ export function CarViewer({ carId }: CarViewerProps) {
         selectSetup(carId, trackId, setup);
     };
 
+    const handleAfterDelete = () => {
+        // Return to the default view but keep the selected car
+        clearSelection();
+    };
+
+    const handleAfterRename = (newFilename: string) => {
+        // Update the selected setup to use the new filename
+        if (selectedSetup) {
+            selectSetup(selectedSetup.car, selectedSetup.track, {
+                filename: newFilename,
+                display_name: newFilename,
+                last_modified: new Date().toISOString(),
+            });
+        }
+    };
+
     if (selectedSetup) {
         return (
             <SetupViewer
@@ -60,6 +76,8 @@ export function CarViewer({ carId }: CarViewerProps) {
                 track={selectedSetup.track}
                 filename={selectedSetup.filename}
                 onClose={clearSelection}
+                onAfterDelete={handleAfterDelete}
+                onAfterRename={handleAfterRename}
             />
         );
     }

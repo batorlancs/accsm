@@ -77,6 +77,8 @@ interface SetupViewerProps {
     filename: string;
     onDelete?: () => void;
     onClose?: () => void;
+    onAfterDelete?: () => void;
+    onAfterRename?: (newFilename: string) => void;
 }
 
 export function SetupViewer({
@@ -84,6 +86,8 @@ export function SetupViewer({
     track,
     filename,
     onClose,
+    onAfterDelete,
+    onAfterRename,
 }: SetupViewerProps) {
     const [isLfmBadgeHovered, setIsLfmBadgeHovered] = useState(false);
     const { data: setup, isLoading, error } = useSetup(car, track, filename);
@@ -459,7 +463,9 @@ export function SetupViewer({
                         size="xs"
                         className="opacity-80 hover:opacity-100 transition-opacity duration-200"
                         onClick={() => {
-                            openRenameSetup(car, track, filename);
+                            openRenameSetup(car, track, filename, {
+                                onAfterRename,
+                            });
                         }}
                     >
                         <EditIcon />
@@ -470,7 +476,9 @@ export function SetupViewer({
                         size="xs"
                         className="opacity-80 hover:opacity-100 transition-opacity duration-200"
                         onClick={() => {
-                            openDeleteSetup(car, track, filename);
+                            openDeleteSetup(car, track, filename, {
+                                onAfterDelete,
+                            });
                         }}
                     >
                         <Trash2Icon />

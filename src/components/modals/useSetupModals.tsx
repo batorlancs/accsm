@@ -9,7 +9,12 @@ export function useSetupModals() {
     const { data: cars } = useCars();
     const { data: tracks } = useTracks();
 
-    const openDeleteSetup = (car: string, track: string, filename: string) => {
+    const openDeleteSetup = (
+        car: string, 
+        track: string, 
+        filename: string,
+        options?: { onAfterDelete?: () => void }
+    ) => {
         if (!cars || !tracks) {
             console.warn("Cars or tracks data not available");
             return;
@@ -29,10 +34,16 @@ export function useSetupModals() {
             filename,
             carData,
             trackData,
+            onAfterDelete: options?.onAfterDelete,
         });
     };
 
-    const openRenameSetup = (car: string, track: string, filename: string) => {
+    const openRenameSetup = (
+        car: string, 
+        track: string, 
+        filename: string,
+        options?: { onAfterRename?: (newFilename: string) => void }
+    ) => {
         if (!cars || !tracks) {
             console.warn("Cars or tracks data not available");
             return;
@@ -52,6 +63,7 @@ export function useSetupModals() {
             filename,
             carData,
             trackData,
+            onAfterRename: options?.onAfterRename,
         });
     };
 

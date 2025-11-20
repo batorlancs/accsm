@@ -1,6 +1,5 @@
-import { Edit, Wrench } from "lucide-react";
+import { Wrench } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CarBrandIcon } from "@/components/ui/car-brand-icon";
 import {
@@ -12,8 +11,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useDeleteSetup, useSaveSetup, useSetup, useForceFolderStructureRefresh } from "@/hooks/useBackend";
+import { useRefreshFolderStructure, useRenameSetup } from "@/hooks/useBackend";
 import { getCountryFlag } from "@/lib/countryFlags";
 import type { SetupModalData } from "./useGlobalModals";
 
@@ -31,17 +29,12 @@ export function RenameSetupModal({
     const [newName, setNewName] = useState("");
     const [isRenaming, setIsRenaming] = useState(false);
 
-    const saveSetup = useSaveSetup();
-    const deleteSetup = useDeleteSetup();
-    const forceFolderRefresh = useForceFolderStructureRefresh();
+    const renameSetup = useRenameSetup();
+    const refreshMutation = useRefreshFolderStructure();
 
-    // Get the current setup data - always call with consistent parameters
-    const { data: setupData } = useSetup(
-        data?.car || "",
-        data?.track || "",
-        data?.filename || "",
-        !!data && isOpen,
-    );
+    const handleRefresh = async () => {
+        await refreshMutation.mutateAsync({ silent: true });
+    };
 
     // Initialize newName when modal opens or data changes
     useEffect(() => {
@@ -71,36 +64,25 @@ export function RenameSetupModal({
     const isValidName = newName.trim().length > 0;
 
     const handleConfirm = async () => {
-        if (!setupData || !isNameChanged || !isValidName) return;
+        if (!isNameChanged || !isValidName) return;
 
         const newFilename = `${newName.trim()}.${fileExtension}`;
 
         setIsRenaming(true);
         try {
-            // First save with new filename (silent)
-            await saveSetup.mutateAsync({
+            await renameSetup.mutateAsync({
                 car,
                 track,
-                filename: newFilename,
-                content: setupData,
-                silent: true,
+                oldFilename: filename,
+                newFilename: newFilename,
+                customToastMessage: `Setup renamed from "${fileNameWithoutExtension}" to "${newName.trim()}"`,
             });
 
-            // Then delete the old file (silent)
-            await deleteSetup.mutateAsync({ 
-                car, 
-                track, 
-                filename,
-                silent: true,
-            });
-
-            toast.success(
-                `Setup renamed from "${fileNameWithoutExtension}" to "${newName.trim()}"`,
-            );
-            forceFolderRefresh();
+            await handleRefresh();
+            data.onAfterRename?.(newFilename);
             onClose();
         } catch (error) {
-            toast.error(`Failed to rename setup: ${error}`);
+            // Error is already shown by the hook
         } finally {
             setIsRenaming(false);
         }
@@ -180,4 +162,3 @@ export function RenameSetupModal({
         </Dialog>
     );
 }
-

@@ -87,6 +87,7 @@ pub fn run() {
             get_setup,
             save_setup,
             edit_setup,
+            rename_setup,
             delete_setup,
             set_setups_path,
             get_setups_path,

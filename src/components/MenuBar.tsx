@@ -17,7 +17,7 @@ export function MenuBar({ onSettingsClick, onAddClick }: MenuBarProps) {
     const refreshMutation = useRefreshFolderStructure();
 
     const handleRefresh = () => {
-        refreshMutation.mutate();
+        refreshMutation.mutate({});
     };
 
     return (

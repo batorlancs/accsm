@@ -26,6 +26,9 @@ pub enum AccError {
     #[error("File not found: {path}")]
     FileNotFound { path: String },
 
+    #[error("File already exists: {path}")]
+    FileAlreadyExists { path: String },
+
     #[error("Directory creation failed: {path}. Error: {error}")]
     DirectoryCreationFailed { path: String, error: String },
 

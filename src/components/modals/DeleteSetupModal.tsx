@@ -1,4 +1,4 @@
-import { Trash2, Wrench } from "lucide-react";
+import { Wrench } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { CarBrandIcon } from "@/components/ui/car-brand-icon";
@@ -10,7 +10,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { useDeleteSetup, useForceFolderStructureRefresh } from "@/hooks/useBackend";
+import { useDeleteSetup, useRefreshFolderStructure } from "@/hooks/useBackend";
 import { getCountryFlag } from "@/lib/countryFlags";
 import type { SetupModalData } from "./useGlobalModals";
 
@@ -26,7 +26,11 @@ export function DeleteSetupModal({
     onClose,
 }: DeleteSetupModalProps) {
     const deleteSetup = useDeleteSetup();
-    const forceFolderRefresh = useForceFolderStructureRefresh();
+    const refreshMutation = useRefreshFolderStructure();
+
+    async function handleRefresh() {
+        await refreshMutation.mutateAsync({ silent: true });
+    }
 
     if (!data) return null;
 
@@ -35,14 +39,17 @@ export function DeleteSetupModal({
 
     const handleConfirm = async () => {
         try {
-            await deleteSetup.mutateAsync({ 
-                car, 
-                track, 
+            await deleteSetup.mutateAsync({
+                car,
+                track,
                 filename,
-                silent: true
+                silent: true,
             });
-            toast.success(`Setup "${fileNameWithoutExtension}" has been deleted`);
-            forceFolderRefresh();
+            toast.success(
+                `Setup "${fileNameWithoutExtension}" has been deleted`,
+            );
+            await handleRefresh();
+            data.onAfterDelete?.();
             onClose();
         } catch (error) {
             toast.error(`Failed to delete setup: ${error}`);
@@ -108,4 +115,3 @@ export function DeleteSetupModal({
         </Dialog>
     );
 }
-

@@ -100,6 +100,31 @@ pub async fn edit_setup(
     }
 }
 
+/// Rename a setup file
+#[tauri::command]
+pub async fn rename_setup(
+    car: String,
+    track: String,
+    old_filename: String,
+    new_filename: String,
+    state: State<'_, Arc<AppStateManager>>,
+) -> Result<(), AccError> {
+    info!("Renaming setup: {}/{}/{} -> {}", car, track, old_filename, new_filename);
+    match state.rename_setup(&car, &track, &old_filename, &new_filename).await {
+        Ok(()) => {
+            info!("Successfully renamed setup: {}/{}/{} -> {}", car, track, old_filename, new_filename);
+            Ok(())
+        }
+        Err(e) => {
+            error!(
+                "Failed to rename setup {}/{}/{} -> {}: {}",
+                car, track, old_filename, new_filename, e
+            );
+            Err(e)
+        }
+    }
+}
+
 /// Delete a setup file
 #[tauri::command]
 pub async fn delete_setup(

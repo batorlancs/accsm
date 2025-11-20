@@ -7,6 +7,8 @@ export interface SetupModalData {
   filename: string
   carData: Car
   trackData: Track
+  onAfterDelete?: () => void
+  onAfterRename?: (newFilename: string) => void
 }
 
 export interface DeleteSetupModalState {
