@@ -117,6 +117,8 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
                                 onSetupClick={(setup) =>
                                     handleSetupClick(group.carId, setup)
                                 }
+                                carName={group.carId}
+                                trackName={trackId}
                             />
                         </div>
                     );

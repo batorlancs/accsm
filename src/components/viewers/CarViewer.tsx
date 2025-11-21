@@ -124,6 +124,8 @@ export function CarViewer({ carId }: CarViewerProps) {
                             onSetupClick={(setup) =>
                                 handleSetupClick(group.trackId, setup)
                             }
+                            carName={carId}
+                            trackName={group.trackId}
                         />
                     </div>
                 ))}
