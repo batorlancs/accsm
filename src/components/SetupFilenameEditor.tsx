@@ -1,10 +1,14 @@
-/** biome-ignore-all lint/style/noNonNullAssertion: <explanation> */
-import { Edit3, Wrench } from "lucide-react";
+/** biome-ignore-all lint/style/noNonNullAssertion: false positive */
+import { Edit3, Sparkles, Wrench } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CarBrandIcon } from "@/components/ui/car-brand-icon";
 import { Input } from "@/components/ui/input";
 import { useCars } from "@/hooks/useBackend";
+import { 
+    hasQualyAndRaceSetups, 
+    generateSimplifiedNames 
+} from "@/lib/filename-simplify";
 import type { ValidationResult } from "@/types/backend";
 
 interface SetupFilenameEditorProps {
@@ -20,6 +24,8 @@ export function SetupFilenameEditor({
         Record<number, string>
     >({});
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [isHoveringSimplify, setIsHoveringSimplify] = useState(false);
+    const [customSimplifyName, setCustomSimplifyName] = useState("");
     const { data: cars } = useCars();
 
     const getDisplayName = (result: ValidationResult, index: number) => {
@@ -39,7 +45,7 @@ export function SetupFilenameEditor({
 
     const handleSave = (index: number) => {
         const newName = customFilenames[index];
-        if (newName && newName.trim()) {
+        if (newName?.trim()) {
             // Ensure .json extension
             const finalName = newName.trim().endsWith(".json")
                 ? newName.trim()
@@ -54,8 +60,6 @@ export function SetupFilenameEditor({
 
     const handleCancel = (index: number) => {
         // Reset to original filename
-        const originalName =
-            validResults[index].filename || "imported_setup.json";
         setCustomFilenames((prev) => {
             const updated = { ...prev };
             delete updated[index];
@@ -73,10 +77,49 @@ export function SetupFilenameEditor({
         }
     };
 
+    // Check if we should show the simplify button
+    const filenames = validResults.map(result => result.filename || "");
+    const shouldShowSimplify = validResults.length >= 2 && hasQualyAndRaceSetups(filenames);
+
+    // Get preview names for hover effect
+    const getPreviewName = (result: ValidationResult, index: number) => {
+        if (!isHoveringSimplify) return getDisplayName(result, index);
+        
+        const simplifiedNames = generateSimplifiedNames(filenames, customSimplifyName);
+        return simplifiedNames[index] || getDisplayName(result, index);
+    };
+
+    const handleSimplify = () => {
+        const simplifiedNames = generateSimplifiedNames(filenames, customSimplifyName);
+        setCustomFilenames(prev => ({ ...prev, ...simplifiedNames }));
+        onFilenamesChange({ ...customFilenames, ...simplifiedNames });
+    };
+
     if (validResults.length === 0) return null;
 
     return (
         <div className="space-y-3">
+            {shouldShowSimplify && (
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/20 border border-border/40">
+                    <Input
+                        value={customSimplifyName}
+                        onChange={(e) => setCustomSimplifyName(e.target.value)}
+                        placeholder="Optional prefix for simplified setups"
+                        className="flex-1 h-8"
+                    />
+                    <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={handleSimplify}
+                        onMouseEnter={() => setIsHoveringSimplify(true)}
+                        onMouseLeave={() => setIsHoveringSimplify(false)}
+                        className="h-8 px-3 gap-2 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                    >
+                        <Sparkles className="size-4" />
+                        Simplify
+                    </Button>
+                </div>
+            )}
             <div className="space-y-2 max-h-48 overflow-y-auto">
                 {validResults.map((result, index) => (
                     <div
@@ -137,8 +180,15 @@ export function SetupFilenameEditor({
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-sm font-medium truncate">
-                                        {getDisplayName(result, index)}
+                                    <span 
+                                        className={`text-sm font-medium truncate transition-opacity duration-200 ${
+                                            isHoveringSimplify ? 'opacity-60' : 'opacity-100'
+                                        }`}
+                                        style={{
+                                            opacity: isHoveringSimplify ? 0.6 : 1,
+                                        }}
+                                    >
+                                        {getPreviewName(result, index)}
                                     </span>
                                     <Button
                                         size="sm"
