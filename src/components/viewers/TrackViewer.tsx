@@ -102,25 +102,19 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
                 ]}
             />
             <div className="grid grid-cols-2 gap-4 p-4">
-                {carGroups.map((group, index) => {
+                {carGroups.map((group, _index) => {
                     return (
-                        <div
+                        <SetupGroup
                             key={group.carId}
-                            className={
-                                "bg-muted/50 border border-border/50 rounded p-2 pb-3"
+                            title={group.carName}
+                            icon={<CarBrandIcon name={group.brandName} />}
+                            setups={group.setups}
+                            onSetupClick={(setup) =>
+                                handleSetupClick(group.carId, setup)
                             }
-                        >
-                            <SetupGroup
-                                title={group.carName}
-                                icon={<CarBrandIcon name={group.brandName} />}
-                                setups={group.setups}
-                                onSetupClick={(setup) =>
-                                    handleSetupClick(group.carId, setup)
-                                }
-                                carName={group.carId}
-                                trackName={trackId}
-                            />
-                        </div>
+                            carName={group.carId}
+                            trackName={trackId}
+                        />
                     );
                 })}
                 {carGroups.length === 0 && (

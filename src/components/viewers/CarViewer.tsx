@@ -107,27 +107,19 @@ export function CarViewer({ carId }: CarViewerProps) {
             />
             <div className="grid grid-cols-2 gap-4 p-4">
                 {trackGroups.map((group, index) => (
-                    <div
+                    <SetupGroup
                         key={group.trackId}
-                        className={
-                            "bg-muted/50 border border-border/50 rounded p-2 pb-3"
+                        title={group.trackName}
+                        icon={
+                            <span>{getCountryFlag(group.country || "")}</span>
                         }
-                    >
-                        <SetupGroup
-                            title={group.trackName}
-                            icon={
-                                <span>
-                                    {getCountryFlag(group.country || "")}
-                                </span>
-                            }
-                            setups={group.setups}
-                            onSetupClick={(setup) =>
-                                handleSetupClick(group.trackId, setup)
-                            }
-                            carName={carId}
-                            trackName={group.trackId}
-                        />
-                    </div>
+                        setups={group.setups}
+                        onSetupClick={(setup) =>
+                            handleSetupClick(group.trackId, setup)
+                        }
+                        carName={carId}
+                        trackName={group.trackId}
+                    />
                 ))}
                 {trackGroups.length === 0 && (
                     <EmptyState message="No setups found for this car" />

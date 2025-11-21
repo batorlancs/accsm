@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import type { SetupInfo } from "@/types/backend";
 import { SetupContextMenu } from "@/components/common/SetupContextMenu";
+import type { SetupInfo } from "@/types/backend";
 
 interface SetupGroupProps {
     title: string;
@@ -21,8 +21,8 @@ export function SetupGroup({
     trackName,
 }: SetupGroupProps) {
     return (
-        <div>
-            <div className="px-2">
+        <div className="bg-muted/50 border border-border/50 rounded">
+            <div className="px-4 py-1 border-b border-b-border/50">
                 <div className="flex items-center gap-2 text-sm py-1">
                     {icon}
                     <h3>
@@ -33,7 +33,7 @@ export function SetupGroup({
                     </h3>
                 </div>
             </div>
-            <div className="ml-4">
+            <div className="p-2">
                 {setups.map((setup) => (
                     <SetupContextMenu
                         key={setup.filename}
@@ -43,7 +43,7 @@ export function SetupGroup({
                     >
                         <button
                             type="button"
-                            className="w-full justify-start text-sm h-auto px-2 text-left cursor-pointer opacity-60 hover:opacity-100 hover:translate-x-2 transition-all duration-200 ease-out flex items-center gap-2 group"
+                            className="w-full justify-start text-sm h-auto text-left cursor-pointer opacity-60 hover:opacity-100 hover:translate-x-2 transition-all duration-200 ease-out flex items-center gap-2 group"
                             onClick={() => onSetupClick(setup)}
                         >
                             <ChevronRightIcon className="size-4 opacity-40 group-hover:opacity-100 transition-opacity duration-200" />
