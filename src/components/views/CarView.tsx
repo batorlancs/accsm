@@ -239,7 +239,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
             </div>
 
             {/* Stats Footer */}
-            <div className="p-4">
+            <div className="px-4 py-3 h-11 border-t border-border/50">
                 {folderStructure && (
                     <div className="text-xs text-muted-foreground opacity-80">
                         {searchQuery || selectedCategory !== "all" ? (

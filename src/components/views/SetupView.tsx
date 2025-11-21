@@ -1,6 +1,12 @@
-import { RefreshCw } from "lucide-react";
+import { ChevronsDownUp, RefreshCw } from "lucide-react";
 import { Files } from "@/components/animate-ui/components/radix/files";
 import { Button } from "@/components/ui/button";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
     useFolderStructure,
     useRefreshFolderStructure,
@@ -30,6 +36,10 @@ export function SetupView({
 
     const handleRefresh = () => {
         refreshMutation.mutate();
+    };
+
+    const handleCollapseAll = () => {
+        onOpenFoldersChange?.([]);
     };
 
     const isSetupSelected = (car: string, track: string, filename: string) => {
@@ -87,7 +97,7 @@ export function SetupView({
                     </Files>
                 )}
             </div>
-            <div className="p-4">
+            <div className="px-4 py-2 h-11 flex justify-between items-center border-t border-border/50">
                 {folderStructure && (
                     <div className="text-xs text-muted-foreground opacity-80">
                         {folderStructure.total_setups} setups across{" "}
@@ -105,6 +115,23 @@ export function SetupView({
                         tracks
                     </div>
                 )}
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon-xs"
+                                onClick={handleCollapseAll}
+                                className="opacity-70 hover:opacity-100 transition duration-200"
+                            >
+                                <ChevronsDownUp />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Collapse all</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </div>
         </div>
     );
