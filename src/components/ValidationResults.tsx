@@ -4,13 +4,7 @@ import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { TrackCombobox } from "@/components/TrackCombobox";
 import { TauriAPI } from "@/services/api";
 import type { SetupImportData, ValidationResult } from "@/types/backend";
 
@@ -51,7 +45,7 @@ export function ValidationResults({
             <div className="space-y-4">
                 <div className="text-center py-8">
                     <AlertCircle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
-                    <h3 className="font-semibold text-lg mb-2">
+                    <h3 className="font-semibold text-lg">
                         No JSON Files Found
                     </h3>
                     <p className="text-muted-foreground">
@@ -95,29 +89,12 @@ export function ValidationResults({
         selectedTrack && validResults.length > 0 && !importMutation.isPending;
 
     return (
-        <div className="space-y-4">
-            <div className="flex items-center justify-between">
-                <h3 className="font-semibold">Validation Results</h3>
-                <div className="flex items-center gap-4 text-sm">
-                    {validResults.length > 0 && (
-                        <span className="flex items-center gap-1 text-green-600">
-                            <CheckCircle2 className="h-4 w-4" />
-                            {validResults.length} valid
-                        </span>
-                    )}
-                    {failedResults.length > 0 && (
-                        <span className="flex items-center gap-1 text-red-600">
-                            <AlertCircle className="h-4 w-4" />
-                            {failedResults.length} failed
-                        </span>
-                    )}
-                </div>
-            </div>
-
+        <div className="space-y-2">
             {/* Results list */}
             <div className="max-h-48 overflow-y-auto space-y-2 border rounded-lg p-3">
                 {results.map((result, index) => (
                     <div
+                        // biome-ignore lint/suspicious/noArrayIndexKey: off
                         key={index}
                         className={`flex items-start gap-3 p-2 rounded ${
                             result.success
@@ -153,48 +130,29 @@ export function ValidationResults({
 
             {/* Import settings */}
             {validResults.length > 0 && (
-                <div className="space-y-4 border-t pt-4">
-                    <h4 className="font-medium">Import Settings</h4>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="track-select">Target Track</Label>
-                        <Select
-                            value={selectedTrack}
-                            onValueChange={setSelectedTrack}
-                        >
-                            <SelectTrigger id="track-select">
-                                <SelectValue placeholder="Select a track" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {tracks &&
-                                    Object.entries(tracks).map(
-                                        ([key, track]) => (
-                                            <SelectItem key={key} value={key}>
-                                                {track.pretty_name}
-                                            </SelectItem>
-                                        ),
-                                    )}
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                        <Checkbox
-                            id={checkboxId}
-                            checked={applyLfm}
-                            onCheckedChange={(checked) =>
-                                setApplyLfm(checked === true)
-                            }
-                        />
-                        <Label htmlFor={checkboxId}>
-                            Apply LFM supported setups modifications
-                        </Label>
-                    </div>
+                <div className="flex items-center py-2 space-x-2">
+                    <Checkbox
+                        id={checkboxId}
+                        checked={applyLfm}
+                        onCheckedChange={(checked) =>
+                            setApplyLfm(checked === true)
+                        }
+                    />
+                    <Label htmlFor={checkboxId} className="text-sm">
+                        LFM: Set Telemetry to 99
+                    </Label>
                 </div>
             )}
 
             {/* Actions */}
             <div className="flex gap-2">
+                <TrackCombobox
+                    tracks={tracks}
+                    value={selectedTrack}
+                    onValueChange={setSelectedTrack}
+                    placeholder="Select a track"
+                    className="flex-1"
+                />
                 {validResults.length > 0 ? (
                     <Button
                         onClick={handleImport}
@@ -214,4 +172,3 @@ export function ValidationResults({
         </div>
     );
 }
-

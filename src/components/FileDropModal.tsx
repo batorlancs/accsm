@@ -204,10 +204,9 @@ export function FileDropModal({
             <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <Upload className="h-5 w-5" />
-                        Import JSON Setup Files
+                        Import Setup
                     </DialogTitle>
-                    <DialogDescription>
+                    <DialogDescription className="text-sm">
                         Drop JSON setup files or folders containing JSON files
                         to validate and import them into your setup collection.
                     </DialogDescription>
