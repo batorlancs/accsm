@@ -1,7 +1,10 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: <explanation> */
 import { Edit3, Wrench } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CarBrandIcon } from "@/components/ui/car-brand-icon";
 import { Input } from "@/components/ui/input";
+import { useCars } from "@/hooks/useBackend";
 import type { ValidationResult } from "@/types/backend";
 
 interface SetupFilenameEditorProps {
@@ -17,6 +20,7 @@ export function SetupFilenameEditor({
         Record<number, string>
     >({});
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const { data: cars } = useCars();
 
     const getDisplayName = (result: ValidationResult, index: number) => {
         // Return custom filename if set, otherwise use original filename
@@ -81,12 +85,19 @@ export function SetupFilenameEditor({
                         className="flex items-center rounded bg-muted/30 border border-border/40 hover:bg-muted/50 hover:border-border/60"
                     >
                         <div className="p-2 bg-foreground/4 h-16 w-16 flex items-center justify-center rounded-l-lg">
-                            <Wrench className="size-5 opacity-40" />
+                            {cars?.[result.car!] ? (
+                                <CarBrandIcon
+                                    name={cars[result.car!].brand_name}
+                                    className="size-6 opacity-80"
+                                />
+                            ) : (
+                                <Wrench className="size-5 opacity-40" />
+                            )}
                         </div>
                         <div className="flex-1 min-w-0 px-3 py-1">
                             <div className="flex items-center gap-2">
-                                <span className="text-xs text-muted-foreground font-mono">
-                                    {result.car}
+                                <span className="text-xs text-muted-foreground">
+                                    {cars?.[result.car!].full_name}
                                 </span>
                             </div>
 

@@ -6,6 +6,7 @@ import { TrackCombobox } from "@/components/TrackCombobox";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useCars } from "@/hooks/useBackend";
 import { TauriAPI } from "@/services/api";
 import type { SetupImportData, ValidationResult } from "@/types/backend";
 
@@ -31,6 +32,8 @@ export function ValidationResults({
         queryKey: ["tracks"],
         queryFn: TauriAPI.getTracks,
     });
+
+    const { data: cars } = useCars();
 
     const importMutation = useMutation({
         mutationFn: TauriAPI.importValidatedSetups,
