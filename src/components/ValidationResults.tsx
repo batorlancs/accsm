@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { useId, useState } from "react";
+import { SetupFilenameEditor } from "@/components/SetupFilenameEditor";
+import { TrackCombobox } from "@/components/TrackCombobox";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { TrackCombobox } from "@/components/TrackCombobox";
 import { TauriAPI } from "@/services/api";
 import type { SetupImportData, ValidationResult } from "@/types/backend";
 
@@ -22,6 +23,9 @@ export function ValidationResults({
     const queryClient = useQueryClient();
     const [selectedTrack, setSelectedTrack] = useState<string>("");
     const [applyLfm, setApplyLfm] = useState(false);
+    const [customFilenames, setCustomFilenames] = useState<
+        Record<number, string>
+    >({});
 
     const { data: tracks } = useQuery({
         queryKey: ["tracks"],
@@ -73,11 +77,11 @@ export function ValidationResults({
         if (!selectedTrack || validResults.length === 0) return;
 
         const setupsToImport: SetupImportData[] = validResults.map(
-            (result) => ({
+            (result, index) => ({
                 json_content: result.json_content,
                 car: result.car!,
                 track: selectedTrack,
-                filename: result.filename!,
+                filename: customFilenames[index] || result.filename!,
                 apply_lfm: applyLfm,
             }),
         );
@@ -90,43 +94,13 @@ export function ValidationResults({
 
     return (
         <div className="space-y-2">
-            {/* Results list */}
-            <div className="max-h-48 overflow-y-auto space-y-2 border rounded-lg p-3">
-                {results.map((result, index) => (
-                    <div
-                        // biome-ignore lint/suspicious/noArrayIndexKey: off
-                        key={index}
-                        className={`flex items-start gap-3 p-2 rounded ${
-                            result.success
-                                ? "bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800"
-                                : "bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800"
-                        }`}
-                    >
-                        {result.success ? (
-                            <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5 shrink-0" />
-                        ) : (
-                            <AlertCircle className="h-4 w-4 text-red-600 mt-0.5 shrink-0" />
-                        )}
-                        <div className="flex-1 min-w-0">
-                            <p
-                                className="text-sm font-medium truncate"
-                                title={result.path}
-                            >
-                                {result.path.split("/").pop() || result.path}
-                            </p>
-                            {result.success ? (
-                                <p className="text-xs text-green-700 dark:text-green-300">
-                                    Valid setup for {result.car}
-                                </p>
-                            ) : (
-                                <p className="text-xs text-red-700 dark:text-red-300">
-                                    {result.error}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-                ))}
-            </div>
+            {/* Filename Editor */}
+            {validResults.length > 0 && (
+                <SetupFilenameEditor
+                    validResults={validResults}
+                    onFilenamesChange={setCustomFilenames}
+                />
+            )}
 
             {/* Import settings */}
             {validResults.length > 0 && (
