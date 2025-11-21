@@ -71,7 +71,7 @@ export function SetupView({
 
     return (
         <div className="w-full h-full flex flex-col justify-between overflow-x-hidden">
-            <div className="flex-1 overflow-y-auto p-2 h-full pb-6">
+            <div className="flex-1 overflow-y-auto h-full">
                 {isLoading ? (
                     <div className="p-4 text-center text-muted-foreground">
                         Loading folder structure...
@@ -82,7 +82,7 @@ export function SetupView({
                     </div>
                 ) : (
                     <Files
-                        className="w-full"
+                        className="w-full h-full py-2 px-2"
                         open={openFolders}
                         onOpenChange={onOpenFoldersChange}
                     >
