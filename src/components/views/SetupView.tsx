@@ -81,7 +81,7 @@ export function SetupView({
                         Loading folder structure...
                     </div>
                 ) : folderStructure?.cars.length === 0 ? (
-                    <div className="p-4 text-center text-muted-foreground">
+                    <div className="p-4 text-center text-muted-foreground text-xs">
                         No cars found in the setups folder
                     </div>
                 ) : (
