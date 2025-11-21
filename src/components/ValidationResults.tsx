@@ -1,12 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { SetupFilenameEditor } from "@/components/SetupFilenameEditor";
 import { TrackCombobox } from "@/components/TrackCombobox";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useCars } from "@/hooks/useBackend";
+import { store } from "@/lib/store-manager";
 import { TauriAPI } from "@/services/api";
 import type { SetupImportData, ValidationResult } from "@/types/backend";
 
@@ -27,6 +28,21 @@ export function ValidationResults({
     const [customFilenames, setCustomFilenames] = useState<
         Record<number, string>
     >({});
+
+    // Load default applyLfm state on mount
+    useEffect(() => {
+        const loadDefault = async () => {
+            const defaultValue = await store.get("applyLfmDefault");
+            setApplyLfm(defaultValue ?? false);
+        };
+        loadDefault();
+    }, []);
+
+    // Save applyLfm state whenever it changes
+    const handleApplyLfmChange = (checked: boolean) => {
+        setApplyLfm(checked);
+        store.set("applyLfmDefault", checked);
+    };
 
     const { data: tracks } = useQuery({
         queryKey: ["tracks"],
@@ -112,7 +128,7 @@ export function ValidationResults({
                         id={checkboxId}
                         checked={applyLfm}
                         onCheckedChange={(checked) =>
-                            setApplyLfm(checked === true)
+                            handleApplyLfmChange(checked === true)
                         }
                     />
                     <Label htmlFor={checkboxId} className="text-sm">

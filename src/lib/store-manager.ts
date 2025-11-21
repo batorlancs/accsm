@@ -4,6 +4,7 @@ export interface AppStore {
     carFilterCategory: string;
     carSearchQuery: string;
     trackSearchQuery: string;
+    applyLfmDefault: boolean;
 }
 
 /**
