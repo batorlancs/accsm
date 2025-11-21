@@ -1,6 +1,7 @@
 import { ChevronRightIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { SetupContextMenu } from "@/components/common/SetupContextMenu";
+import { cn } from "@/lib/utils";
 import type { SetupInfo } from "@/types/backend";
 
 interface SetupGroupProps {
@@ -12,6 +13,7 @@ interface SetupGroupProps {
     trackName: string;
     onAfterDelete?: () => void;
     onAfterRename?: (newFilename: string) => void;
+    className?: string;
 }
 
 export function SetupGroup({
@@ -23,9 +25,15 @@ export function SetupGroup({
     trackName,
     onAfterDelete,
     onAfterRename,
+    className,
 }: SetupGroupProps) {
     return (
-        <div className="bg-muted/50 border border-border/50 rounded">
+        <div
+            className={cn(
+                "bg-muted/50 border border-border/50 rounded",
+                className,
+            )}
+        >
             <div className="px-4 py-1 border-b border-b-border/50">
                 <div className="flex items-center gap-2 text-sm py-1">
                     {icon}
