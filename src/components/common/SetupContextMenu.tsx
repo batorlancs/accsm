@@ -12,6 +12,8 @@ interface SetupContextMenuProps {
     carName: string;
     trackName: string;
     setupName: string;
+    onAfterRename?: (newFilename: string) => void;
+    onAfterDelete?: () => void;
 }
 
 export function SetupContextMenu({
@@ -19,15 +21,17 @@ export function SetupContextMenu({
     carName,
     trackName,
     setupName,
+    onAfterRename,
+    onAfterDelete,
 }: SetupContextMenuProps) {
     const { openRenameSetup, openDeleteSetup } = useSetupModals();
 
     const handleRename = () => {
-        openRenameSetup(carName, trackName, setupName);
+        openRenameSetup(carName, trackName, setupName, { onAfterRename });
     };
 
     const handleDelete = () => {
-        openDeleteSetup(carName, trackName, setupName);
+        openDeleteSetup(carName, trackName, setupName, { onAfterDelete });
     };
 
     return (

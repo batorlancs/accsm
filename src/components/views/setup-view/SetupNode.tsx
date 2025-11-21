@@ -10,6 +10,8 @@ interface SetupNodeProps {
     setup: SetupInfo;
     isSelected: boolean;
     onSelect: () => void;
+    onAfterRename?: (newFilename: string) => void;
+    onAfterDelete?: () => void;
 }
 
 export function SetupNode({
@@ -18,12 +20,16 @@ export function SetupNode({
     setup,
     isSelected,
     onSelect,
+    onAfterRename,
+    onAfterDelete,
 }: SetupNodeProps) {
     return (
         <SetupContextMenu
             carName={car.car_id}
             trackName={track.track_id}
             setupName={setup.filename}
+            onAfterRename={onAfterRename}
+            onAfterDelete={onAfterDelete}
         >
             {/* biome-ignore lint/a11y/noStaticElementInteractions: off */}
             {/* biome-ignore lint/a11y/useKeyWithClickEvents: off */}

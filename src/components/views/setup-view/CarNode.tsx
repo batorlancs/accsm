@@ -17,9 +17,11 @@ interface CarNodeProps {
     car: CarFolder;
     onSelectSetup: (car: string, track: string, filename: string) => void;
     isSetupSelected: (car: string, track: string, filename: string) => boolean;
+    onAfterRename?: (newFilename: string) => void;
+    onAfterDelete?: () => void;
 }
 
-export function CarNode({ car, onSelectSetup, isSetupSelected }: CarNodeProps) {
+export function CarNode({ car, onSelectSetup, isSetupSelected, onAfterRename, onAfterDelete }: CarNodeProps) {
     return (
         <FolderItem value={car.car_id}>
             <FolderHeaderPrimitive>
@@ -60,6 +62,8 @@ export function CarNode({ car, onSelectSetup, isSetupSelected }: CarNodeProps) {
                         track={track}
                         onSelectSetup={onSelectSetup}
                         isSetupSelected={isSetupSelected}
+                        onAfterRename={onAfterRename}
+                        onAfterDelete={onAfterDelete}
                     />
                 ))}
             </FolderContent>

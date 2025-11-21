@@ -10,6 +10,8 @@ interface SetupGroupProps {
     onSetupClick: (setup: SetupInfo) => void;
     carName: string;
     trackName: string;
+    onAfterDelete?: () => void;
+    onAfterRename?: (newFilename: string) => void;
 }
 
 export function SetupGroup({
@@ -19,6 +21,8 @@ export function SetupGroup({
     onSetupClick,
     carName,
     trackName,
+    onAfterDelete,
+    onAfterRename,
 }: SetupGroupProps) {
     return (
         <div className="bg-muted/50 border border-border/50 rounded">
@@ -40,6 +44,8 @@ export function SetupGroup({
                         carName={carName}
                         trackName={trackName}
                         setupName={setup.filename}
+                        onAfterDelete={onAfterDelete}
+                        onAfterRename={onAfterRename}
                     >
                         <button
                             type="button"

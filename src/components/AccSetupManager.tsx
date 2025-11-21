@@ -135,6 +135,8 @@ export function AccSetupManager() {
                                     }
                                     openFolders={openFolders}
                                     onOpenFoldersChange={setOpenFolders}
+                                    onAfterRename={handleRenameSetup}
+                                    onAfterDelete={handleDeleteSetup}
                                 />
                             </TabsPanel>
                             <TabsPanel

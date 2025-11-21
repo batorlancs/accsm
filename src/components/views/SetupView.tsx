@@ -23,6 +23,8 @@ interface SetupViewProps {
     onChangePathClick?: () => void;
     openFolders?: string[];
     onOpenFoldersChange?: (openFolders: string[]) => void;
+    onAfterRename?: (newFilename: string) => void;
+    onAfterDelete?: () => void;
 }
 
 export function SetupView({
@@ -30,6 +32,8 @@ export function SetupView({
     onSelectSetup,
     openFolders = [],
     onOpenFoldersChange,
+    onAfterRename,
+    onAfterDelete,
 }: SetupViewProps) {
     const { data: folderStructure, isLoading, error } = useFolderStructure();
     const refreshMutation = useRefreshFolderStructure();
@@ -92,6 +96,8 @@ export function SetupView({
                                 car={car}
                                 onSelectSetup={onSelectSetup}
                                 isSetupSelected={isSetupSelected}
+                                onAfterRename={onAfterRename}
+                                onAfterDelete={onAfterDelete}
                             />
                         ))}
                     </Files>
