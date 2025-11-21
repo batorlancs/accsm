@@ -2,7 +2,6 @@ import {
     BadgeAlert,
     BadgeCheckIcon,
     BadgePlus,
-    Edit2Icon,
     EditIcon,
     Fuel,
     Loader2,
@@ -16,7 +15,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useCars, useEditSetup, useSetup, useTracks } from "@/hooks/useBackend";
 import { getCountryFlag } from "@/lib/countryFlags";
-import { ExampleUsage, useSetupModals } from "./modals";
+import { useSetupModals } from "./modals";
 import { Badge } from "./ui/badge";
 import { CarBrandIcon } from "./ui/car-brand-icon";
 import { InputWithIcon } from "./ui/input-with-icon";
@@ -118,8 +117,8 @@ export function SetupViewer({
     if (error || carsError || tracksError) {
         return (
             <div className="p-4">
-                <h2 className="text-red-500">Error</h2>
-                <p className="text-sm text-red-500">
+                <h2 className="text-red-400/50">Error</h2>
+                <p className="text-sm text-red-400/50">
                     Failed to load setup:{" "}
                     {String(
                         error?.message ||
