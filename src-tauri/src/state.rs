@@ -107,12 +107,15 @@ impl AppStateManager {
             if let Some(car) = find_car_by_folder(&folder_name) {
                 match self.scan_car_folder(&path, &car.id).await {
                     Ok(car_folder) => {
-                        total_setups += car_folder
-                            .tracks
-                            .iter()
-                            .map(|t| t.setups.len())
-                            .sum::<usize>();
-                        cars.push(car_folder);
+                        // Only include cars that have at least one track with setups
+                        if !car_folder.tracks.is_empty() {
+                            total_setups += car_folder
+                                .tracks
+                                .iter()
+                                .map(|t| t.setups.len())
+                                .sum::<usize>();
+                            cars.push(car_folder);
+                        }
                     }
                     Err(e) => {
                         warn!("Error scanning car folder {}: {}", folder_name, e);
