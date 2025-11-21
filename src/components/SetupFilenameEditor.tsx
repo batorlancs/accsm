@@ -1,13 +1,13 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: false positive */
-import { Edit3, Sparkles, Wrench } from "lucide-react";
-import { useState } from "react";
+import { Check, Edit3, Sparkles, Wrench } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CarBrandIcon } from "@/components/ui/car-brand-icon";
 import { Input } from "@/components/ui/input";
 import { useCars } from "@/hooks/useBackend";
-import { 
-    hasQualyAndRaceSetups, 
-    generateSimplifiedNames 
+import {
+    generateSimplifiedNames,
+    hasQualyAndRaceSetups,
 } from "@/lib/filename-simplify";
 import type { ValidationResult } from "@/types/backend";
 
@@ -24,9 +24,18 @@ export function SetupFilenameEditor({
         Record<number, string>
     >({});
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [showSimplifyCheck, setShowSimplifyCheck] = useState(false);
     const [isHoveringSimplify, setIsHoveringSimplify] = useState(false);
     const [customSimplifyName, setCustomSimplifyName] = useState("");
     const { data: cars } = useCars();
+
+    useEffect(() => {
+        setTimeout(() => {
+            if (showSimplifyCheck) {
+                setShowSimplifyCheck(false);
+            }
+        }, 1000);
+    }, [showSimplifyCheck]);
 
     const getDisplayName = (result: ValidationResult, index: number) => {
         // Return custom filename if set, otherwise use original filename
@@ -78,21 +87,29 @@ export function SetupFilenameEditor({
     };
 
     // Check if we should show the simplify button
-    const filenames = validResults.map(result => result.filename || "");
-    const shouldShowSimplify = validResults.length >= 2 && hasQualyAndRaceSetups(filenames);
+    const filenames = validResults.map((result) => result.filename || "");
+    const shouldShowSimplify =
+        validResults.length >= 2 && hasQualyAndRaceSetups(filenames);
 
     // Get preview names for hover effect
     const getPreviewName = (result: ValidationResult, index: number) => {
         if (!isHoveringSimplify) return getDisplayName(result, index);
-        
-        const simplifiedNames = generateSimplifiedNames(filenames, customSimplifyName);
+
+        const simplifiedNames = generateSimplifiedNames(
+            filenames,
+            customSimplifyName,
+        );
         return simplifiedNames[index] || getDisplayName(result, index);
     };
 
     const handleSimplify = () => {
-        const simplifiedNames = generateSimplifiedNames(filenames, customSimplifyName);
-        setCustomFilenames(prev => ({ ...prev, ...simplifiedNames }));
+        const simplifiedNames = generateSimplifiedNames(
+            filenames,
+            customSimplifyName,
+        );
+        setCustomFilenames((prev) => ({ ...prev, ...simplifiedNames }));
         onFilenamesChange({ ...customFilenames, ...simplifiedNames });
+        setShowSimplifyCheck(true);
     };
 
     if (validResults.length === 0) return null;
@@ -111,12 +128,15 @@ export function SetupFilenameEditor({
                         size="sm"
                         variant="outline"
                         onClick={handleSimplify}
-                        onMouseEnter={() => setIsHoveringSimplify(true)}
+                        onMouseEnter={() => {
+                            setIsHoveringSimplify(true);
+                            setShowSimplifyCheck(false);
+                        }}
                         onMouseLeave={() => setIsHoveringSimplify(false)}
-                        className="h-8 px-3 gap-2 hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                        className="h-8 px-3 gap-2 hover:bg-yellow-300/20 hover:text-yellow-600 transition-all duration-200"
                     >
-                        <Sparkles className="size-4" />
-                        Simplify
+                        {showSimplifyCheck ? "Simplified" : "Simplify"}
+                        {showSimplifyCheck ? <Check /> : <Sparkles />}
                     </Button>
                 </div>
             )}
@@ -180,12 +200,16 @@ export function SetupFilenameEditor({
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span 
+                                    <span
                                         className={`text-sm font-medium truncate transition-opacity duration-200 ${
-                                            isHoveringSimplify ? 'opacity-60' : 'opacity-100'
+                                            isHoveringSimplify
+                                                ? "opacity-60"
+                                                : "opacity-100"
                                         }`}
                                         style={{
-                                            opacity: isHoveringSimplify ? 0.6 : 1,
+                                            opacity: isHoveringSimplify
+                                                ? 0.6
+                                                : 1,
                                         }}
                                     >
                                         {getPreviewName(result, index)}
