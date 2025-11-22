@@ -14,8 +14,7 @@ const BRAND_OVERRIDES: Record<
     }
 > = {
     audi: {
-        outerClassName: "bg-red-400/20 rounded p-[2px]",
-        className: "brightness-0 invert-[0.8] size-[15px] mx-0",
+        className: "brightness-0 invert-[0.7]",
     },
     honda: {
         className: "brightness-0 invert-[0.7]",
@@ -27,15 +26,13 @@ const BRAND_OVERRIDES: Record<
         },
     },
     bentley: {
-        outerClassName: "bg-neutral-500/30 rounded p-[2px]",
-        className: "brightness-0 invert size-[15px] mx-0",
+        className: "brightness-0 invert-[0.9]",
     },
     alpine: {
-        outerClassName: "bg-blue-400/20 rounded p-[2px]",
-        className: "brightness-0 invert size-[15px] mx-0",
+        className: "brightness-0 invert-[0.9]",
     },
     jaguar: {
-        className: "brightness-0 invert-[0.6]",
+        className: "brightness-0 invert-[0.9]",
     },
     ginetta: {
         className: "brightness-0 invert-[0.5]",
@@ -44,8 +41,7 @@ const BRAND_OVERRIDES: Record<
         className: "brightness-0 invert-[0.7]",
     },
     "aston martin": {
-        outerClassName: "bg-[#01665E]/30 rounded p-[2px]",
-        className: "brightness-0 invert-[0.8] size-[15px] mx-0",
+        className: "brightness-0 invert-[0.9]",
     },
     chevrolet: {
         className: "brightness-0 invert-[0.6]",
