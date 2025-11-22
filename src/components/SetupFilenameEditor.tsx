@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: false positive */
-import { Check, Edit3, Sparkles, Wrench } from "lucide-react";
+import { AlertTriangle, Check, Edit3, Sparkles, Wrench } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -12,15 +12,20 @@ import {
     SIMPLIFIED_NAMES,
 } from "@/lib/filename-simplify";
 import type { ValidationResult } from "@/types/backend";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface SetupFilenameEditorProps {
     validResults: ValidationResult[];
     onFilenamesChange: (updatedFilenames: Record<number, string>) => void;
+    onHasDuplicatesChange: (hasDuplicates: boolean) => void;
+    existingFileConflicts: Set<number>;
 }
 
 export function SetupFilenameEditor({
     validResults,
     onFilenamesChange,
+    onHasDuplicatesChange,
+    existingFileConflicts,
 }: SetupFilenameEditorProps) {
     const [customFilenames, setCustomFilenames] = useState<
         Record<number, string>
@@ -30,6 +35,9 @@ export function SetupFilenameEditor({
     const [showSimplifyCheck, setShowSimplifyCheck] = useState(false);
     const [isHoveringSimplify, setIsHoveringSimplify] = useState(false);
     const [customSimplifyName, setCustomSimplifyName] = useState("");
+    const [duplicateIndices, setDuplicateIndices] = useState<Set<number>>(
+        new Set(),
+    );
     const { data: cars } = useCars();
 
     useEffect(() => {
@@ -46,6 +54,31 @@ export function SetupFilenameEditor({
             customFilenames[index] || result.filename || "imported_setup.json"
         );
     };
+
+    // biome-ignore lint/correctness/useExhaustiveDependencies: off
+    useEffect(() => {
+        const allFilenames = validResults.map((result, index) =>
+            getDisplayName(result, index),
+        );
+        const nameToIndices: Record<string, number[]> = {};
+        allFilenames.forEach((name, index) => {
+            if (!nameToIndices[name]) {
+                nameToIndices[name] = [];
+            }
+            nameToIndices[name].push(index);
+        });
+
+        const newDuplicateIndices = new Set<number>();
+        for (const name in nameToIndices) {
+            if (nameToIndices[name].length > 1) {
+                nameToIndices[name].forEach((index) => {
+                    newDuplicateIndices.add(index);
+                });
+            }
+        }
+        setDuplicateIndices(newDuplicateIndices);
+        onHasDuplicatesChange(newDuplicateIndices.size > 0);
+    }, [customFilenames, validResults, onHasDuplicatesChange]);
 
     const handleEdit = (index: number) => {
         const currentName = getDisplayName(validResults[index], index);
@@ -203,38 +236,45 @@ export function SetupFilenameEditor({
                             </div>
 
                             {editingIndex === index ? (
-                                <div className="flex items-center gap-2 mt-1">
-                                    <Input
-                                        value={customFilenames[index] || ""}
-                                        onChange={(e) =>
-                                            setCustomFilenames((prev) => ({
-                                                ...prev,
-                                                [index]: e.target.value,
-                                            }))
-                                        }
-                                        onKeyDown={(e) =>
-                                            handleKeyDown(e, index)
-                                        }
-                                        placeholder="Enter filename (without .json)"
-                                        className="h-7 text-sm flex-1"
-                                        autoFocus
-                                    />
-                                    <Button
-                                        size="sm"
-                                        // variant="primary"
-                                        onClick={() => handleSave(index)}
-                                        className="h-7 px-2 text-xs"
-                                    >
-                                        Save
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        onClick={() => handleCancel(index)}
-                                        className="h-7 px-2 text-xs"
-                                    >
-                                        Cancel
-                                    </Button>
+                                <div className="flex flex-col gap-2 mt-1">
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            value={customFilenames[index] || ""}
+                                            onChange={(e) =>
+                                                setCustomFilenames((prev) => ({
+                                                    ...prev,
+                                                    [index]: e.target.value,
+                                                }))
+                                            }
+                                            onKeyDown={(e) =>
+                                                handleKeyDown(e, index)
+                                            }
+                                            placeholder="Enter filename (without .json)"
+                                            className={`h-7 text-sm flex-1 ${
+                                                duplicateIndices.has(index) ||
+                                                existingFileConflicts.has(index)
+                                                    ? "border-red-500/50"
+                                                    : ""
+                                            }`}
+                                            autoFocus
+                                        />
+                                        <Button
+                                            size="sm"
+                                            // variant="primary"
+                                            onClick={() => handleSave(index)}
+                                            className="h-7 px-2 text-xs"
+                                        >
+                                            Save
+                                        </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={() => handleCancel(index)}
+                                            className="h-7 px-2 text-xs"
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-2 mt-1">
@@ -253,11 +293,51 @@ export function SetupFilenameEditor({
                                                 isNameDifferent(index)
                                                     ? "text-yellow-200/60"
                                                     : ""
+                                            } ${
+                                                duplicateIndices.has(index)
+                                                    ? "text-red-500/80"
+                                                    : ""
+                                            }  ${
+                                                existingFileConflicts.has(index)
+                                                    ? "text-orange-400/80"
+                                                    : ""
                                             }`}
                                         >
                                             {getPreviewName(result, index)}
                                         </motion.span>
                                     </AnimatePresence>
+                                    {duplicateIndices.has(index) &&
+                                        !(
+                                            isHoveringSimplify &&
+                                            isNameDifferent(index)
+                                        ) && (
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <AlertTriangle className="size-4 text-red-500/80 shrink-0" />
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>
+                                                        Duplicate file names
+                                                        detected
+                                                    </p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        )}
+                                    {existingFileConflicts.has(index) &&
+                                        !duplicateIndices.has(index) &&
+                                        !(
+                                            isHoveringSimplify &&
+                                            isNameDifferent(index)
+                                        ) && (
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <AlertTriangle className="size-4 text-orange-400/80 shrink-0" />
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p>File already exists</p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        )}
                                     <div className="flex h-6 w-6 items-center justify-center">
                                         <AnimatePresence mode="wait">
                                             {isHoveringSimplify &&
