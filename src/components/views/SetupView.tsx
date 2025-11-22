@@ -39,7 +39,7 @@ export function SetupView({
     const refreshMutation = useRefreshFolderStructure();
 
     const handleRefresh = () => {
-        refreshMutation.mutate();
+        refreshMutation.mutate({});
     };
 
     const handleCollapseAll = () => {

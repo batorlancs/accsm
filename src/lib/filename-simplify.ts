@@ -70,7 +70,7 @@ function matchQualify(
 
     // Check for short patterns (Q, R) in tokens to avoid false matches
     for (const token of tokens) {
-        if (SETUP_TYPE_PATTERNS.QUALIFY.short.includes(token)) {
+        if ((SETUP_TYPE_PATTERNS.QUALIFY.short as readonly string[]).includes(token)) {
             return { type: "qualify", confidence: 0.7 };
         }
     }
@@ -91,7 +91,7 @@ function matchRace(tokens: string[], fullString: string): SimplifyMatch | null {
 
     // Check for short patterns (R) in tokens
     for (const token of tokens) {
-        if (SETUP_TYPE_PATTERNS.RACE.short.includes(token)) {
+        if ((SETUP_TYPE_PATTERNS.RACE.short as readonly string[]).includes(token)) {
             return { type: "race", confidence: 0.7 };
         }
     }
@@ -112,7 +112,7 @@ function matchWet(tokens: string[], fullString: string): SimplifyMatch | null {
 
     // Check for short patterns (W) in tokens
     for (const token of tokens) {
-        if (SETUP_TYPE_PATTERNS.WET.short.includes(token)) {
+        if ((SETUP_TYPE_PATTERNS.WET.short as readonly string[]).includes(token)) {
             return { type: "wet", confidence: 0.6 };
         }
     }
