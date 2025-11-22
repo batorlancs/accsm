@@ -25,6 +25,7 @@ export function SetupFilenameEditor({
         Record<number, string>
     >({});
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [preEditFilename, setPreEditFilename] = useState<string | null>(null);
     const [showSimplifyCheck, setShowSimplifyCheck] = useState(false);
     const [isHoveringSimplify, setIsHoveringSimplify] = useState(false);
     const [customSimplifyName, setCustomSimplifyName] = useState("");
@@ -47,6 +48,7 @@ export function SetupFilenameEditor({
 
     const handleEdit = (index: number) => {
         const currentName = getDisplayName(validResults[index], index);
+        setPreEditFilename(currentName);
         // Remove .json extension for editing
         const nameWithoutExt = currentName.replace(/\.json$/, "");
         setCustomFilenames((prev) => ({ ...prev, [index]: nameWithoutExt }));
@@ -66,17 +68,20 @@ export function SetupFilenameEditor({
             onFilenamesChange(updatedFilenames);
         }
         setEditingIndex(null);
+        setPreEditFilename(null);
     };
 
     const handleCancel = (index: number) => {
-        // Reset to original filename
-        setCustomFilenames((prev) => {
-            const updated = { ...prev };
+        const updated = { ...customFilenames };
+        if (preEditFilename) {
+            updated[index] = preEditFilename;
+        } else {
             delete updated[index];
-            return updated;
-        });
+        }
+        setCustomFilenames(updated);
+        onFilenamesChange(updated);
         setEditingIndex(null);
-        onFilenamesChange(customFilenames);
+        setPreEditFilename(null);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
@@ -98,7 +103,9 @@ export function SetupFilenameEditor({
             filenames,
             customSimplifyName,
         );
-        const previewName = simplifiedNames[index] || getDisplayName(validResults[index], index);
+        const previewName =
+            simplifiedNames[index] ||
+            getDisplayName(validResults[index], index);
         return originalName !== previewName;
     };
 
@@ -161,7 +168,7 @@ export function SetupFilenameEditor({
                     <div
                         // biome-ignore lint/suspicious/noArrayIndexKey: off
                         key={index}
-                        className="flex items-center rounded bg-muted/30 border border-border/40 hover:bg-muted/50 hover:border-border/60"
+                        className="flex items-center rounded bg-foreground/1.5 border border-border/60 hover:bg-foreground/3 hover:border-border/80"
                     >
                         <div className="p-2 bg-foreground/4 h-16 w-16 flex items-center justify-center rounded-l-lg">
                             {cars?.[result.car!] ? (
@@ -227,7 +234,8 @@ export function SetupFilenameEditor({
                                             exit={{ opacity: 0, y: 5 }}
                                             transition={{ duration: 0.15 }}
                                             className={`truncate text-sm font-medium ${
-                                                isHoveringSimplify && isNameDifferent(index)
+                                                isHoveringSimplify &&
+                                                isNameDifferent(index)
                                                     ? "text-yellow-200/60"
                                                     : ""
                                             }`}
@@ -237,7 +245,8 @@ export function SetupFilenameEditor({
                                     </AnimatePresence>
                                     <div className="flex h-6 w-6 items-center justify-center">
                                         <AnimatePresence mode="wait">
-                                            {isHoveringSimplify && isNameDifferent(index) ? (
+                                            {isHoveringSimplify &&
+                                            isNameDifferent(index) ? (
                                                 <motion.div
                                                     key="sparkles"
                                                     initial={{
