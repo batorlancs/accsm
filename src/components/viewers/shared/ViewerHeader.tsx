@@ -13,7 +13,8 @@ interface ViewerHeaderProps {
 
 export function ViewerHeader({ title, subtitles, corner }: ViewerHeaderProps) {
     return (
-        <div className="p-4 border-b border-border/50 flex items-start justify-between">
+        <div className="p-4 pb-2 flex items-start justify-between">
+            {/* <div className="p-4 border-b border-border/50 flex items-start justify-between"> */}
             <div>
                 <h2 className="text-lg font-semibold">{title}</h2>
                 {subtitles?.map((subtitle, index) => (
@@ -33,4 +34,3 @@ export function ViewerHeader({ title, subtitles, corner }: ViewerHeaderProps) {
         </div>
     );
 }
-

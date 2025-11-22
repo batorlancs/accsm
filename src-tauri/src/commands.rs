@@ -100,6 +100,40 @@ pub async fn edit_setup(
     }
 }
 
+/// Rename a setup file
+#[tauri::command]
+pub async fn rename_setup(
+    car: String,
+    track: String,
+    old_filename: String,
+    new_filename: String,
+    state: State<'_, Arc<AppStateManager>>,
+) -> Result<(), AccError> {
+    info!(
+        "Renaming setup: {}/{}/{} -> {}",
+        car, track, old_filename, new_filename
+    );
+    match state
+        .rename_setup(&car, &track, &old_filename, &new_filename)
+        .await
+    {
+        Ok(()) => {
+            info!(
+                "Successfully renamed setup: {}/{}/{} -> {}",
+                car, track, old_filename, new_filename
+            );
+            Ok(())
+        }
+        Err(e) => {
+            error!(
+                "Failed to rename setup {}/{}/{} -> {}: {}",
+                car, track, old_filename, new_filename, e
+            );
+            Err(e)
+        }
+    }
+}
+
 /// Delete a setup file
 #[tauri::command]
 pub async fn delete_setup(
@@ -740,12 +774,12 @@ fn apply_lfm_modifications(mut json_content: JsonValue) -> JsonValue {
     if let Some(obj) = json_content.as_object_mut() {
         // Example: Set specific values for LFM compatibility
         if let Some(basic_setup) = obj.get_mut("basicSetup").and_then(|v| v.as_object_mut()) {
-            // Example modifications for LFM compatibility
-            if let Some(telementry_laps) = basic_setup
-                .get_mut("telemetryLaps")
+            // Set telemetry laps to 99 for LFM compatibility
+            if let Some(electronics) = basic_setup
+                .get_mut("electronics")
                 .and_then(|v| v.as_object_mut())
             {
-                telementry_laps.insert("value".to_string(), JsonValue::from(99));
+                electronics.insert("telemetryLaps".to_string(), JsonValue::from(99));
             }
         }
     }

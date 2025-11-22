@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { TauriAPI } from "@/services/api";
 import type {
     DeleteSetupParams,
+    RenameSetupParams,
     SaveSetupParams,
     ValidateSetupParams,
 } from "@/types/backend";
@@ -30,10 +31,11 @@ export function useRefreshFolderStructure() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: TauriAPI.refreshFolderStructure,
-        onSuccess: (data) => {
+        mutationFn: (_params: { silent?: boolean }) =>
+            TauriAPI.refreshFolderStructure(),
+        onSuccess: (data, variables) => {
             queryClient.setQueryData(queryKeys.folderStructure, data);
-            toast.success("Refreshed all setups!");
+            if (!variables.silent) toast.success("Refreshed all setups!");
         },
         onError: (error) => {
             toast.error(`Failed to refresh: ${error}`);
@@ -59,7 +61,12 @@ export function useSaveSetup() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (params: SaveSetupParams) => TauriAPI.saveSetup(params),
+        mutationFn: (
+            params: SaveSetupParams & {
+                silent?: boolean;
+                customToastMessage?: string;
+            },
+        ) => TauriAPI.saveSetup(params),
         onSuccess: (_, variables) => {
             // Invalidate the specific setup and folder structure
             queryClient.invalidateQueries({
@@ -72,7 +79,12 @@ export function useSaveSetup() {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.folderStructure,
             });
-            toast.success("Setup saved successfully");
+
+            if (!variables.silent) {
+                toast.success(
+                    variables.customToastMessage || "Setup saved successfully",
+                );
+            }
         },
         onError: (error) => {
             toast.error(`Failed to save setup: ${error}`);
@@ -84,7 +96,9 @@ export function useEditSetup() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (params: SaveSetupParams) => TauriAPI.editSetup(params),
+        mutationFn: (
+            params: SaveSetupParams & { customToastMessage?: string },
+        ) => TauriAPI.editSetup(params),
         onSuccess: (_, variables) => {
             // Invalidate the specific setup and folder structure
             queryClient.invalidateQueries({
@@ -97,10 +111,49 @@ export function useEditSetup() {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.folderStructure,
             });
-            toast.success("Setup updated successfully");
+            toast.success(
+                variables.customToastMessage || "Setup updated successfully",
+            );
         },
         onError: (error) => {
             toast.error(`Failed to update setup: ${error}`);
+        },
+    });
+}
+
+export function useRenameSetup() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (
+            params: RenameSetupParams & {
+                silent?: boolean;
+                customToastMessage?: string;
+            },
+        ) => TauriAPI.renameSetup(params),
+        onSuccess: (_, variables) => {
+            // Remove the old setup from cache
+            queryClient.removeQueries({
+                queryKey: queryKeys.setup(
+                    variables.car,
+                    variables.track,
+                    variables.oldFilename,
+                ),
+            });
+            // Invalidate folder structure to show new filename
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.folderStructure,
+            });
+
+            if (!variables.silent) {
+                toast.success(
+                    variables.customToastMessage ||
+                        "Setup renamed successfully",
+                );
+            }
+        },
+        onError: (error) => {
+            toast.error(`Failed to rename setup: ${error.message}`);
         },
     });
 }
@@ -109,7 +162,12 @@ export function useDeleteSetup() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (params: DeleteSetupParams) => TauriAPI.deleteSetup(params),
+        mutationFn: (
+            params: DeleteSetupParams & {
+                silent?: boolean;
+                customToastMessage?: string;
+            },
+        ) => TauriAPI.deleteSetup(params),
         onSuccess: (_, variables) => {
             // Remove the specific setup from cache and invalidate folder structure
             queryClient.removeQueries({
@@ -122,7 +180,13 @@ export function useDeleteSetup() {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.folderStructure,
             });
-            toast.success("Setup deleted successfully");
+
+            if (!variables.silent) {
+                toast.success(
+                    variables.customToastMessage ||
+                        "Setup deleted successfully",
+                );
+            }
         },
         onError: (error) => {
             toast.error(`Failed to delete setup: ${error}`);

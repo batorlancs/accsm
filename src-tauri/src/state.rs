@@ -107,12 +107,15 @@ impl AppStateManager {
             if let Some(car) = find_car_by_folder(&folder_name) {
                 match self.scan_car_folder(&path, &car.id).await {
                     Ok(car_folder) => {
-                        total_setups += car_folder
-                            .tracks
-                            .iter()
-                            .map(|t| t.setups.len())
-                            .sum::<usize>();
-                        cars.push(car_folder);
+                        // Only include cars that have at least one track with setups
+                        if !car_folder.tracks.is_empty() {
+                            total_setups += car_folder
+                                .tracks
+                                .iter()
+                                .map(|t| t.setups.len())
+                                .sum::<usize>();
+                            cars.push(car_folder);
+                        }
                     }
                     Err(e) => {
                         warn!("Error scanning car folder {}: {}", folder_name, e);
@@ -397,6 +400,51 @@ impl AppStateManager {
         })?;
 
         info!("Saved setup: {}/{}/{}", car, track, filename);
+        Ok(())
+    }
+
+    /// Rename a setup file
+    pub async fn rename_setup(&self, car: &str, track: &str, old_filename: &str, new_filename: &str) -> AccResult<()> {
+        let setups_path = self.get_setups_path().await;
+        let cars_data = crate::data::get_cars();
+        let tracks_data = crate::data::get_tracks();
+
+        let car_data = cars_data.get(car).ok_or_else(|| AccError::InvalidCarId {
+            car_id: car.to_string(),
+        })?;
+        let track_data = tracks_data
+            .get(track)
+            .ok_or_else(|| AccError::InvalidTrackId {
+                track_id: track.to_string(),
+            })?;
+
+        let old_file_path = setups_path
+            .join(&car_data.id)
+            .join(&track_data.id)
+            .join(old_filename);
+
+        let new_file_path = setups_path
+            .join(&car_data.id)
+            .join(&track_data.id)
+            .join(new_filename);
+
+        if !old_file_path.exists() {
+            return Err(AccError::FileNotFound {
+                path: old_file_path.to_string_lossy().to_string(),
+            });
+        }
+
+        if new_file_path.exists() {
+            return Err(AccError::FileAlreadyExists {
+                path: new_file_path.to_string_lossy().to_string(),
+            });
+        }
+
+        fs::rename(&old_file_path, &new_file_path).map_err(|e| AccError::IoError {
+            message: format!("Failed to rename setup file: {}", e),
+        })?;
+
+        info!("Renamed setup: {}/{}/{} -> {}", car, track, old_filename, new_filename);
         Ok(())
     }
 

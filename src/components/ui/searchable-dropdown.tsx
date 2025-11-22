@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 export interface SearchableDropdownOption {
     value: string;
     label: string;
+    count?: number;
 }
 
 export interface SearchableDropdownProps {
@@ -131,7 +132,18 @@ export function SearchableDropdown({
                                     disabled={disabled}
                                     type="button"
                                 >
-                                    {selectedOption?.label || dropdownLabel}{" "}
+                                    {selectedOption ? (
+                                        <>
+                                            {selectedOption.label}
+                                            {selectedOption.count !== undefined && (
+                                                <span className="opacity-50">
+                                                    {" "}({selectedOption.count})
+                                                </span>
+                                            )}
+                                        </>
+                                    ) : (
+                                        dropdownLabel
+                                    )}{" "}
                                     <ChevronDownIcon className="size-3" />
                                 </InputGroupButton>
                             </DropdownMenuTrigger>
@@ -148,7 +160,14 @@ export function SearchableDropdown({
                                                 option.value && "bg-accent/50",
                                         )}
                                     >
-                                        <span>{option.label}</span>
+                                        <span>
+                                            {option.label}
+                                            {option.count !== undefined && (
+                                                <span className="opacity-50">
+                                                    {" "}({option.count})
+                                                </span>
+                                            )}
+                                        </span>
                                         {selectedOption?.value ===
                                             option.value && (
                                             <CheckIcon className="size-3" />

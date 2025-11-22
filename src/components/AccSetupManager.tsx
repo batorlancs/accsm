@@ -61,6 +61,17 @@ export function AccSetupManager() {
         setExplorerViewState({ type: "empty" });
     };
 
+    const handleRenameSetup = (newFilename: string) => {
+        if (explorerViewState.type === "viewing") {
+            setExplorerViewState({
+                type: "viewing",
+                car: explorerViewState.car,
+                track: explorerViewState.track,
+                filename: newFilename,
+            });
+        }
+    };
+
     // Tracks tab handlers
     const handleSelectTrack = (trackId: string) => {
         setSelectedTrack(trackId === selectedTrack ? null : trackId);
@@ -124,6 +135,8 @@ export function AccSetupManager() {
                                     }
                                     openFolders={openFolders}
                                     onOpenFoldersChange={setOpenFolders}
+                                    onAfterRename={handleRenameSetup}
+                                    onAfterDelete={handleDeleteSetup}
                                 />
                             </TabsPanel>
                             <TabsPanel
@@ -160,6 +173,7 @@ export function AccSetupManager() {
                             <ExplorerViewer
                                 viewState={explorerViewState}
                                 onDeleteSetup={handleDeleteSetup}
+                                onRenameSetup={handleRenameSetup}
                             />
                         )}
 

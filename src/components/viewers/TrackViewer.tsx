@@ -57,6 +57,22 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
         selectSetup(carId, trackId, setup);
     };
 
+    const handleAfterDelete = () => {
+        // Return to the default view but keep the selected track
+        clearSelection();
+    };
+
+    const handleAfterRename = (newFilename: string) => {
+        // Update the selected setup to use the new filename
+        if (selectedSetup) {
+            selectSetup(selectedSetup.car, selectedSetup.track, {
+                filename: newFilename,
+                display_name: newFilename,
+                last_modified: new Date().toISOString(),
+            });
+        }
+    };
+
     if (selectedSetup) {
         return (
             <SetupViewer
@@ -64,6 +80,8 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
                 track={selectedSetup.track}
                 filename={selectedSetup.filename}
                 onClose={clearSelection}
+                onAfterDelete={handleAfterDelete}
+                onAfterRename={handleAfterRename}
             />
         );
     }
@@ -83,8 +101,8 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
                     },
                 ]}
             />
-            <div className="p-4 grid grid-cols-2 gap-x-4 gap-y-6">
-                {carGroups.map((group) => {
+            <div className="grid grid-cols-2 gap-4 p-4">
+                {carGroups.map((group, _index) => {
                     return (
                         <SetupGroup
                             key={group.carId}
@@ -94,6 +112,8 @@ export function TrackViewer({ trackId }: TrackViewerProps) {
                             onSetupClick={(setup) =>
                                 handleSetupClick(group.carId, setup)
                             }
+                            carName={group.carId}
+                            trackName={trackId}
                         />
                     );
                 })}

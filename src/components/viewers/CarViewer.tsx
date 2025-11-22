@@ -53,6 +53,22 @@ export function CarViewer({ carId }: CarViewerProps) {
         selectSetup(carId, trackId, setup);
     };
 
+    const handleAfterDelete = () => {
+        // Return to the default view but keep the selected car
+        clearSelection();
+    };
+
+    const handleAfterRename = (newFilename: string) => {
+        // Update the selected setup to use the new filename
+        if (selectedSetup) {
+            selectSetup(selectedSetup.car, selectedSetup.track, {
+                filename: newFilename,
+                display_name: newFilename,
+                last_modified: new Date().toISOString(),
+            });
+        }
+    };
+
     if (selectedSetup) {
         return (
             <SetupViewer
@@ -60,6 +76,8 @@ export function CarViewer({ carId }: CarViewerProps) {
                 track={selectedSetup.track}
                 filename={selectedSetup.filename}
                 onClose={clearSelection}
+                onAfterDelete={handleAfterDelete}
+                onAfterRename={handleAfterRename}
             />
         );
     }
@@ -87,8 +105,8 @@ export function CarViewer({ carId }: CarViewerProps) {
                     </span>
                 }
             />
-            <div className="p-4 grid grid-cols-2 gap-x-4 gap-y-6">
-                {trackGroups.map((group) => (
+            <div className="grid grid-cols-2 gap-4 p-4">
+                {trackGroups.map((group, _index) => (
                     <SetupGroup
                         key={group.trackId}
                         title={group.trackName}
@@ -99,6 +117,8 @@ export function CarViewer({ carId }: CarViewerProps) {
                         onSetupClick={(setup) =>
                             handleSetupClick(group.trackId, setup)
                         }
+                        carName={carId}
+                        trackName={group.trackId}
                     />
                 ))}
                 {trackGroups.length === 0 && (

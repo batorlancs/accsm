@@ -18,6 +18,8 @@ interface TrackNodeProps {
     track: TrackFolder;
     onSelectSetup: (car: string, track: string, filename: string) => void;
     isSetupSelected: (car: string, track: string, filename: string) => boolean;
+    onAfterRename?: (newFilename: string) => void;
+    onAfterDelete?: () => void;
 }
 
 export function TrackNode({
@@ -25,6 +27,8 @@ export function TrackNode({
     track,
     onSelectSetup,
     isSetupSelected,
+    onAfterRename,
+    onAfterDelete,
 }: TrackNodeProps) {
     return (
         <FolderItem value={`${car.car_id}/${track.track_id}`}>
@@ -72,6 +76,8 @@ export function TrackNode({
                                 setup.filename,
                             )
                         }
+                        onAfterRename={onAfterRename}
+                        onAfterDelete={onAfterDelete}
                     />
                 ))}
             </FolderContent>

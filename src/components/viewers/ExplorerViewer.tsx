@@ -8,11 +8,13 @@ type ExplorerViewState =
 interface ExplorerViewerProps {
     viewState: ExplorerViewState;
     onDeleteSetup: () => void;
+    onRenameSetup?: (newFilename: string) => void;
 }
 
 export function ExplorerViewer({
     viewState,
     onDeleteSetup,
+    onRenameSetup,
 }: ExplorerViewerProps) {
     if (viewState.type === "empty") {
         return <EmptyState />;
@@ -26,6 +28,8 @@ export function ExplorerViewer({
                 filename={viewState.filename}
                 onDelete={onDeleteSetup}
                 onClose={onDeleteSetup}
+                onAfterDelete={onDeleteSetup}
+                onAfterRename={onRenameSetup}
             />
         );
     }

@@ -28,7 +28,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
         const loadPersistedValues = async () => {
             const storedCategory = await store.get("carFilterCategory");
             const storedSearch = await store.get("carSearchQuery");
-            
+
             if (storedCategory) {
                 setSelectedCategory(storedCategory);
             }
@@ -44,15 +44,38 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
     // Get all available cars from folder structure
     const availableCars = folderStructure?.cars || [];
 
-    // Define category options
-    const categoryOptions: SearchableDropdownOption[] = [
-        { value: "all", label: "All" },
-        { value: "gt2", label: "GT2" },
-        { value: "gt3", label: "GT3" },
-        { value: "gt4", label: "GT4" },
-        { value: "cup", label: "Cup" },
-        { value: "m2", label: "M2" },
-    ];
+    // Define category options with counts
+    const categoryOptions: SearchableDropdownOption[] = useMemo(() => {
+        const categories = [
+            { value: "all", label: "All" },
+            { value: "gt2", label: "GT2" },
+            { value: "gt3", label: "GT3" },
+            { value: "gt4", label: "GT4" },
+            { value: "cup", label: "CUP" },
+            { value: "st", label: "ST" },
+            { value: "chl", label: "CHL" },
+            { value: "tcx", label: "TCX" },
+        ];
+
+        return categories.map((category) => {
+            if (category.value === "all") {
+                return {
+                    ...category,
+                    count: availableCars.length,
+                };
+            }
+
+            const count = availableCars.filter((car) => {
+                const carInfo = carsData?.[car.car_id];
+                return carInfo?.car_type === category.value;
+            }).length;
+
+            return {
+                ...category,
+                count,
+            };
+        });
+    }, [availableCars, carsData]);
 
     // Filter and search cars
     const filteredCars = useMemo(() => {
@@ -72,7 +95,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
             filtered = filtered.filter((car) => {
                 const carInfo = carsData?.[car.car_id];
                 const searchableText =
-                    `${carInfo?.pretty_name || car.car_name} ${carInfo?.brand_name || ""} ${carInfo?.full_name || ""}`.toLowerCase();
+                    `${carInfo?.pretty_name || car.car_name} ${carInfo?.brand_name || ""} ${carInfo?.full_name || ""} ${carInfo?.car_type || ""}`.toLowerCase();
                 return searchableText.includes(query);
             });
         }
@@ -216,7 +239,7 @@ export function CarView({ selectedCar, onSelectCar }: CarViewProps) {
             </div>
 
             {/* Stats Footer */}
-            <div className="p-4">
+            <div className="px-4 py-3 h-11 border-t border-border/50">
                 {folderStructure && (
                     <div className="text-xs text-muted-foreground opacity-80">
                         {searchQuery || selectedCategory !== "all" ? (

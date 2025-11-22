@@ -67,6 +67,14 @@ export interface SaveSetupParams {
     [key: string]: unknown;
 }
 
+export interface RenameSetupParams {
+    car: string;
+    track: string;
+    oldFilename: string;
+    newFilename: string;
+    [key: string]: unknown;
+}
+
 export interface DeleteSetupParams {
     car: string;
     track: string;

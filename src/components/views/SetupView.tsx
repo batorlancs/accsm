@@ -1,6 +1,12 @@
-import { RefreshCw } from "lucide-react";
+import { ChevronsDownUp, RefreshCw } from "lucide-react";
 import { Files } from "@/components/animate-ui/components/radix/files";
 import { Button } from "@/components/ui/button";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
     useFolderStructure,
     useRefreshFolderStructure,
@@ -17,6 +23,8 @@ interface SetupViewProps {
     onChangePathClick?: () => void;
     openFolders?: string[];
     onOpenFoldersChange?: (openFolders: string[]) => void;
+    onAfterRename?: (newFilename: string) => void;
+    onAfterDelete?: () => void;
 }
 
 export function SetupView({
@@ -24,12 +32,18 @@ export function SetupView({
     onSelectSetup,
     openFolders = [],
     onOpenFoldersChange,
+    onAfterRename,
+    onAfterDelete,
 }: SetupViewProps) {
     const { data: folderStructure, isLoading, error } = useFolderStructure();
     const refreshMutation = useRefreshFolderStructure();
 
     const handleRefresh = () => {
-        refreshMutation.mutate();
+        refreshMutation.mutate({});
+    };
+
+    const handleCollapseAll = () => {
+        onOpenFoldersChange?.([]);
     };
 
     const isSetupSelected = (car: string, track: string, filename: string) => {
@@ -61,18 +75,18 @@ export function SetupView({
 
     return (
         <div className="w-full h-full flex flex-col justify-between overflow-x-hidden">
-            <div className="flex-1 overflow-y-auto p-2 h-full pb-6">
+            <div className="flex-1 overflow-y-auto h-full">
                 {isLoading ? (
                     <div className="p-4 text-center text-muted-foreground">
                         Loading folder structure...
                     </div>
                 ) : folderStructure?.cars.length === 0 ? (
-                    <div className="p-4 text-center text-muted-foreground">
+                    <div className="p-4 text-center text-muted-foreground text-xs">
                         No cars found in the setups folder
                     </div>
                 ) : (
                     <Files
-                        className="w-full"
+                        className="w-full h-full py-2 px-2"
                         open={openFolders}
                         onOpenChange={onOpenFoldersChange}
                     >
@@ -82,12 +96,14 @@ export function SetupView({
                                 car={car}
                                 onSelectSetup={onSelectSetup}
                                 isSetupSelected={isSetupSelected}
+                                onAfterRename={onAfterRename}
+                                onAfterDelete={onAfterDelete}
                             />
                         ))}
                     </Files>
                 )}
             </div>
-            <div className="p-4">
+            <div className="px-4 py-2 h-11 flex justify-between items-center border-t border-border/50">
                 {folderStructure && (
                     <div className="text-xs text-muted-foreground opacity-80">
                         {folderStructure.total_setups} setups across{" "}
@@ -105,6 +121,23 @@ export function SetupView({
                         tracks
                     </div>
                 )}
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon-xs"
+                                onClick={handleCollapseAll}
+                                className="opacity-70 hover:opacity-100 transition duration-200"
+                            >
+                                <ChevronsDownUp />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Collapse all</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </div>
         </div>
     );

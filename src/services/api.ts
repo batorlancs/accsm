@@ -7,6 +7,7 @@ import type {
     FolderStructure,
     GetSetupParams,
     ImportResult,
+    RenameSetupParams,
     SaveSetupParams,
     SetupFile,
     SetupImportData,
@@ -36,6 +37,10 @@ export class TauriAPI {
 
     static async editSetup(params: SaveSetupParams): Promise<void> {
         return invoke<void>("edit_setup", params);
+    }
+
+    static async renameSetup(params: RenameSetupParams): Promise<void> {
+        return invoke<void>("rename_setup", params);
     }
 
     static async deleteSetup(params: DeleteSetupParams): Promise<void> {
