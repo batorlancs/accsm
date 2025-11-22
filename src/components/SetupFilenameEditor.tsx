@@ -1,5 +1,6 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: false positive */
 import { Check, Edit3, Sparkles, Wrench } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CarBrandIcon } from "@/components/ui/car-brand-icon";
@@ -124,23 +125,28 @@ export function SetupFilenameEditor({
                         placeholder="Optional prefix for simplified setups"
                         className="flex-1 h-8"
                     />
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={handleSimplify}
-                        onMouseEnter={() => {
+                    <motion.div
+                        onHoverStart={() => {
                             setIsHoveringSimplify(true);
                             setShowSimplifyCheck(false);
                         }}
-                        onMouseLeave={() => setIsHoveringSimplify(false)}
-                        className="h-8 px-3 gap-2 hover:bg-yellow-300/20 hover:text-yellow-600 transition-all duration-200"
+                        onHoverEnd={() => setIsHoveringSimplify(false)}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                     >
-                        {showSimplifyCheck ? "Simplified" : "Simplify"}
-                        {showSimplifyCheck ? <Check /> : <Sparkles />}
-                    </Button>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleSimplify}
+                            className="h-8 px-3 gap-2 hover:bg-yellow-200/10! hover:text-yellow-200 hover:border-yellow-200/50! transition-all duration-200"
+                        >
+                            {showSimplifyCheck ? "Simplified" : "Simplify"}
+                            {showSimplifyCheck ? <Check /> : <Sparkles />}
+                        </Button>
+                    </motion.div>
                 </div>
             )}
-            <div className="space-y-2 max-h-48 overflow-y-auto">
+            <div className="space-y-2 max-h-80 overflow-y-auto">
                 {validResults.map((result, index) => (
                     <div
                         // biome-ignore lint/suspicious/noArrayIndexKey: off
@@ -200,28 +206,81 @@ export function SetupFilenameEditor({
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-2 mt-1">
-                                    <span
-                                        className={`text-sm font-medium truncate transition-opacity duration-200 ${
-                                            isHoveringSimplify
-                                                ? "opacity-60"
-                                                : "opacity-100"
-                                        }`}
-                                        style={{
-                                            opacity: isHoveringSimplify
-                                                ? 0.6
-                                                : 1,
-                                        }}
+                                    <AnimatePresence
+                                        mode="wait"
+                                        initial={false}
                                     >
-                                        {getPreviewName(result, index)}
-                                    </span>
-                                    <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        onClick={() => handleEdit(index)}
-                                        className="h-6 w-6 p-0 opacity-40 hover:opacity-80 hover:bg-transparent!"
-                                    >
-                                        <Edit3 className="size-4" />
-                                    </Button>
+                                        <motion.span
+                                            key={getPreviewName(result, index)}
+                                            initial={{ opacity: 0, y: -5 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 5 }}
+                                            transition={{ duration: 0.15 }}
+                                            className={`truncate text-sm font-medium ${
+                                                isHoveringSimplify
+                                                    ? "text-yellow-200/60"
+                                                    : ""
+                                            }`}
+                                        >
+                                            {getPreviewName(result, index)}
+                                        </motion.span>
+                                    </AnimatePresence>
+                                    <div className="flex h-6 w-6 items-center justify-center">
+                                        <AnimatePresence mode="wait">
+                                            {isHoveringSimplify ? (
+                                                <motion.div
+                                                    key="sparkles"
+                                                    initial={{
+                                                        opacity: 0,
+                                                        scale: 0.5,
+                                                    }}
+                                                    animate={{
+                                                        opacity: 1,
+                                                        scale: 1,
+                                                    }}
+                                                    exit={{
+                                                        opacity: 0,
+                                                        scale: 0.5,
+                                                    }}
+                                                    transition={{
+                                                        duration: 0.15,
+                                                    }}
+                                                >
+                                                    <Sparkles className="size-4 text-yellow-200/30" />
+                                                </motion.div>
+                                            ) : (
+                                                <motion.div
+                                                    key="edit"
+                                                    initial={{
+                                                        opacity: 0,
+                                                        scale: 0.5,
+                                                    }}
+                                                    animate={{
+                                                        opacity: 1,
+                                                        scale: 1,
+                                                    }}
+                                                    exit={{
+                                                        opacity: 0,
+                                                        scale: 0.5,
+                                                    }}
+                                                    transition={{
+                                                        duration: 0.15,
+                                                    }}
+                                                >
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() =>
+                                                            handleEdit(index)
+                                                        }
+                                                        className="h-6 w-6 p-0 opacity-40 hover:opacity-80 hover:bg-transparent!"
+                                                    >
+                                                        <Edit3 className="size-4" />
+                                                    </Button>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
                                 </div>
                             )}
                         </div>
