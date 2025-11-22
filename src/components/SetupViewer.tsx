@@ -66,7 +66,6 @@ function SetupValueInput({
                 );
             }}
             className="flex-1 min-w-0"
-            groupClassName=""
         />
     );
 }
@@ -312,15 +311,15 @@ export function SetupViewer({
 
     return (
         <div className="space-y-4 p-4">
-            <div className="flex flex-row justify-between bg-muted rounded border border-border">
-                <div className="flex flex-col items-center justify-center w-28  border-r bg-foreground/2">
+            <div className="flex flex-row justify-between bg-muted rounded border border-border/50">
+                <div className="flex flex-col items-center justify-center w-28  border-r border-border/50 bg-foreground/2">
                     <div className="p-2 h-20 w-28 opacity-70 flex items-center justify-center">
                         <CarBrandIcon
                             name={carData.brand_name || ""}
                             className=" max-h-20 h-full w-full p-4"
                         />
                     </div>
-                    <div className="bg-foreground/2 rounded-b-lg px-1 py-1 w-full border-t border-border">
+                    <div className="bg-foreground/2 rounded-b-lg px-1 py-1 w-full border-t border-border/50">
                         <p className="text-xs text-center opacity-50">
                             {carData.pretty_name}
                         </p>
@@ -347,12 +346,12 @@ export function SetupViewer({
                             variant="ghost"
                             size="icon-sm"
                             onClick={onClose}
-                            // className="border border-b border-l rounded-bl-lg"
+                            className="border-b border-l border-border/50 rounded-bl-lg"
                         >
                             <X />
                         </Button>
                     )}
-                    <div className="flex border-t border-l rounded-tl-lg">
+                    <div className="flex border-t border-l border-border/50 rounded-tl-lg">
                         <Button
                             variant="ghost"
                             size="icon-sm"
@@ -425,32 +424,30 @@ export function SetupViewer({
                     />
                 </div>
             </div>
-            <div className="">
-                <div className="bg-[#151515] p-4 rounded opacity-80">
-                    <div className="text-xs text-muted-foreground/40 mb-3">
-                        <div>
-                            Try{" "}
-                            <KbdGroup>
-                                <Kbd>Ctrl</Kbd>
-                                <span>+</span>
-                                <Kbd>Enter</Kbd>
-                            </KbdGroup>{" "}
-                            to submit changes when editing values
-                        </div>
+            <div className="bg-[#151515] p-4 rounded opacity-80 border border-border/50">
+                <div className="text-xs text-muted-foreground/40 mb-3">
+                    <div>
+                        Try{" "}
+                        <KbdGroup>
+                            <Kbd>Ctrl</Kbd>
+                            <span>+</span>
+                            <Kbd>Enter</Kbd>
+                        </KbdGroup>{" "}
+                        to submit changes when editing values
                     </div>
-                    <ReactJson
-                        key={`${track}-${car}-${filename}`}
-                        src={setup}
-                        name={false}
-                        iconStyle="square"
-                        collapsed={1}
-                        onEdit={handleJson}
-                        // onAdd={handleJson}
-                        // onDelete={handleJson}
-                        enableClipboard={false}
-                        theme="chalk"
-                    />
                 </div>
+                <ReactJson
+                    key={`${track}-${car}-${filename}`}
+                    src={setup}
+                    name={false}
+                    iconStyle="square"
+                    collapsed={1}
+                    onEdit={handleJson}
+                    // onAdd={handleJson}
+                    // onDelete={handleJson}
+                    enableClipboard={false}
+                    theme="chalk"
+                />
             </div>
 
             <div className="flex items-start justify-between">

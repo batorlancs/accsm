@@ -210,7 +210,7 @@ export const InputWithIcon = React.forwardRef<
                     >
                         <motion.div
                             className={cn(
-                                "flex items-center gap-2 w-full px-3 py-2 rounded-md border border-input bg-background",
+                                "flex items-center gap-2 w-full px-3 py-2 rounded-md border border-border/50 bg-background",
                                 (hasErrors || hasSubmitError) &&
                                     "border-destructive",
                             )}
