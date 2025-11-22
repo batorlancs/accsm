@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { AlertCircle } from "lucide-react";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { SetupFilenameEditor } from "@/components/SetupFilenameEditor";
 import { TrackCombobox } from "@/components/TrackCombobox";
@@ -8,14 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useCars, useRefreshFolderStructure } from "@/hooks/useBackend";
+import { findCommonTrack } from "@/lib/track-simplify";
 import { store } from "@/lib/store-manager";
 import { TauriAPI } from "@/services/api";
 import type { SetupImportData, ValidationResult } from "@/types/backend";
 
 interface ValidationResultsProps {
-    results: ValidationResult[];
-    onComplete: () => void;
-    onTryAgain: () => void;
+	results: ValidationResult[];
+	onComplete: () => void;
+	onTryAgain: () => void;
 }
 
 export function ValidationResults({
@@ -30,6 +31,12 @@ export function ValidationResults({
 	>({});
 	const refreshMutation = useRefreshFolderStructure();
 
+	const validResults = useMemo(() => results.filter((r) => r.success), [results]);
+	const failedResults = useMemo(
+		() => results.filter((r) => !r.success),
+		[results],
+	);
+
 	// Load default applyLfm state on mount
 	useEffect(() => {
 		const loadDefault = async () => {
@@ -38,6 +45,17 @@ export function ValidationResults({
 		};
 		loadDefault();
 	}, []);
+
+	// Automatically select a track if all valid setups are for the same one.
+	useEffect(() => {
+		if (validResults.length > 0) {
+			const filenames = validResults.map((r) => r.filename!);
+			const commonTrack = findCommonTrack(filenames);
+			if (commonTrack) {
+				setSelectedTrack(commonTrack);
+			}
+		}
+	}, [validResults]);
 
 	// Save applyLfm state whenever it changes
 	const handleApplyLfmChange = (checked: boolean) => {
@@ -60,55 +78,52 @@ export function ValidationResults({
 			onComplete();
 		},
 	});
-    const checkboxId = useId();
+	const checkboxId = useId();
 
-    const validResults = results.filter((r) => r.success);
-    const failedResults = results.filter((r) => !r.success);
+	if (validResults.length === 0 && failedResults.length === 0) {
+		return (
+			<div className="space-y-4">
+				<div className="text-center py-8">
+					<AlertCircle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+					<h3 className="font-semibold text-lg">
+						No JSON Files Found
+					</h3>
+					<p className="text-muted-foreground">
+						The selected folder doesn't contain any valid JSON setup
+						files.
+					</p>
+				</div>
+				<div className="flex gap-2">
+					<Button
+						variant="outline"
+						onClick={onTryAgain}
+						className="flex-1"
+					>
+						Try Again
+					</Button>
+					<Button onClick={onComplete} className="flex-1">
+						Close
+					</Button>
+				</div>
+			</div>
+		);
+	}
 
-    if (validResults.length === 0 && failedResults.length === 0) {
-        return (
-            <div className="space-y-4">
-                <div className="text-center py-8">
-                    <AlertCircle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
-                    <h3 className="font-semibold text-lg">
-                        No JSON Files Found
-                    </h3>
-                    <p className="text-muted-foreground">
-                        The selected folder doesn't contain any valid JSON setup
-                        files.
-                    </p>
-                </div>
-                <div className="flex gap-2">
-                    <Button
-                        variant="outline"
-                        onClick={onTryAgain}
-                        className="flex-1"
-                    >
-                        Try Again
-                    </Button>
-                    <Button onClick={onComplete} className="flex-1">
-                        Close
-                    </Button>
-                </div>
-            </div>
-        );
-    }
+	const handleImport = () => {
+		if (!selectedTrack || validResults.length === 0) return;
 
-    const handleImport = () => {
-        if (!selectedTrack || validResults.length === 0) return;
+		const setupsToImport: SetupImportData[] = validResults.map(
+			(result, index) => ({
+				json_content: result.json_content,
+				car: result.car!,
+				track: selectedTrack,
+				filename: customFilenames[index] || result.filename!,
+				apply_lfm: applyLfm,
+			}),
+		);
 
-        const setupsToImport: SetupImportData[] = validResults.map(
-            (result, index) => ({
-                json_content: result.json_content,
-                car: result.car!,
-                track: selectedTrack,
-                filename: customFilenames[index] || result.filename!,
-                apply_lfm: applyLfm,
-            }),
-        );
-
-        importMutation.mutate(setupsToImport);
-    };
+		importMutation.mutate(setupsToImport);
+	};
 
     const canImport =
         selectedTrack && validResults.length > 0 && !importMutation.isPending;
