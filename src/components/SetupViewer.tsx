@@ -311,7 +311,7 @@ export function SetupViewer({
     };
 
     return (
-        <div className="space-y-2 p-4">
+        <div className="space-y-4 p-4">
             <div className="flex flex-row justify-between bg-muted rounded border border-border">
                 <div className="flex flex-col items-center justify-center w-28  border-r bg-foreground/2">
                     <div className="p-2 h-20 w-28 opacity-70 flex items-center justify-center">
@@ -381,8 +381,8 @@ export function SetupViewer({
                 </div>
             </div>
 
-            <div className="flex items-center justify-between mt-4">
-                <div className="flex flex-wrap gap-2 flex-1">
+            <div className="flex items-center justify-between">
+                <div className="flex flex-wrap gap-4 flex-1">
                     <SetupValueInput
                         icon={<Fuel className="size-3" />}
                         label="Fuel"
