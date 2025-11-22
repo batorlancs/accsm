@@ -312,62 +312,73 @@ export function SetupViewer({
 
     return (
         <div className="space-y-2 p-4">
-            <div className="flex items-start justify-between">
-                <div>
-                    <div className="flex items-center gap-4">
-                        {/* <div className="bg-muted rounded flex flex-col items-center justify-center p-2 relative size-24"> */}
-                        {/*     <CarBrandIcon */}
-                        {/*         name={carData.brand_name || ""} */}
-                        {/*         className="h-full w-full px-6 pb-10 pt-6 opacity-70" */}
-                        {/*     /> */}
-                        {/*     <p className="absolute bottom-0 bg-foreground/8 left-0 right-0 text-xs text-muted-foreground text-center px-[5px] opacity-50"> */}
-                        {/*         {carData.pretty_name} */}
-                        {/*     </p> */}
-                        {/* </div> */}
-                        <div className="bg-muted rounded flex flex-col items-center justify-center w-24 border border-border">
-                            <div className="p-2 h-20 w-20 opacity-50 flex items-center justify-center">
-                                <CarBrandIcon
-                                    name={carData.brand_name || ""}
-                                    className="h-full w-full p-2"
-                                />
-                            </div>
-                            <div className="bg-foreground/4 rounded-b-lg px-2 py-1 w-full border-t border-border">
-                                <p className="text-xs text-center opacity-50">
-                                    {carData.pretty_name}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="">
-                            <h2 className="text-lg font-medium">
-                                {fileNameWithoutExtension}
-                                <span className="text-muted-foreground">
-                                    {fileNameExtension
-                                        ? `.${fileNameExtension}`
-                                        : ""}
-                                </span>
-                            </h2>
-
-                            <div className="flex items-center gap-2 mt-1 opacity-60">
-                                <span className="text-sm shrink-0 flex items-center justify-center">
-                                    {getCountryFlag(trackData?.country || "")}
-                                </span>
-                                <span className="text-xs">
-                                    {trackData.pretty_name}
-                                </span>
-                            </div>
-                        </div>
+            <div className="flex flex-row justify-between bg-muted rounded border border-border">
+                <div className="flex flex-col items-center justify-center w-28  border-r bg-foreground/2">
+                    <div className="p-2 h-20 w-28 opacity-70 flex items-center justify-center">
+                        <CarBrandIcon
+                            name={carData.brand_name || ""}
+                            className=" max-h-20 h-full w-full p-4"
+                        />
+                    </div>
+                    <div className="bg-foreground/2 rounded-b-lg px-1 py-1 w-full border-t border-border">
+                        <p className="text-xs text-center opacity-50">
+                            {carData.pretty_name}
+                        </p>
                     </div>
                 </div>
-                {onClose && (
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={onClose}
-                        className="h-8 w-8 p-0"
-                    >
-                        <X className="h-4 w-4" />
-                    </Button>
-                )}
+                <div className="p-4 w-full">
+                    <h2 className="text-lg font-medium">
+                        {fileNameWithoutExtension}
+                        <span className="text-muted-foreground">
+                            {fileNameExtension ? `.${fileNameExtension}` : ""}
+                        </span>
+                    </h2>
+
+                    <div className="flex items-center gap-2 mt-1 opacity-60">
+                        <span className="text-sm shrink-0 flex items-center justify-center">
+                            {getCountryFlag(trackData?.country || "")}
+                        </span>
+                        <span className="text-xs">{trackData.pretty_name}</span>
+                    </div>
+                </div>
+                <div className="flex flex-col items-end justify-between space-y-2">
+                    {onClose && (
+                        <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={onClose}
+                            // className="border border-b border-l rounded-bl-lg"
+                        >
+                            <X />
+                        </Button>
+                    )}
+                    <div className="flex border-t border-l rounded-tl-lg">
+                        <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            className="opacity-60 hover:opacity-100"
+                            onClick={() => {
+                                openRenameSetup(car, track, filename, {
+                                    onAfterRename,
+                                });
+                            }}
+                        >
+                            <EditIcon />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            className="opacity-60 hover:opacity-100 text-red-400 hover:text-red-400 hover:bg-red-400/10!"
+                            onClick={() => {
+                                openDeleteSetup(car, track, filename, {
+                                    onAfterDelete,
+                                });
+                            }}
+                        >
+                            <Trash2Icon />
+                        </Button>
+                    </div>
+                </div>
             </div>
 
             <div className="flex items-center justify-between mt-4">
@@ -470,34 +481,6 @@ export function SetupViewer({
                             )}
                         </Badge>
                     )}
-                </div>
-                <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        size="xs"
-                        className="opacity-80 hover:opacity-100 transition-opacity duration-200"
-                        onClick={() => {
-                            openRenameSetup(car, track, filename, {
-                                onAfterRename,
-                            });
-                        }}
-                    >
-                        <EditIcon />
-                        Rename
-                    </Button>
-                    <Button
-                        variant="destructive"
-                        size="xs"
-                        className="opacity-80 hover:opacity-100 transition-opacity duration-200"
-                        onClick={() => {
-                            openDeleteSetup(car, track, filename, {
-                                onAfterDelete,
-                            });
-                        }}
-                    >
-                        <Trash2Icon />
-                        Delete
-                    </Button>
                 </div>
             </div>
         </div>
