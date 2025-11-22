@@ -1,4 +1,4 @@
-import { Plus, RefreshCw, Settings2 } from "lucide-react";
+import { EllipsisVertical, Plus, RefreshCw, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -7,6 +7,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRefreshFolderStructure } from "@/hooks/useBackend";
+import { TooltipButton } from "./ui/tooltip-button";
 
 interface MenuBarProps {
     onSettingsClick: () => void;
@@ -31,19 +32,20 @@ export function MenuBar({ onSettingsClick, onAddClick }: MenuBarProps) {
                 <Plus />
                 Add Setup
             </Button>
-            <Button
+            <TooltipButton
                 variant="outline"
                 size="icon-sm"
                 className="size-7"
+                tooltip="Refresh All Setups"
                 onClick={handleRefresh}
                 disabled={refreshMutation.isPending}
             >
                 <RefreshCw />
-            </Button>
+            </TooltipButton>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="icon-sm" className="size-7">
-                        <Settings2 />
+                        <EllipsisVertical />
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="mt-4">

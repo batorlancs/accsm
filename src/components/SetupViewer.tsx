@@ -20,6 +20,7 @@ import { Badge } from "./ui/badge";
 import { CarBrandIcon } from "./ui/car-brand-icon";
 import { InputWithIcon } from "./ui/input-with-icon";
 import { Kbd, KbdGroup } from "./ui/kbd";
+import { TooltipButton } from "./ui/tooltip-button";
 
 interface SetupValueInputProps {
     icon: React.ReactNode;
@@ -352,10 +353,11 @@ export function SetupViewer({
                         </Button>
                     )}
                     <div className="flex border-t border-l border-border/50 rounded-tl-lg">
-                        <Button
+                        <TooltipButton
                             variant="ghost"
                             size="icon-sm"
                             className="opacity-60 hover:opacity-100"
+                            tooltip="Rename Setup"
                             onClick={() => {
                                 openRenameSetup(car, track, filename, {
                                     onAfterRename,
@@ -363,11 +365,12 @@ export function SetupViewer({
                             }}
                         >
                             <EditIcon />
-                        </Button>
-                        <Button
+                        </TooltipButton>
+                        <TooltipButton
                             variant="ghost"
                             size="icon-sm"
                             className="opacity-60 hover:opacity-100 text-red-400 hover:text-red-400 hover:bg-red-400/10!"
+                            tooltip="Delete Setup"
                             onClick={() => {
                                 openDeleteSetup(car, track, filename, {
                                     onAfterDelete,
@@ -375,7 +378,7 @@ export function SetupViewer({
                             }}
                         >
                             <Trash2Icon />
-                        </Button>
+                        </TooltipButton>
                     </div>
                 </div>
             </div>
