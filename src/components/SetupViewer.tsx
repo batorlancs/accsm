@@ -314,12 +314,28 @@ export function SetupViewer({
         <div className="space-y-2 p-4">
             <div className="flex items-start justify-between">
                 <div>
-                    <div className="flex items-center gap-3">
-                        <div className="bg-muted rounded flex flex-col items-center justify-center p-2 gap-2 size-24">
-                            <Wrench className="text-muted-foreground" />
-                            <p className="text-xs text-muted-foreground font-bold opacity-50">
-                                SETUP
-                            </p>
+                    <div className="flex items-center gap-4">
+                        {/* <div className="bg-muted rounded flex flex-col items-center justify-center p-2 relative size-24"> */}
+                        {/*     <CarBrandIcon */}
+                        {/*         name={carData.brand_name || ""} */}
+                        {/*         className="h-full w-full px-6 pb-10 pt-6 opacity-70" */}
+                        {/*     /> */}
+                        {/*     <p className="absolute bottom-0 bg-foreground/8 left-0 right-0 text-xs text-muted-foreground text-center px-[5px] opacity-50"> */}
+                        {/*         {carData.pretty_name} */}
+                        {/*     </p> */}
+                        {/* </div> */}
+                        <div className="bg-muted rounded flex flex-col items-center justify-center w-24 border border-border">
+                            <div className="p-2 h-20 w-20 opacity-50 flex items-center justify-center">
+                                <CarBrandIcon
+                                    name={carData.brand_name || ""}
+                                    className="h-full w-full p-2"
+                                />
+                            </div>
+                            <div className="bg-foreground/4 rounded-b-lg px-2 py-1 w-full border-t border-border">
+                                <p className="text-xs text-center opacity-50">
+                                    {carData.pretty_name}
+                                </p>
+                            </div>
                         </div>
                         <div className="">
                             <h2 className="text-lg font-medium">
@@ -332,21 +348,11 @@ export function SetupViewer({
                             </h2>
 
                             <div className="flex items-center gap-2 mt-1 opacity-60">
-                                <span className="text-sm shrink-0 w-6 flex items-center justify-center">
+                                <span className="text-sm shrink-0 flex items-center justify-center">
                                     {getCountryFlag(trackData?.country || "")}
                                 </span>
                                 <span className="text-xs">
                                     {trackData.pretty_name}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2 mt-1 opacity-60">
-                                <span className="text-sm shrink-0 w-6 flex items-center justify-center">
-                                    <CarBrandIcon
-                                        name={carData.brand_name || ""}
-                                    />
-                                </span>
-                                <span className="text-xs">
-                                    {carData.pretty_name}
                                 </span>
                             </div>
                         </div>
