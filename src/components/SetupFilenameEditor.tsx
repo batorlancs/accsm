@@ -9,6 +9,7 @@ import { useCars } from "@/hooks/useBackend";
 import {
     generateSimplifiedNames,
     hasQualyAndRaceSetups,
+    SIMPLIFIED_NAMES,
 } from "@/lib/filename-simplify";
 import type { ValidationResult } from "@/types/backend";
 
@@ -92,6 +93,20 @@ export function SetupFilenameEditor({
         }
     };
 
+    const handleQuickRename = (
+        index: number,
+        type: "race" | "qualify" | "qualify-2" | "wet",
+    ) => {
+        const baseName = SIMPLIFIED_NAMES[type];
+        const finalName = customSimplifyName
+            ? `(${customSimplifyName}) ${baseName}.json`
+            : `${baseName}.json`;
+
+        const updatedFilenames = { ...customFilenames, [index]: finalName };
+        setCustomFilenames(updatedFilenames);
+        onFilenamesChange(updatedFilenames);
+    };
+
     // Check if we should show the simplify button
     const filenames = validResults.map((result) => result.filename || "");
     const shouldShowSimplify =
@@ -168,7 +183,7 @@ export function SetupFilenameEditor({
                     <div
                         // biome-ignore lint/suspicious/noArrayIndexKey: off
                         key={index}
-                        className="flex items-center rounded bg-foreground/1.5 border border-border/60 hover:bg-foreground/3 hover:border-border/80"
+                        className="relative flex items-center rounded bg-foreground/1.5 border border-border/60 hover:bg-foreground/3 hover:border-border/80"
                     >
                         <div className="p-2 bg-foreground/4 h-16 w-16 flex items-center justify-center rounded-l-lg">
                             {cars?.[result.car!] ? (
@@ -303,6 +318,50 @@ export function SetupFilenameEditor({
                                 </div>
                             )}
                         </div>
+                        {editingIndex !== index && (
+                            <div className="absolute bottom-1 right-1 flex items-center gap-1">
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() =>
+                                        handleQuickRename(index, "race")
+                                    }
+                                    className="h-5 px-1.5 text-xs opacity-50 hover:opacity-100 font-mono"
+                                >
+                                    R
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() =>
+                                        handleQuickRename(index, "qualify")
+                                    }
+                                    className="h-5 px-1.5 text-xs opacity-50 hover:opacity-100 font-mono"
+                                >
+                                    Q
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() =>
+                                        handleQuickRename(index, "qualify-2")
+                                    }
+                                    className="h-5 px-1.5 text-xs opacity-50 hover:opacity-100 font-mono"
+                                >
+                                    Q2
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() =>
+                                        handleQuickRename(index, "wet")
+                                    }
+                                    className="h-5 px-1.5 text-xs opacity-50 hover:opacity-100 font-mono"
+                                >
+                                    W
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>
