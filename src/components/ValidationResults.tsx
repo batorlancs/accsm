@@ -1,12 +1,13 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AlertCircle } from "lucide-react";
 import { useEffect, useId, useState } from "react";
+import { toast } from "sonner";
 import { SetupFilenameEditor } from "@/components/SetupFilenameEditor";
 import { TrackCombobox } from "@/components/TrackCombobox";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useCars } from "@/hooks/useBackend";
+import { useCars, useRefreshFolderStructure } from "@/hooks/useBackend";
 import { store } from "@/lib/store-manager";
 import { TauriAPI } from "@/services/api";
 import type { SetupImportData, ValidationResult } from "@/types/backend";
@@ -18,46 +19,47 @@ interface ValidationResultsProps {
 }
 
 export function ValidationResults({
-    results,
-    onComplete,
-    onTryAgain,
+	results,
+	onComplete,
+	onTryAgain,
 }: ValidationResultsProps) {
-    const queryClient = useQueryClient();
-    const [selectedTrack, setSelectedTrack] = useState<string>("");
-    const [applyLfm, setApplyLfm] = useState(false);
-    const [customFilenames, setCustomFilenames] = useState<
-        Record<number, string>
-    >({});
+	const [selectedTrack, setSelectedTrack] = useState<string>("");
+	const [applyLfm, setApplyLfm] = useState(false);
+	const [customFilenames, setCustomFilenames] = useState<
+		Record<number, string>
+	>({});
+	const refreshMutation = useRefreshFolderStructure();
 
-    // Load default applyLfm state on mount
-    useEffect(() => {
-        const loadDefault = async () => {
-            const defaultValue = await store.get("applyLfmDefault");
-            setApplyLfm(defaultValue ?? false);
-        };
-        loadDefault();
-    }, []);
+	// Load default applyLfm state on mount
+	useEffect(() => {
+		const loadDefault = async () => {
+			const defaultValue = await store.get("applyLfmDefault");
+			setApplyLfm(defaultValue ?? false);
+		};
+		loadDefault();
+	}, []);
 
-    // Save applyLfm state whenever it changes
-    const handleApplyLfmChange = (checked: boolean) => {
-        setApplyLfm(checked);
-        store.set("applyLfmDefault", checked);
-    };
+	// Save applyLfm state whenever it changes
+	const handleApplyLfmChange = (checked: boolean) => {
+		setApplyLfm(checked);
+		store.set("applyLfmDefault", checked);
+	};
 
-    const { data: tracks } = useQuery({
-        queryKey: ["tracks"],
-        queryFn: TauriAPI.getTracks,
-    });
+	const { data: tracks } = useQuery({
+		queryKey: ["tracks"],
+		queryFn: TauriAPI.getTracks,
+	});
 
-    const { data: cars } = useCars();
+	const { data: cars } = useCars();
 
-    const importMutation = useMutation({
-        mutationFn: TauriAPI.importValidatedSetups,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["folderStructure"] });
-            onComplete();
-        },
-    });
+	const importMutation = useMutation({
+		mutationFn: TauriAPI.importValidatedSetups,
+		onSuccess: async () => {
+			await refreshMutation.mutateAsync({ silent: true });
+			toast.success("Setups imported successfully!");
+			onComplete();
+		},
+	});
     const checkboxId = useId();
 
     const validResults = results.filter((r) => r.success);
