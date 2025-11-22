@@ -105,10 +105,9 @@ export function CarViewer({ carId }: CarViewerProps) {
                     </span>
                 }
             />
-            <div className="columns-2 gap-4 p-4">
+            <div className="grid grid-cols-2 gap-4 p-4">
                 {trackGroups.map((group, _index) => (
                     <SetupGroup
-                        className="break-inside-avoid mb-4"
                         key={group.trackId}
                         title={group.trackName}
                         icon={
