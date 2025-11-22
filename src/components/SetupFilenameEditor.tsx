@@ -92,6 +92,16 @@ export function SetupFilenameEditor({
     const shouldShowSimplify =
         validResults.length >= 2 && hasQualyAndRaceSetups(filenames);
 
+    const isNameDifferent = (index: number) => {
+        const originalName = getDisplayName(validResults[index], index);
+        const simplifiedNames = generateSimplifiedNames(
+            filenames,
+            customSimplifyName,
+        );
+        const previewName = simplifiedNames[index] || getDisplayName(validResults[index], index);
+        return originalName !== previewName;
+    };
+
     // Get preview names for hover effect
     const getPreviewName = (result: ValidationResult, index: number) => {
         if (!isHoveringSimplify) return getDisplayName(result, index);
@@ -217,7 +227,7 @@ export function SetupFilenameEditor({
                                             exit={{ opacity: 0, y: 5 }}
                                             transition={{ duration: 0.15 }}
                                             className={`truncate text-sm font-medium ${
-                                                isHoveringSimplify
+                                                isHoveringSimplify && isNameDifferent(index)
                                                     ? "text-yellow-200/60"
                                                     : ""
                                             }`}
@@ -227,7 +237,7 @@ export function SetupFilenameEditor({
                                     </AnimatePresence>
                                     <div className="flex h-6 w-6 items-center justify-center">
                                         <AnimatePresence mode="wait">
-                                            {isHoveringSimplify ? (
+                                            {isHoveringSimplify && isNameDifferent(index) ? (
                                                 <motion.div
                                                     key="sparkles"
                                                     initial={{
