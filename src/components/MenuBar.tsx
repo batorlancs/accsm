@@ -1,4 +1,4 @@
-import { EllipsisVertical, Plus, RefreshCw, Settings2 } from "lucide-react";
+import { EllipsisVertical, Plus, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
