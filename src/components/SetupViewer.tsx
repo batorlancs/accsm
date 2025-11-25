@@ -311,15 +311,15 @@ export function SetupViewer({
 
     return (
         <div className="space-y-4 p-4">
-            <div className="flex flex-row justify-between bg-muted rounded border border-border/50">
-                <div className="flex flex-col items-center justify-center w-28  border-r border-border/50 bg-foreground/2">
+            <div className="flex flex-row justify-between bg-muted/40 rounded border border-border/50">
+                <div className="flex flex-col items-center justify-center w-28  border-r border-border/50 bg-foreground/2 rounded-l-lg">
                     <div className="p-2 h-20 w-28 opacity-70 flex items-center justify-center">
                         <CarBrandIcon
                             name={carData.brand_name || ""}
                             className=" max-h-20 h-full w-full p-4"
                         />
                     </div>
-                    <div className="bg-foreground/2 rounded-b-lg px-1 py-1 w-full border-t border-border/50">
+                    <div className="rounded-bl-lg px-1 py-1 w-full border-t border-border/50 bg-foreground/4">
                         <p className="text-xs text-center opacity-50">
                             {carData.pretty_name}
                         </p>
@@ -348,7 +348,7 @@ export function SetupViewer({
                             variant="ghost"
                             size="icon-sm"
                             onClick={onClose}
-                            className="border-b border-l border-border/50 rounded-bl-lg"
+                            className="border-b border-l border-border/50 rounded-tl-none rounded-br-none"
                         >
                             <X />
                         </Button>
@@ -357,7 +357,7 @@ export function SetupViewer({
                         <TooltipButton
                             variant="ghost"
                             size="icon-sm"
-                            className="opacity-60 hover:opacity-100"
+                            className="opacity-60 hover:opacity-100 rounded-b-none rounded-tr-none"
                             tooltip="Rename Setup"
                             onClick={() => {
                                 openRenameSetup(car, track, filename, {
@@ -370,7 +370,7 @@ export function SetupViewer({
                         <TooltipButton
                             variant="ghost"
                             size="icon-sm"
-                            className="opacity-60 hover:opacity-100 text-red-400 hover:text-red-400 hover:bg-red-400/10!"
+                            className="opacity-60 hover:opacity-100 text-red-400 hover:text-red-400 hover:bg-red-400/10! rounded-t-none rounded-bl-none"
                             tooltip="Delete Setup"
                             onClick={() => {
                                 openDeleteSetup(car, track, filename, {

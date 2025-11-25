@@ -30,7 +30,7 @@ export function SetupGroup({
     return (
         <div
             className={cn(
-                "bg-muted/50 border border-border/50 rounded",
+                "bg-muted/40 border border-border/50 rounded",
                 className,
             )}
         >

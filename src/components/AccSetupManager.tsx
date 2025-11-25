@@ -105,7 +105,7 @@ export function AccSetupManager() {
         <div className="h-screen max-h-screen min-h-screen flex flex-col bg-background border-t border-border/50">
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Sidebar - Tabbed Explorer */}
-                <div className="w-80 border-r border-border/50 bg-muted/50">
+                <div className="w-80 border-r border-border/50 bg-muted/40">
                     <Tabs
                         value={activeTab}
                         onValueChange={(value) =>
