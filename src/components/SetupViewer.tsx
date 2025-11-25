@@ -457,14 +457,14 @@ export function SetupViewer({
             <div className="flex items-start justify-between">
                 <div>
                     {isLfmCompatible ? (
-                        <Badge className="bg-green-600/30 opacity-70">
+                        <Badge className="bg-primary/80 opacity-70">
                             <BadgeCheckIcon className="mr-1 mb-[2px]" />
                             LFM: Telemtry Laps is set
                         </Badge>
                     ) : (
                         <Badge
                             variant="secondary"
-                            className="cursor-pointer transition-all duration-400 hover:bg-orange-600/30 opacity-70"
+                            className="cursor-pointer transition-all duration-400 hover:bg-yellow-400/30 opacity-70"
                             onMouseEnter={() => setIsLfmBadgeHovered(true)}
                             onMouseLeave={() => setIsLfmBadgeHovered(false)}
                             onClick={handleMakeLfmCompatible}
