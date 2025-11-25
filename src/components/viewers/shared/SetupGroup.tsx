@@ -57,11 +57,13 @@ export function SetupGroup({
                     >
                         <button
                             type="button"
-                            className="w-full justify-start text-sm h-auto text-left cursor-pointer opacity-60 hover:opacity-100 hover:translate-x-2 transition-all duration-200 ease-out flex items-center gap-2 group"
+                            className="w-full min-w-0 justify-start text-sm h-auto text-left cursor-pointer opacity-60 hover:opacity-100 hover:translate-x-1 transition-all duration-200 ease-out flex items-center gap-2 group"
                             onClick={() => onSetupClick(setup)}
                         >
-                            <ChevronRightIcon className="size-4 opacity-40 group-hover:opacity-100 transition-opacity duration-200" />
-                            {setup.display_name}
+                            <ChevronRightIcon className="shrink-0 size-4 opacity-40 group-hover:opacity-100 transition-opacity duration-200" />
+                            <span className="truncate">
+                                {setup.display_name}
+                            </span>
                         </button>
                     </SetupContextMenu>
                 ))}
