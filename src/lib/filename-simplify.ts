@@ -31,6 +31,7 @@ export const SETUP_TYPE_PATTERNS = {
 
 export const SIMPLIFIED_NAMES = {
     race: "Race",
+    "race-2": "Race 2",
     qualify: "Quali",
     "qualify-2": "Quali 2",
     wet: "Wet",

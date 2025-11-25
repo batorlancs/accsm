@@ -128,7 +128,7 @@ export function SetupFilenameEditor({
 
     const handleQuickRename = (
         index: number,
-        type: "race" | "qualify" | "qualify-2" | "wet",
+        type: "race" | "race-2" | "qualify" | "qualify-2" | "wet",
     ) => {
         const baseName = SIMPLIFIED_NAMES[type];
         const finalName = customSimplifyName
@@ -409,6 +409,16 @@ export function SetupFilenameEditor({
                                     className="h-5 px-1.5 text-xs opacity-50 hover:opacity-100 font-mono"
                                 >
                                     R
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() =>
+                                        handleQuickRename(index, "race-2")
+                                    }
+                                    className="h-5 px-1.5 text-xs opacity-50 hover:opacity-100 font-mono"
+                                >
+                                    R2
                                 </Button>
                                 <Button
                                     size="sm"
