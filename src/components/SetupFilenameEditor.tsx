@@ -62,10 +62,11 @@ export function SetupFilenameEditor({
         );
         const nameToIndices: Record<string, number[]> = {};
         allFilenames.forEach((name, index) => {
-            if (!nameToIndices[name]) {
-                nameToIndices[name] = [];
+            const lowerCaseName = name.toLowerCase();
+            if (!nameToIndices[lowerCaseName]) {
+                nameToIndices[lowerCaseName] = [];
             }
-            nameToIndices[name].push(index);
+            nameToIndices[lowerCaseName].push(index);
         });
 
         const newDuplicateIndices = new Set<number>();

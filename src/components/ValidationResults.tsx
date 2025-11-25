@@ -73,7 +73,7 @@ export function ValidationResults({
                 (t) => t.track_id === selectedTrack,
             );
             if (!trackFolderData) return;
-            if (trackFolderData.setups.some((s) => s.filename === filename)) {
+            if (trackFolderData.setups.some((s) => s.filename.toLowerCase() === filename.toLowerCase())) {
                 conflicts.add(index);
             }
         });

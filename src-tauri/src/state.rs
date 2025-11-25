@@ -434,15 +434,42 @@ impl AppStateManager {
             });
         }
 
-        if new_file_path.exists() {
-            return Err(AccError::FileAlreadyExists {
-                path: new_file_path.to_string_lossy().to_string(),
-            });
+        // If names are identical, do nothing.
+        if old_filename == new_filename {
+            return Ok(());
         }
 
-        fs::rename(&old_file_path, &new_file_path).map_err(|e| AccError::IoError {
-            message: format!("Failed to rename setup file: {}", e),
-        })?;
+        // Handle case-only renames on case-insensitive filesystems
+        if old_filename.eq_ignore_ascii_case(new_filename) {
+            // This is a case-only rename. To handle this on file systems
+            // that are case-insensitive (like Windows and default macOS),
+            // we need to rename to a temporary name first.
+            let temp_path = old_file_path.with_extension(format!("json_tmp_{}", Utc::now().timestamp_millis()));
+
+            fs::rename(&old_file_path, &temp_path).map_err(|e| AccError::IoError {
+                message: format!("Failed to rename to temporary file: {}", e),
+            })?;
+
+            fs::rename(&temp_path, &new_file_path).map_err(|e| {
+                // Try to rename back if the second rename fails
+                let _ = fs::rename(&temp_path, &old_file_path);
+                AccError::IoError {
+                    message: format!("Failed to rename to final file: {}", e),
+                }
+            })?;
+
+        } else {
+            // This is a standard rename 
+            if new_file_path.exists() {
+                return Err(AccError::FileAlreadyExists {
+                    path: new_file_path.to_string_lossy().to_string(),
+                });
+            }
+
+            fs::rename(&old_file_path, &new_file_path).map_err(|e| AccError::IoError {
+                message: format!("Failed to rename setup file: {}", e),
+            })?;
+        }
 
         info!("Renamed setup: {}/{}/{} -> {}", car, track, old_filename, new_filename);
         Ok(())
