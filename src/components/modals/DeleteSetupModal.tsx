@@ -69,15 +69,15 @@ export function DeleteSetupModal({
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="flex items-center gap-3 bg-muted/50 rounded-lg border border-dashed border-border/50">
+                <div className="w-full overflow-hidden flex items-center gap-3 bg-muted/50 rounded-lg border border-dashed border-border/50">
                     <div className="bg-foreground/2 flex flex-col items-center justify-center p-2 gap-1 size-16 h-full w-20">
                         <Wrench className="text-muted-foreground size-4" />
                         <p className="text-xs text-muted-foreground font-bold opacity-50">
                             SETUP
                         </p>
                     </div>
-                    <div className="flex-1 py-2">
-                        <h3 className="font-medium text-sm">
+                    <div className="flex-1 py-2 min-w-0">
+                        <h3 className="font-medium text-sm truncate">
                             {fileNameWithoutExtension}
                         </h3>
                         <div className="flex items-center gap-2 mt-1 opacity-40">

@@ -100,36 +100,35 @@ export function RenameSetupModal({
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="flex items-center gap-3 bg-muted/50 rounded-lg border border-dashed border-border/50">
-                    <div className="bg-foreground/2 flex flex-col items-center justify-center p-2 gap-1 size-16 h-full w-20">
+                <div className="w-full overflow-hidden flex items-center gap-3 bg-muted/50 rounded-lg border border-dashed border-border/50">
+                    <div className="bg-foreground/2 flex flex-col items-center justify-center p-2 gap-1 size-16 h-full w-20 shrink-0">
                         <Wrench className="text-muted-foreground size-4" />
                         <p className="text-xs text-muted-foreground font-bold opacity-50">
                             SETUP
                         </p>
                     </div>
-                    <div className="flex-1 py-2">
-                        <h3 className="font-medium text-sm">
+                    <div className="flex-1 py-2 min-w-0">
+                        <h3 className="font-medium text-sm truncate">
                             {fileNameWithoutExtension}
                         </h3>
-                        <div className="flex items-center gap-2 mt-1 opacity-40">
+                        <div className="flex items-center gap-2 mt-1 opacity-40 min-w-0">
                             <span className="text-sm shrink-0 w-4 flex items-center justify-center">
                                 {getCountryFlag(trackData?.country || "")}
                             </span>
-                            <span className="text-xs">
+                            <span className="text-xs truncate">
                                 {trackData.pretty_name}
                             </span>
                         </div>
-                        <div className="flex items-center gap-2 mt-1 opacity-40">
+                        <div className="flex items-center gap-2 mt-1 opacity-40 min-w-0">
                             <span className="text-sm shrink-0 w-4 flex items-center justify-center">
                                 <CarBrandIcon name={carData.brand_name || ""} />
                             </span>
-                            <span className="text-xs">
+                            <span className="text-xs truncate">
                                 {carData.pretty_name}
                             </span>
                         </div>
                     </div>
                 </div>
-
                 {/** biome-ignore lint/correctness/useUniqueElementIds: off */}
                 <Input
                     id="setup-name"
