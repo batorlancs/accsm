@@ -48,6 +48,7 @@ export function SetupNode({
                             ? "opacity-80! hover:opacity-100!"
                             : "opacity-40! hover:opacity-60!"
                     }
+                    className="truncate"
                 >
                     {setup.display_name}
                 </FileItem>

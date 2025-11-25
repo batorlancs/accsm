@@ -135,7 +135,7 @@ function FileItem({
                     gitStatus === "deleted" && "text-red-400",
                 )}
             >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                     <FileIconPrimitive>
                         <Icon className="size-4" />
                     </FileIconPrimitive>
