@@ -47,9 +47,9 @@ export function SetupContextMenu({
                 </ContextMenuItem>
                 <ContextMenuItem
                     onClick={handleDelete}
-                    className="cursor-pointer text-xs! text-red-500 focus:text-red-500 hover:bg-red-500/15!"
+                    className="cursor-pointer text-xs! text-destructive focus:text-destructive hover:bg-destructive/15!"
                 >
-                    <Trash2 className="text-red-500" />
+                    <Trash2 className="text-destructive" />
                     Delete
                 </ContextMenuItem>
             </ContextMenuContent>

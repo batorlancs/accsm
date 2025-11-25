@@ -357,7 +357,7 @@ export function SetupViewer({
                         <TooltipButton
                             variant="ghost"
                             size="icon-sm"
-                            className="opacity-60 hover:opacity-100 rounded-b-none rounded-tr-none"
+                            className="opacity-60 rounded-b-none rounded-tr-none"
                             tooltip="Rename Setup"
                             onClick={() => {
                                 openRenameSetup(car, track, filename, {
@@ -370,7 +370,7 @@ export function SetupViewer({
                         <TooltipButton
                             variant="ghost"
                             size="icon-sm"
-                            className="opacity-60 hover:opacity-100 text-red-400 hover:text-red-400 hover:bg-red-400/10! rounded-t-none rounded-bl-none"
+                            className="opacity-100 text-destructive hover:text-destructive hover:bg-destructive/10! rounded-t-none rounded-bl-none"
                             tooltip="Delete Setup"
                             onClick={() => {
                                 openDeleteSetup(car, track, filename, {
