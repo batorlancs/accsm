@@ -133,17 +133,23 @@ export function ValidationResults({
     });
     const checkboxId = useId();
 
-    if (validResults.length === 0 && failedResults.length === 0) {
+    // no files found
+    if (validResults.length === 0) {
+        const noFilesFound = failedResults.length <= 0;
+
         return (
             <div className="space-y-4">
                 <div className="text-center py-8">
-                    <AlertCircle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+                    <AlertCircle
+                        className={`h-12 w-12 mx-auto mb-4 ${noFilesFound ? "text-amber-500 " : "text-red-500"}`}
+                    />
                     <h3 className="font-semibold text-lg">
-                        No JSON Files Found
+                        {noFilesFound ? "No Files Found" : "Invalid Files"}
                     </h3>
                     <p className="text-muted-foreground">
-                        The selected folder doesn't contain any valid JSON setup
-                        files.
+                        {noFilesFound
+                            ? "The selected folder doesn't contain any files."
+                            : "All files failed validation and cannot be imported."}
                     </p>
                 </div>
                 <div className="flex gap-2">
