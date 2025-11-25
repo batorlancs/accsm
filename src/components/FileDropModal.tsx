@@ -18,6 +18,7 @@ import type { ValidationResult } from "@/types/backend";
 interface FileDropModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    onFilesDropped: (paths: string[]) => void;
     globalDropFiles?: string[] | null;
 }
 
@@ -29,6 +30,7 @@ type ModalState =
 export function FileDropModal({
     open,
     onOpenChange,
+    onFilesDropped,
     globalDropFiles,
 }: FileDropModalProps) {
     const [modalState, setModalState] = useState<ModalState>({
@@ -57,7 +59,7 @@ export function FileDropModal({
 
     // Don't handle drag/drop in modal - let global handler do it
     const { dragState } = useDragDrop({
-        onFileDrop: () => {},
+        onFileDrop: open ? onFilesDropped : () => {},
         enabled: !open,
     });
 
