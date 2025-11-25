@@ -326,10 +326,12 @@ export function SetupViewer({
                         </p>
                     </div>
                 </div>
-                <div className="p-4 w-full">
-                    <h2 className="text-lg font-medium">
-                        {fileNameWithoutExtension}
-                        <span className="text-muted-foreground">
+                <div className="p-4 flex-1 overflow-hidden">
+                    <h2 className="text-lg font-medium min-w-0 flex items-baseline">
+                        <span className="truncate">
+                            {fileNameWithoutExtension}
+                        </span>{" "}
+                        <span className="text-muted-foreground shtink-0">
                             {fileNameExtension ? `.${fileNameExtension}` : ""}
                         </span>
                     </h2>
@@ -341,7 +343,7 @@ export function SetupViewer({
                         <span className="text-xs">{trackData.pretty_name}</span>
                     </div>
                 </div>
-                <div className="flex flex-col items-end justify-between space-y-2">
+                <div className="flex flex-col items-end justify-between space-y-2 shrink-0">
                     {onClose && (
                         <Button
                             variant="ghost"
