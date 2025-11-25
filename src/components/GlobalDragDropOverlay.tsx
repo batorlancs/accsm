@@ -1,21 +1,22 @@
+import type { DragState } from "@/hooks/useDragDrop";
 import { Upload } from "lucide-react";
-import { useDragDrop } from "@/hooks/useDragDrop";
 
 interface GlobalDragDropOverlayProps {
-    onFilesDropped: (paths: string[]) => void;
-    enabled?: boolean;
+    enabled: boolean;
+    dragState: DragState;
 }
 
 export function GlobalDragDropOverlay({
-    onFilesDropped,
-    enabled = true,
+    enabled,
+    dragState,
 }: GlobalDragDropOverlayProps) {
-    const { dragState } = useDragDrop({
-        onFileDrop: onFilesDropped,
-        enabled,
-    });
+    
 
     if (dragState !== "dragover") {
+        return null;
+    }
+
+    if (!enabled) {
         return null;
     }
 

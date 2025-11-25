@@ -11,14 +11,14 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { ValidationResults } from "@/components/ValidationResults";
-import { useDragDrop } from "@/hooks/useDragDrop";
 import { TauriAPI } from "@/services/api";
 import type { ValidationResult } from "@/types/backend";
+import type { DragState } from "@/hooks/useDragDrop";
 
 interface FileDropModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onFilesDropped: (paths: string[]) => void;
+    dragState: DragState;
     globalDropFiles?: string[] | null;
 }
 
@@ -30,7 +30,7 @@ type ModalState =
 export function FileDropModal({
     open,
     onOpenChange,
-    onFilesDropped,
+    dragState,
     globalDropFiles,
 }: FileDropModalProps) {
     const [modalState, setModalState] = useState<ModalState>({
@@ -57,11 +57,6 @@ export function FileDropModal({
         validateMutation.mutate(paths);
     };
 
-    // Don't handle drag/drop in modal - let global handler do it
-    const { dragState } = useDragDrop({
-        onFileDrop: open ? onFilesDropped : () => {},
-        enabled: !open,
-    });
 
     // Process global files when modal opens with them
     useEffect(() => {

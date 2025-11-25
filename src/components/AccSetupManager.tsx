@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import {
     Tabs,
     TabsList,
@@ -15,6 +15,7 @@ import { CarView } from "@/components/views/CarView";
 import { SetupView } from "@/components/views/SetupView";
 import { TrackView } from "@/components/views/TrackView";
 import { useSetupsEvents } from "@/hooks/useSetupsEvents";
+import { useDragDrop } from "@/hooks/useDragDrop";
 
 type ExplorerViewState =
     | { type: "empty" }
@@ -47,7 +48,15 @@ export function AccSetupManager() {
     // Global state
     const [isPathDialogOpen, setIsPathDialogOpen] = useState(false);
     const [isFileDropModalOpen, setIsFileDropModalOpen] = useState(false);
-
+    const [globalDropFiles, setGlobalDropFiles] = useState<string[] | null>(
+            null,
+        );
+    const { dragState } = useDragDrop({
+        onFileDrop: (paths: string[]) => {
+            setIsFileDropModalOpen(true);
+            setGlobalDropFiles(paths);
+        }
+    });
     // Explorer tab handlers
     const handleSelectSetup = (
         car: string,
@@ -82,14 +91,7 @@ export function AccSetupManager() {
         setSelectedCar(carId === selectedCar ? null : carId);
     };
 
-    const [globalDropFiles, setGlobalDropFiles] = useState<string[] | null>(
-        null,
-    );
-
-    const handleFilesDropped = useCallback((paths: string[]) => {
-        setGlobalDropFiles(paths);
-        setIsFileDropModalOpen(true);
-    }, []);
+    
 
     const selectedSetup =
         explorerViewState.type === "viewing"
@@ -202,14 +204,12 @@ export function AccSetupManager() {
                     }
                 }}
                 globalDropFiles={globalDropFiles}
-                onFilesDropped={handleFilesDropped}
+                dragState={dragState}
             />
-            {!isFileDropModalOpen ? (
-                <GlobalDragDropOverlay
-                    onFilesDropped={handleFilesDropped}
-                    enabled={!isFileDropModalOpen}
-                />
-            ) : null}
+            <GlobalDragDropOverlay
+                enabled={!isFileDropModalOpen}
+                dragState={dragState}
+            />
         </div>
     );
 }
