@@ -8,33 +8,23 @@ interface UseDragDropOptions {
     enabled?: boolean;
 }
 
-export function useDragDrop({
-    onFileDrop,
-    enabled = true,
-}: UseDragDropOptions) {
+export function useDragDrop({ onFileDrop }: UseDragDropOptions) {
     const [dragState, setDragState] = useState<DragState>("idle");
 
     useEffect(() => {
-        if (!enabled) return;
-
         let unlisten: (() => void) | null = null;
 
         const setupDragDrop = async () => {
             try {
                 const webview = getCurrentWebview();
                 unlisten = await webview.onDragDropEvent((event) => {
-                    switch (event.payload.type) {
-                        case "enter":
-                        case "over":
-                            setDragState("dragover");
-                            break;
-                        case "drop":
-                            setDragState("processing");
-                            onFileDrop(event.payload.paths);
-                            break;
-                        default:
-                            setDragState("idle");
-                            break;
+                    if (event.payload.type === "over") {
+                        setDragState("dragover");
+                    } else if (event.payload.type === "drop") {
+                        setDragState("processing");
+                        onFileDrop(event.payload.paths);
+                    } else {
+                        setDragState("idle");
                     }
                 });
             } catch (error) {
@@ -46,9 +36,8 @@ export function useDragDrop({
 
         return () => {
             unlisten?.();
-            setDragState("idle");
         };
-    }, [enabled, onFileDrop]);
+    }, [onFileDrop]);
 
     const resetDragState = useCallback(() => {
         setDragState("idle");

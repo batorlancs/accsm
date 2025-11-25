@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Tabs,
     TabsList,
@@ -14,8 +14,8 @@ import { CarViewer, ExplorerViewer, TrackViewer } from "@/components/viewers";
 import { CarView } from "@/components/views/CarView";
 import { SetupView } from "@/components/views/SetupView";
 import { TrackView } from "@/components/views/TrackView";
-import { useSetupsEvents } from "@/hooks/useSetupsEvents";
 import { useDragDrop } from "@/hooks/useDragDrop";
+import { useSetupsEvents } from "@/hooks/useSetupsEvents";
 
 type ExplorerViewState =
     | { type: "empty" }
@@ -49,14 +49,15 @@ export function AccSetupManager() {
     const [isPathDialogOpen, setIsPathDialogOpen] = useState(false);
     const [isFileDropModalOpen, setIsFileDropModalOpen] = useState(false);
     const [globalDropFiles, setGlobalDropFiles] = useState<string[] | null>(
-            null,
-        );
+        null,
+    );
     const { dragState } = useDragDrop({
         onFileDrop: (paths: string[]) => {
             setIsFileDropModalOpen(true);
             setGlobalDropFiles(paths);
-        }
+        },
     });
+
     // Explorer tab handlers
     const handleSelectSetup = (
         car: string,
@@ -90,8 +91,6 @@ export function AccSetupManager() {
     const handleSelectCar = (carId: string) => {
         setSelectedCar(carId === selectedCar ? null : carId);
     };
-
-    
 
     const selectedSetup =
         explorerViewState.type === "viewing"

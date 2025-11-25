@@ -1,5 +1,5 @@
-import type { DragState } from "@/hooks/useDragDrop";
 import { Upload } from "lucide-react";
+import type { DragState } from "@/hooks/useDragDrop";
 
 interface GlobalDragDropOverlayProps {
     enabled: boolean;
@@ -10,8 +10,6 @@ export function GlobalDragDropOverlay({
     enabled,
     dragState,
 }: GlobalDragDropOverlayProps) {
-    
-
     if (dragState !== "dragover") {
         return null;
     }
