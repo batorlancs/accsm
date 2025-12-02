@@ -6,8 +6,8 @@
 
 *The ultimate desktop companion for ACC drivers who demand perfection*
 
-[![GitHub release](https://img.shields.io/github/release/username/accsm.svg?style=for-the-badge&color=success)](../../releases)
-[![Platform Support](https://img.shields.io/badge/platform-Windows%20|%20macOS%20|%20Linux-blue?style=for-the-badge)](../../releases)
+[![GitHub release](https://img.shields.io/github/release/batorlancs/accsm.svg?style=for-the-badge&color=success)](https://github.com/batorlancs/accsm/releases)
+[![Platform Support](https://img.shields.io/badge/platform-Windows%20|%20macOS%20|%20Linux-blue?style=for-the-badge)](https://github.com/batorlancs/accsm/releases)
 [![Built with Tauri](https://img.shields.io/badge/built%20with-Tauri-FFC131?style=for-the-badge&logo=tauri)](https://tauri.app)
 [![License MIT](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 
@@ -71,7 +71,7 @@ Native performance on Windows, macOS, and Linux
 <details>
 <summary><b>📦 Installation</b></summary>
 
-1. Visit our [**releases page**](../../releases)
+1. Visit our [**releases page**](https://github.com/batorlancs/accsm/releases)
 2. Download the latest version for your platform
 3. Install and launch!
 
@@ -131,7 +131,7 @@ We welcome contributions from the ACC community! Whether you're fixing bugs, add
 
 ### 🌟 Star us on GitHub if ACCSM helps your racing! 🌟
 
-[⭐ Star Repository](../../stargazers) • [🐛 Report Bug](../../issues) • [💡 Request Feature](../../issues) • [💬 Discussions](../../discussions)
+[⭐ Star Repository](https://github.com/batorlancs/accsm/stargazers) • [🐛 Report Bug](https://github.com/batorlancs/accsm/issues) • [💡 Request Feature](https://github.com/batorlancs/accsm/issues) • [💬 Discussions](https://github.com/batorlancs/accsm/discussions)
 
 </div>
 
