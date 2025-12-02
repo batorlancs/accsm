@@ -1,6 +1,7 @@
 <div align="center">
 
 # 🏁 ACCSM
+
 ### Assetto Corsa Competizione Setup Manager
 
 *The ultimate desktop companion for ACC drivers who demand perfection*
@@ -58,9 +59,9 @@ Native performance on Windows, macOS, and Linux
 ## ⚠️ **IMPORTANT: Backup First!**
 
 > **🛡️ Safety Notice**
-> 
-> This application modifies, moves, and deletes files in your ACC Setups folder. 
-> 
+>
+> This application modifies, moves, and deletes files in your ACC Setups folder.
+>
 > **Always backup your Setups folder before first use.** While ACCSM includes extensive validation and safety checks, your setups are irreplaceable!
 
 ---
@@ -71,10 +72,7 @@ Native performance on Windows, macOS, and Linux
 <summary><b>📦 Installation</b></summary>
 
 1. Visit our [**releases page**](../../releases)
-2. Download the latest version for your platform:
-   - 🪟 Windows: `.msi` or `.exe`
-   - 🍎 macOS: `.dmg` 
-   - 🐧 Linux: `.AppImage` or `.deb`
+2. Download the latest version for your platform
 3. Install and launch!
 
 </details>
@@ -151,4 +149,3 @@ MIT License - see [LICENSE](LICENSE) file for details.
 *Happy Racing! 🏁*
 
 </div>
-
