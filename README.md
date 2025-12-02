@@ -7,7 +7,7 @@
 *The ultimate desktop companion for ACC drivers who demand perfection*
 
 [![GitHub release](https://img.shields.io/github/release/batorlancs/accsm.svg?style=for-the-badge&color=success)](https://github.com/batorlancs/accsm/releases)
-[![Platform Support](https://img.shields.io/badge/platform-Windows%20|%20macOS%20|%20Linux-blue?style=for-the-badge)](https://github.com/batorlancs/accsm/releases)
+[![Platform Support](https://img.shields.io/badge/platform-Windows-0078D4?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/batorlancs/accsm/releases)
 [![Built with Tauri](https://img.shields.io/badge/built%20with-Tauri-FFC131?style=for-the-badge&logo=tauri)](https://tauri.app)
 [![License MIT](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 
@@ -72,7 +72,10 @@ Native performance on Windows, macOS, and Linux
 <summary><b>📦 Installation</b></summary>
 
 1. Visit our [**releases page**](https://github.com/batorlancs/accsm/releases)
-2. Download the latest version for your platform
+2. Download the latest version for your platform:
+   - 🪟 Windows: `.msi` or `.exe`
+   - 🍎 macOS: `.dmg` 
+   - 🐧 Linux: `.AppImage` or `.deb`
 3. Install and launch!
 
 </details>
