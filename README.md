@@ -1,41 +1,154 @@
-# ACCSM - Assetto Corsa Competizione Setup Manager
+<div align="center">
 
-A powerful desktop application for managing your ACC car setup files with intelligent organization and easy importing.
+# 🏁 ACCSM
+### Assetto Corsa Competizione Setup Manager
+
+*The ultimate desktop companion for ACC drivers who demand perfection*
+
+[![GitHub release](https://img.shields.io/github/release/username/accsm.svg?style=for-the-badge&color=success)](../../releases)
+[![Platform Support](https://img.shields.io/badge/platform-Windows%20|%20macOS%20|%20Linux-blue?style=for-the-badge)](../../releases)
+[![Built with Tauri](https://img.shields.io/badge/built%20with-Tauri-FFC131?style=for-the-badge&logo=tauri)](https://tauri.app)
+[![License MIT](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
 
 ![ACCSM Screenshot](docs/screenshot.png)
 
-## ⚠️ Important Warning
+</div>
 
-**This application modifies, moves, and deletes files in your ACC Setups folder.**
+---
 
-It is **strongly recommended** to create a backup of your entire Setups folder before using this application. While ACCSM includes validation and safety checks, having a backup ensures you won't lose any important setup configurations.
+## 🚀 What Makes ACCSM Special?
 
-## Features
+Transform your ACC setup management from chaos to championship-level organization. ACCSM brings professional-grade tools to every sim racer's desktop.
 
-- **Drag & Drop Import** - Simply drag JSON setup files into the window to import them
-- **Smart Setup Detection** - Automatically detects setup types (Race/Qualifying/Wet) from filenames  
-- **Track Recognition** - Intelligent track detection and automatic file organization
-- **Quick Editing** - Modify common settings like fuel, ABS, and TC directly in the interface
-- **Real-time Sync** - File watcher automatically updates when setup files change
-- **Cross-platform** - Works on Windows, macOS, and Linux
+### ✨ Core Features
 
-## How to Use
+<table>
+<tr>
+<td align="center" width="33%">
+<h4>🎯 Drag & Drop Magic</h4>
+Simply drag JSON setup files into the window and watch them find their perfect home
+</td>
+<td align="center" width="33%">
+<h4>🧠 Smart Detection</h4>
+AI-powered setup type recognition (Race/Qualifying/Wet) from filename patterns
+</td>
+<td align="center" width="33%">
+<h4>🗺️ Track Intelligence</h4>
+Automatic track detection with seamless file organization
+</td>
+</tr>
+<tr>
+<td align="center" width="33%">
+<h4>⚡ Live Editing</h4>
+Tweak fuel, ABS, TC, and other critical settings without leaving the app
+</td>
+<td align="center" width="33%">
+<h4>🔄 Real-time Sync</h4>
+File watcher keeps everything in sync as you make changes
+</td>
+<td align="center" width="33%">
+<h4>🌍 Cross-Platform</h4>
+Native performance on Windows, macOS, and Linux
+</td>
+</tr>
+</table>
 
-1. **Launch the app** - ACCSM will automatically scan your ACC Setups folder
-2. **Import setups** - Drag JSON setup files or entire folders into the application window
-3. **Select track** - Choose the appropriate track from the dropdown when importing
-4. **Organize automatically** - The app will place setups in the correct car/track folders
-5. **Edit on the fly** - Use the built-in editor to adjust fuel, ABS, TC, and other settings
+---
 
-## Installation
+## ⚠️ **IMPORTANT: Backup First!**
 
-Download the latest release for your platform from the [releases page](../../releases).
+> **🛡️ Safety Notice**
+> 
+> This application modifies, moves, and deletes files in your ACC Setups folder. 
+> 
+> **Always backup your Setups folder before first use.** While ACCSM includes extensive validation and safety checks, your setups are irreplaceable!
 
-## Technical Details
+---
 
-Built with Tauri (Rust + React) for native performance and cross-platform compatibility.
+## 🎮 Quick Start Guide
 
-## License
+<details>
+<summary><b>📦 Installation</b></summary>
 
-MIT License - see LICENSE file for details.
+1. Visit our [**releases page**](../../releases)
+2. Download the latest version for your platform:
+   - 🪟 Windows: `.msi` or `.exe`
+   - 🍎 macOS: `.dmg` 
+   - 🐧 Linux: `.AppImage` or `.deb`
+3. Install and launch!
+
+</details>
+
+<details>
+<summary><b>🚀 First Launch</b></summary>
+
+1. **Auto-Discovery** - ACCSM automatically finds your ACC Setups folder
+2. **Scan Complete** - All existing setups are instantly cataloged
+3. **Ready to Rock** - Start importing and organizing immediately
+
+</details>
+
+<details>
+<summary><b>📂 Import Workflow</b></summary>
+
+```
+1. 🖱️  Drag setup files (or entire folders) into ACCSM
+2. 🎯  Select the target track from the smart dropdown
+3. ⚡  Watch automatic organization magic happen
+4. 🔧  Fine-tune settings with the built-in editor
+5. 🏁  Jump into ACC with perfectly organized setups
+```
+
+</details>
+
+---
+
+## 🛠️ Tech Stack
+
+<div align="center">
+
+**Built for Speed. Designed for Reliability.**
+
+| Frontend | Backend | Desktop |
+|:--------:|:-------:|:-------:|
+| ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) | ![Rust](https://img.shields.io/badge/Rust-000000?style=for-the-badge&logo=rust&logoColor=white) | ![Tauri](https://img.shields.io/badge/Tauri-FFC131?style=for-the-badge&logo=tauri&logoColor=white) |
+| TypeScript + Vite | Native Performance | Cross-Platform |
+
+</div>
+
+### Why This Stack?
+
+- **🦀 Rust Backend**: Memory-safe, blazingly fast file operations
+- **⚛️ React Frontend**: Modern, responsive UI that feels native  
+- **🌪️ Tauri Framework**: Tiny bundle size, native OS integration
+- **⚡ Vite**: Lightning-fast development and builds
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions from the ACC community! Whether you're fixing bugs, adding features, or improving docs - every contribution makes ACCSM better for everyone.
+
+<div align="center">
+
+### 🌟 Star us on GitHub if ACCSM helps your racing! 🌟
+
+[⭐ Star Repository](../../stargazers) • [🐛 Report Bug](../../issues) • [💡 Request Feature](../../issues) • [💬 Discussions](../../discussions)
+
+</div>
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+<div align="center">
+<br>
+
+**Made with ❤️ by sim racers, for sim racers**
+
+*Happy Racing! 🏁*
+
+</div>
 
